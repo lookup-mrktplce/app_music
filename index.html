@@ -104,8 +104,14 @@
     .btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #b89600; }
     .btn.secondary { background:#333; color:#fff; box-shadow: 0 4px 0 #111; }
     .btn.secondary:active { box-shadow: 0 2px 0 #111; }
+    .btn:disabled { opacity:0.6; cursor:not-allowed; box-shadow:none; }
     .error { color:#ff4444; font-size:0.85rem; margin-top:5px; min-height:1.2em; }
     .success { color:#4ade80; font-size:0.9rem; margin-top:5px; }
+    .loading-spinner {
+      display:inline-block; width:16px; height:16px; border:2px solid rgba(255,255,255,0.3);
+      border-radius:50%; border-top-color:#fff; animation: spin 0.8s linear infinite; margin-right:8px; vertical-align:middle;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
     .id-display {
       background:#111; padding:10px; border-radius:8px; font-family:monospace;
       text-align:center; margin:10px 0; border:1px dashed var(--btn-bg); word-break:break-all;
@@ -185,19 +191,19 @@
           <input type="email" id="reg-email" placeholder="example@mail.com">
         </div>
         <div class="error" id="email-error"></div>
-        <button class="btn" id="reg-next-1">Далее</button>
+        <button class="btn" id="reg-next-1">Отправить код на почту</button>
       </div>
       <div class="step" data-step="1b">
         <h2>📧 Подтвердите почту</h2>
-        <p class="text-center">Мы отправили ссылку подтверждения на:<br><strong id="confirm-email-display" style="color:var(--btn-bg)"></strong></p>
+        <p class="text-center">Мы отправили письмо со ссылкой подтверждения на:<br><strong id="confirm-email-display" style="color:var(--btn-bg)"></strong></p>
         <p class="text-center" style="font-size:0.85rem;color:#aaa;margin-top:10px;">
-          🔹 Откройте письмо → нажмите "Подтвердить"<br>
-          🔹 Вернитесь в игру — аккаунт активируется автоматически
+          🔹 Откройте письмо от "Firebase"<br>
+          🔹 Нажмите кнопку "Подтвердить адрес"<br>
+          🔹 Вернитесь сюда и нажмите кнопку ниже
         </p>
-        <div class="email-hint" id="demo-link-display"></div>
-        <p class="success" id="email-verified-msg" style="display:none">✅ Почта подтверждена!</p>
-        <button class="btn" id="check-verification-btn">Я подтвердил почту</button>
-        <button class="btn secondary mt-10" id="resend-email-btn">Отправить ссылку ещё раз</button>
+        <p class="success" id="email-verified-msg" style="display:none">✅ Почта подтверждена! Переходим дальше...</p>
+        <button class="btn" id="check-verification-btn">✅ Я подтвердил почту</button>
+        <button class="btn secondary mt-10" id="resend-email-btn">Отправить письмо ещё раз</button>
       </div>
       <div class="step" data-step="2">
         <h2>Придумайте никнейм</h2>
@@ -274,10 +280,8 @@
 
 <div class="modal-overlay" id="email-modal">
   <div class="modal">
-    <h3>🔗 Ссылка для подтверждения</h3>
-    <p>Для демо-режима скопируйте эту ссылку и откройте в новой вкладке:</p>
-    <div class="email-hint" id="modal-link" style="cursor:pointer" title="Нажмите чтобы скопировать"></div>
-    <p style="font-size:0.8rem;color:#aaa">После открытия ссылки вернитесь сюда и нажмите "Я подтвердил"</p>
+    <h3>⏳ Отправка письма...</h3>
+    <p>Проверьте папку "Спам", если письмо не пришло в течение 2 минут.</p>
     <button class="btn" onclick="closeEmailModal()">Понятно</button>
   </div>
 </div>
@@ -299,11 +303,12 @@
 </div>
 
 <script type="module">
-  // 🔥 FIREBASE CONFIG
+  // 🔥 FIREBASE CONFIG — ТВОИ ДАННЫЕ
   import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
   import { 
     getAuth, createUserWithEmailAndPassword, sendEmailVerification, 
-    signInWithEmailAndPassword, onAuthStateChanged, applyActionCode 
+    signInWithEmailAndPassword, onAuthStateChanged, applyActionCode,
+    signOut
   } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
   import { 
     getFirestore, doc, setDoc, getDoc, collection, addDoc, 
@@ -320,23 +325,15 @@
     appId: "1:468429851250:web:e0e7f7e7eeff0643bb90eb"
   };
 
-  // 🔹 ФОН ЗАГРУЗКИ — ИСПРАВЛЕННАЯ ССЫЛКА (raw.githubusercontent.com):
+  // 🔹 ФОН ЗАГРУЗКИ — прямая ссылка (raw):
   const bgImageUrl = 'https://raw.githubusercontent.com/lookup-mrktplce/brawlstars/main/photo_2026-05-09_05-06-06.jpg';
 
-  let auth, db;
-  let isFirebaseReady = false;
-  try {
-    if (firebaseConfig.apiKey && firebaseConfig.apiKey !== "ВСТАВЬТЕ_API_KEY") {
-      const app = initializeApp(firebaseConfig);
-      auth = getAuth(app);
-      db = getFirestore(app);
-      isFirebaseReady = true;
-      console.log("✅ Firebase подключен");
-    }
-  } catch(e) { 
-    console.warn("⚠️ Firebase ошибка, работает демо-режим:", e.message); 
-  }
+  // Инициализация Firebase
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
 
+  // Глобальные функции
   window.showScreen = (id) => {
     ['splash','loading','auth','main-menu','support-chat'].forEach(s => {
       const el = document.getElementById(s);
@@ -351,6 +348,7 @@
     return `FB-${ts}-${rand}`.toUpperCase();
   };
 
+  // Фильтр мата
   const badWords = ['бля','сука','хуй','пизд','ебат','муд','жоп','даун','ебан','пидор','лох','чмо','нах','долб','трах'];
   function containsProfanity(text) {
     if(!text) return false;
@@ -358,6 +356,7 @@
     return badWords.some(w => clean.includes(w));
   }
 
+  // Анимация черепов
   function createSkulls() {
     const container = document.getElementById('skull-bg');
     if(!container) return;
@@ -374,11 +373,10 @@
   }
   createSkulls();
 
+  // Загрузка
   async function runLoadingSequence() {
-    console.log("🔄 Запуск загрузки...");
     const fill = document.getElementById('progress-fill');
     const text = document.getElementById('progress-text');
-    
     document.getElementById('loading').style.backgroundImage = `url('${bgImageUrl}')`;
     document.getElementById('loading').style.display = 'flex';
 
@@ -388,134 +386,153 @@
       text.textContent = s.p + '%';
       await sleep(s.d);
     }
-
     text.textContent = 'Подключение к серверу...';
     await sleep(3000);
-
     for(let i=26; i<=100; i+=2) {
       fill.style.width = i + '%';
       text.textContent = i + '%';
       await sleep(35);
     }
     await sleep(400);
-    console.log("✅ Загрузка завершена, показываем авторизацию");
     window.showScreen('auth');
   }
-
   function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
-  // Запуск
-  console.log("🎮 Mell Brawl запускается...");
   setTimeout(() => {
-    console.log("👋 Скрываем splash");
     document.getElementById('splash').classList.add('hidden');
     setTimeout(runLoadingSequence, 500);
   }, 2200);
 
-  let regData = {};
-  let pendingEmail = '';
-
+  // Проверка верификации по URL (когда пользователь кликнул по ссылке из письма)
   async function checkUrlForVerification() {
     const urlParams = new URLSearchParams(window.location.search);
     const oobCode = urlParams.get('oobCode');
     const mode = urlParams.get('mode');
     
-    if (mode === 'verifyEmail' && oobCode && isFirebaseReady) {
+    if (mode === 'verifyEmail' && oobCode) {
       try {
         await applyActionCode(auth, oobCode);
         window.history.replaceState({}, document.title, window.location.pathname);
-        alert('✅ Почта подтверждена!');
-        if(pendingEmail && document.querySelector('[data-step="1b"]')) {
+        alert('✅ Почта подтверждена! Можете продолжить регистрацию.');
+        // Если пользователь на шаге 1b — автоматически переходим дальше
+        if (document.querySelector('[data-step="1b"]')?.classList.contains('active')) {
           document.getElementById('email-verified-msg').style.display = 'block';
           setTimeout(() => goToStep('reg-flow', '2'), 1500);
         }
       } catch(e) {
         console.error("Ошибка верификации:", e);
-        alert('❌ Ссылка недействительна');
+        alert('❌ Ссылка недействительна или истекла. Запросите новую.');
       }
     }
   }
   checkUrlForVerification();
 
-  // === ШАГ 1: ВВОД ПОЧТЫ ===
+  // === РЕГИСТРАЦИЯ ===
+  let regData = {};
+  let tempUser = null; // Временный пользователь для отправки письма
+
   document.getElementById('reg-next-1').onclick = async () => {
     const email = document.getElementById('reg-email').value.trim();
     const err = document.getElementById('email-error');
+    const btn = document.getElementById('reg-next-1');
     
     if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       err.textContent = 'Введите корректную почту';
       return;
     }
     err.textContent = '';
-    pendingEmail = email;
-    regData.email = email;
-    document.getElementById('confirm-email-display').textContent = email;
-
-    // === ДЕМО-РЕЖИМ (работает всегда, даже с подключенным Firebase) ===
-    const demoLink = `${window.location.origin}${window.location.pathname}?mode=verifyEmail&oobCode=DEMO_${btoa(email)}`;
-    document.getElementById('demo-link-display').textContent = demoLink;
-    document.getElementById('modal-link').textContent = demoLink;
-    document.getElementById('modal-link').onclick = () => {
-      navigator.clipboard.writeText(demoLink);
-      alert('📋 Ссылка скопирована!');
-    };
-    showEmailModal(email);
-    goToStep('reg-flow', '1b');
     
-    /* 
-    // === РЕАЛЬНЫЙ FIREBASE (раскомментируйте, когда будете готовы) ===
-    if(isFirebaseReady) {
-      try {
-        const userCred = await createUserWithEmailAndPassword(auth, email, 'temp_'+Math.random().toString(36).slice(2));
-        await sendEmailVerification(userCred.user, { url: window.location.href.split('?')[0] });
-        showEmailModal(email);
-        return;
-      } catch(e) {
-        if(e.code === 'auth/email-already-in-use') {
-          err.textContent = 'Эта почта уже зарегистрирована';
-        } else {
-          err.textContent = 'Ошибка: ' + e.message;
-        }
+    // Блокируем кнопку
+    btn.disabled = true;
+    btn.innerHTML = '<span class="loading-spinner"></span>Отправка...';
+    
+    try {
+      // Создаём пользователя с временным паролем
+      const tempPass = 'temp_' + Math.random().toString(36).slice(2, 10);
+      const userCred = await createUserWithEmailAndPassword(auth, email, tempPass);
+      tempUser = userCred.user;
+      
+      // Отправляем письмо с подтверждением
+      await sendEmailVerification(tempUser, {
+        url: window.location.href.split('?')[0] // Куда вернуться после подтверждения
+      });
+      
+      regData.email = email;
+      regData.tempPass = tempPass; // Сохраняем для последующего входа
+      document.getElementById('confirm-email-display').textContent = email;
+      
+      showEmailModal();
+      goToStep('reg-flow', '1b');
+      
+    } catch(e) {
+      console.error("Firebase error:", e);
+      if(e.code === 'auth/email-already-in-use') {
+        err.textContent = 'Эта почта уже зарегистрирована';
+      } else if(e.code === 'auth/invalid-email') {
+        err.textContent = 'Неверный формат почты';
+      } else if(e.code === 'auth/too-many-requests') {
+        err.textContent = 'Слишком много запросов. Попробуйте позже.';
+      } else {
+        err.textContent = 'Ошибка: ' + (e.message || 'Неизвестная ошибка');
       }
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Отправить код на почту';
     }
-    */
   };
 
   document.getElementById('check-verification-btn').onclick = async () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const oobCode = urlParams.get('oobCode');
+    const btn = document.getElementById('check-verification-btn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="loading-spinner"></span>Проверка...';
     
-    if(oobCode && oobCode.startsWith('DEMO_')) {
-      document.getElementById('email-verified-msg').style.display = 'block';
-      await sleep(800);
-      goToStep('reg-flow', '2');
-      return;
-    }
-    
-    if(isFirebaseReady && auth.currentUser) {
-      try {
-        await auth.currentUser.reload();
-        if(auth.currentUser.emailVerified) {
+    try {
+      // Перезагружаем данные пользователя
+      if(tempUser) {
+        await tempUser.reload();
+        if(tempUser.emailVerified) {
           document.getElementById('email-verified-msg').style.display = 'block';
-          await sleep(800);
+          await sleep(1000);
           goToStep('reg-flow', '2');
         } else {
-          alert('⏳ Почта ещё не подтверждена. Проверьте письмо.');
+          alert('⏳ Почта ещё не подтверждена. Проверьте письмо и нажмите кнопку в нём.');
         }
-      } catch(e) { alert('Ошибка: ' + e.message); }
-    } else {
-      alert('🔗 Сначала откройте ссылку из письма, затем нажмите эту кнопку');
+      } else {
+        alert('❌ Сессия истекла. Начните регистрацию заново.');
+        goToStep('reg-flow', '1');
+      }
+    } catch(e) {
+      alert('Ошибка проверки: ' + e.message);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = '✅ Я подтвердил почту';
     }
   };
 
-  document.getElementById('resend-email-btn').onclick = () => {
-    alert('📧 Ссылка отправлена повторно (демо)');
+  document.getElementById('resend-email-btn').onclick = async () => {
+    if(!tempUser) return alert('❌ Сессия истекла. Начните заново.');
+    
+    const btn = document.getElementById('resend-email-btn');
+    btn.disabled = true;
+    btn.textContent = 'Отправка...';
+    
+    try {
+      await sendEmailVerification(tempUser, {
+        url: window.location.href.split('?')[0]
+      });
+      alert('📧 Письмо отправлено повторно!');
+    } catch(e) {
+      alert('Ошибка: ' + e.message);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Отправить письмо ещё раз';
+    }
   };
 
   function showEmailModal() { document.getElementById('email-modal').classList.add('active'); }
   window.closeEmailModal = () => { document.getElementById('email-modal').classList.remove('active'); };
 
-  // === ОСТАЛЬНЫЕ ШАГИ ===
+  // === ШАГИ РЕГИСТРАЦИИ ===
   document.getElementById('reg-next-2').onclick = () => {
     const nick = document.getElementById('reg-nick').value.trim();
     const err = document.getElementById('nick-error');
@@ -535,25 +552,43 @@
     goToStep('reg-flow', '4');
   };
 
-  document.getElementById('reg-next-4').onclick = () => {
+  document.getElementById('reg-next-4').onclick = async () => {
     if(!document.getElementById('reg-consent').checked) {
       return document.getElementById('consent-error').textContent = 'Требуется согласие';
     }
     document.getElementById('consent-error').textContent = '';
+    
+    // Генерируем данные аккаунта
     regData.id = window.generatePlayerId();
     regData.trophies = 0;
     regData.avatar = 'default';
     regData.createdAt = new Date().toISOString();
+    regData.emailVerified = true;
+    
     document.getElementById('generated-id').textContent = regData.id;
     goToStep('reg-flow', '5');
-    if(isFirebaseReady) {
-      setDoc(doc(db, "users", regData.id), regData).catch(console.error);
-    } else {
-      localStorage.setItem('mellbrawl_user_'+regData.id, JSON.stringify(regData));
+
+    // Сохраняем в Firestore
+    try {
+      await setDoc(doc(db, "users", regData.id), {
+        email: regData.email,
+        nick: regData.nick,
+        age: regData.age,
+        trophies: 0,
+        avatar: 'default',
+        createdAt: regData.createdAt,
+        emailVerified: true
+      });
+      console.log("✅ Пользователь сохранён:", regData.id);
+    } catch(e) {
+      console.error("Ошибка сохранения:", e);
     }
   };
 
-  document.getElementById('reg-finish').onclick = () => {
+  document.getElementById('reg-finish').onclick = async () => {
+    // Выходим из временного аккаунта
+    if(auth.currentUser) await signOut(auth);
+    
     localStorage.setItem('mellbrawl_current_user', regData.id);
     window.showScreen('main-menu');
   };
@@ -563,22 +598,35 @@
     const email = document.getElementById('login-email').value.trim();
     const id = document.getElementById('login-id').value.trim().toUpperCase();
     const err = document.getElementById('login-error');
+    const btn = document.getElementById('login-next');
+
     if(!email || !id) return err.textContent = 'Заполните оба поля';
-    let userData = null;
-    if(isFirebaseReady) {
+
+    btn.disabled = true;
+    btn.innerHTML = '<span class="loading-spinner"></span>Поиск...';
+
+    try {
       const snap = await getDoc(doc(db, "users", id));
-      if(snap.exists() && snap.data().email.toLowerCase() === email.toLowerCase()) {
-        userData = snap.data();
+      if(!snap.exists() || snap.data().email.toLowerCase() !== email.toLowerCase()) {
+        return err.textContent = '❌ Аккаунт не найден';
       }
-    } else {
-      const saved = JSON.parse(localStorage.getItem('mellbrawl_user_'+id));
-      if(saved && saved.email.toLowerCase() === email.toLowerCase()) userData = saved;
+      
+      const userData = snap.data();
+      if(!userData.emailVerified) {
+        return err.textContent = '⚠️ Подтвердите почту перед входом';
+      }
+
+      document.getElementById('confirm-nick').textContent = userData.nick;
+      document.getElementById('confirm-trophies').textContent = userData.trophies;
+      err.textContent = '';
+      goToStep('login-flow', 'l2');
+      
+    } catch(e) {
+      err.textContent = 'Ошибка: ' + e.message;
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Найти аккаунт';
     }
-    if(!userData) return err.textContent = '❌ Аккаунт не найден';
-    document.getElementById('confirm-nick').textContent = userData.nick;
-    document.getElementById('confirm-trophies').textContent = userData.trophies;
-    err.textContent = '';
-    goToStep('login-flow', 'l2');
   };
 
   document.getElementById('login-yes').onclick = () => {
@@ -604,9 +652,9 @@
     addMessage(text, 'user');
     input.value = '';
     const userId = localStorage.getItem('mellbrawl_current_user') || 'guest';
-    if(isFirebaseReady) {
-      await addDoc(collection(db, "support_chats"), { text, user: userId, isSupport: false, ts: new Date() });
-    }
+    await addDoc(collection(db, "support_chats"), { 
+      text, user: userId, isSupport: false, ts: new Date() 
+    });
   };
   function addMessage(text, type) {
     const div = document.createElement('div');
@@ -618,18 +666,17 @@
   async function loadChat() {
     const container = document.getElementById('chat-msgs');
     container.innerHTML = '<div class="msg support">👋 Здравствуйте! Чем можем помочь?</div>';
-    if(isFirebaseReady) {
-      const q = query(collection(db, "support_chats"), orderBy("ts"));
-      onSnapshot(q, (snap) => {
-        container.innerHTML = '<div class="msg support">👋 Здравствуйте! Чем можем помочь?</div>';
-        snap.forEach(d => {
-          const data = d.data();
-          addMessage(data.text, data.isSupport ? 'support' : 'user');
-        });
+    const q = query(collection(db, "support_chats"), orderBy("ts"));
+    onSnapshot(q, (snap) => {
+      container.innerHTML = '<div class="msg support">👋 Здравствуйте! Чем можем помочь?</div>';
+      snap.forEach(d => {
+        const data = d.data();
+        addMessage(data.text, data.isSupport ? 'support' : 'user');
       });
-    }
+    });
   }
 
+  // === НАВИГАЦИЯ ===
   function goToStep(flowId, stepNum) {
     document.querySelectorAll(`#${flowId} .step`).forEach(s => s.classList.remove('active'));
     document.querySelector(`#${flowId} .step[data-step="${stepNum}"]`)?.classList.add('active');
