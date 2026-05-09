@@ -1,1239 +1,1331 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Rizzy 🎧</title>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <style>
-    /* ==================== 🎨 БАЗОВЫЕ СТИЛИ ==================== */
-    :root {
-      --primary: #00ff88;
-      --primary-glow: rgba(0, 255, 136, 0.4);
-      --bg-dark: #0a0a0a;
-      --bg-card: rgba(20, 20, 20, 0.8);
-      --text: #fff;
-      --text-dim: #aaa;
-      --border: rgba(255,255,255,0.1);
-      --danger: #ff4757;
-      --warning: #ffa502;
-    }
-    
-    /* Темы */
-    [data-theme="purple"] { --primary: #d633ff; --primary-glow: rgba(214, 51, 255, 0.4); }
-    [data-theme="red"] { --primary: #ff4757; --primary-glow: rgba(255, 71, 87, 0.4); }
-    [data-theme="blue"] { --primary: #3498db; --primary-glow: rgba(52, 152, 219, 0.4); }
-    [data-theme="green"] { --primary: #00ff88; --primary-glow: rgba(0, 255, 136, 0.4); }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Fell Brawl</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Russo+One&family=Roboto:wght@400;700;900&display=swap');
 
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    
-    body {
-      font-family: 'Segoe UI', system-ui, sans-serif;
-      background: linear-gradient(135deg, #000 0%, #0a3d0a 50%, #000 100%);
-      background-size: 400% 400%;
-      animation: gradientFlow 15s ease infinite;
-      color: var(--text);
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
-    
-    @keyframes gradientFlow {
-      0%, 100% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-    }
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    user-select: none;
+  }
 
-    /* ==================== 🧭 ПАНЕЛЬ СПРАВА ==================== */
-    .side-panel {
-      position: fixed;
-      right: 0;
-      top: 0;
-      width: 280px;
-      height: 100vh;
-      background: var(--bg-card);
-      border-left: 1px solid var(--border);
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      z-index: 100;
-      backdrop-filter: blur(10px);
-    }
+  body {
+    overflow: hidden;
+    font-family: 'Roboto', sans-serif;
+    background: #000;
+    color: #fff;
+    width: 100vw;
+    height: 100vh;
+  }
 
-    .logo {
-      font-size: 28px;
-      font-weight: 900;
-      margin-bottom: 20px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .logo .r {
-      color: var(--primary);
-      text-shadow: 0 0 15px var(--primary-glow);
-      position: relative;
-    }
-    .logo .r::after {
-      content: "⚡";
-      position: absolute;
-      top: -8px;
-      right: -12px;
-      font-size: 14px;
-      animation: flicker 1.5s infinite;
-    }
-    @keyframes flicker {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.7; }
-    }
+  /* ===== ЭКРАНЫ ===== */
+  .screen {
+    display: none;
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+    top: 0; left: 0;
+  }
+  .screen.active {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
 
-    .nav-btn {
-      padding: 12px 16px;
-      background: transparent;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      color: var(--text);
-      text-align: left;
-      cursor: pointer;
-      transition: all 0.2s;
-      font-size: 14px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .nav-btn:hover, .nav-btn.active {
-      background: var(--primary);
-      color: #000;
-      border-color: var(--primary);
-      box-shadow: 0 0 20px var(--primary-glow);
-    }
-    .nav-btn.admin-only {
-      border-color: var(--warning);
-      color: var(--warning);
-    }
-    .nav-btn.admin-only:hover {
-      background: var(--warning);
-      color: #000;
-    }
+  /* ===== ЧЕРНЫЙ ЭКРАН ===== */
+  #screen-black {
+    background: #000;
+  }
 
-    /* ==================== 📄 КОНТЕНТ ==================== */
-    .main-content {
-      margin-right: 280px;
-      padding: 30px;
-      min-height: 100vh;
-    }
+  /* ===== BY WASHEDOUT ===== */
+  #screen-washedout {
+    background: #000;
+  }
+  .washedout-text {
+    font-family: 'Russo One', sans-serif;
+    font-size: 28px;
+    color: #aaa;
+    letter-spacing: 4px;
+    animation: fadeInWash 0.8s ease;
+  }
+  @keyframes fadeInWash {
+    from { opacity: 0; transform: scale(0.8); }
+    to { opacity: 1; transform: scale(1); }
+  }
 
-    .page { display: none; }
-    .page.active { display: block; animation: fadeIn 0.3s; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+  /* ===== ЭКРАН ЗАГРУЗКИ ===== */
+  #screen-loading {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+  }
+  #screen-loading::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.3);
+    z-index: 0;
+  }
 
-    /* ==================== 👤 ПРОФИЛЬ ==================== */
-    .profile-header {
-      display: flex;
-      gap: 20px;
-      align-items: center;
-      padding: 20px;
-      background: var(--bg-card);
-      border-radius: 16px;
-      border: 1px solid var(--border);
-      margin-bottom: 30px;
-    }
-    .avatar {
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      background: var(--primary);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 40px;
-      font-weight: bold;
-      color: #000;
-      cursor: pointer;
-      position: relative;
-      overflow: hidden;
-    }
-    .avatar img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    .avatar input {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      opacity: 0;
-      cursor: pointer;
-    }
-    .profile-info h2 { font-size: 24px; margin-bottom: 4px; }
-    .profile-info .username { color: var(--primary); font-weight: 600; margin-bottom: 8px; display: block; }
-    .profile-info .bio { color: var(--text-dim); margin-bottom: 12px; }
-    .profile-stats { display: flex; gap: 20px; color: var(--text-dim); font-size: 14px; }
-    .profile-stats span { color: var(--primary); font-weight: 600; }
+  .logo-container {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .logo-fell {
+    font-family: 'Russo One', sans-serif;
+    font-size: 42px;
+    font-weight: 900;
+    color: #ff2d2d;
+    text-shadow:
+      -2px -2px 0 #000,
+       2px -2px 0 #000,
+      -2px  2px 0 #000,
+       2px  2px 0 #000,
+       0 0 10px rgba(255,0,0,0.5);
+    letter-spacing: 2px;
+  }
+  .logo-brawl {
+    font-family: 'Russo One', sans-serif;
+    font-size: 42px;
+    font-weight: 900;
+    color: #ffffff;
+    text-shadow:
+      -2px -2px 0 #000,
+       2px -2px 0 #000,
+      -2px  2px 0 #000,
+       2px  2px 0 #000;
+    letter-spacing: 2px;
+  }
 
-    /* ==================== 🎵 ТРЕКИ ==================== */
-    .track-card {
-      display: flex;
-      gap: 15px;
-      padding: 15px;
-      background: var(--bg-card);
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      margin-bottom: 12px;
-      align-items: center;
-      transition: transform 0.2s;
-    }
-    .track-card:hover { transform: translateX(5px); border-color: var(--primary); }
-    .track-cover {
-      width: 60px;
-      height: 60px;
-      border-radius: 8px;
-      background: #333;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 24px;
-      flex-shrink: 0;
-    }
-    .track-cover img { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; }
-    .track-info { flex: 1; min-width: 0; }
-    .track-title { font-weight: 600; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .track-artist { color: var(--text-dim); font-size: 13px; }
-    .track-meta { display: flex; gap: 15px; font-size: 12px; color: var(--text-dim); margin-top: 6px; }
-    .track-actions { display: flex; gap: 8px; }
-    .icon-btn {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      border: 1px solid var(--border);
-      background: transparent;
-      color: var(--text);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.2s;
-    }
-    .icon-btn:hover { background: var(--primary); color: #000; border-color: var(--primary); }
-    .icon-btn.danger:hover { background: var(--danger); color: #fff; border-color: var(--danger); }
+  .loading-bar-container {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 70%;
+    z-index: 2;
+    text-align: center;
+  }
+  .loading-percent {
+    font-family: 'Russo One', sans-serif;
+    font-size: 22px;
+    margin-bottom: 8px;
+    color: #fff;
+    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+  }
+  .loading-bar-bg {
+    width: 100%;
+    height: 14px;
+    background: rgba(0,0,0,0.6);
+    border-radius: 7px;
+    border: 2px solid rgba(255,255,255,0.3);
+    overflow: hidden;
+  }
+  .loading-bar-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #ff6b00, #ffcc00);
+    border-radius: 7px;
+    transition: width 0.5s ease;
+  }
+  .loading-server-text {
+    font-family: 'Roboto', sans-serif;
+    font-size: 18px;
+    color: #aaa;
+    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000;
+  }
 
-    /* ==================== 🎧 ПЛЕЕР ==================== */
-    .player-bar {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 280px;
-      background: rgba(15, 15, 15, 0.95);
-      border-top: 1px solid var(--border);
-      padding: 12px 20px;
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      z-index: 200;
-      backdrop-filter: blur(10px);
-    }
-    .player-track { display: flex; align-items: center; gap: 12px; min-width: 200px; }
-    .player-cover { width: 48px; height: 48px; border-radius: 6px; background: #333; }
-    .player-cover img { width: 100%; height: 100%; object-fit: cover; border-radius: 6px; }
-    .player-title { font-weight: 600; font-size: 14px; }
-    .player-artist { font-size: 12px; color: var(--text-dim); }
-    
-    .player-progress { flex: 1; display: flex; align-items: center; gap: 10px; }
-    .player-time { font-size: 12px; color: var(--text-dim); min-width: 40px; }
-    .progress-slider {
-      flex: 1;
-      height: 4px;
-      background: rgba(255,255,255,0.2);
-      border-radius: 2px;
-      cursor: pointer;
-      position: relative;
-    }
-    .progress-fill {
-      height: 100%;
-      background: var(--primary);
-      border-radius: 2px;
-      width: 0%;
-      position: relative;
-      transition: width 0.1s linear;
-    }
-    .progress-slider:hover .progress-fill::after {
-      content: '';
-      position: absolute;
-      right: -6px;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 12px;
-      height: 12px;
-      background: var(--primary);
-      border-radius: 50%;
-      box-shadow: 0 0 10px var(--primary-glow);
-    }
-    
-    .player-controls { display: flex; align-items: center; gap: 12px; }
-    .ctrl-btn {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      border: none;
-      background: var(--primary);
-      color: #000;
-      font-size: 18px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: transform 0.1s;
-    }
-    .ctrl-btn:hover { transform: scale(1.05); }
-    .ctrl-btn.secondary { background: transparent; border: 1px solid var(--border); color: var(--text); }
-    
-    .player-extras { display: flex; align-items: center; gap: 8px; }
-    .lyrics-btn.active { color: var(--primary); text-shadow: 0 0 10px var(--primary-glow); }
+  /* ===== ЭКРАН АВТОРИЗАЦИИ ===== */
+  #screen-auth {
+    position: relative;
+    overflow: hidden;
+  }
 
-    /* ==================== 📝 ТЕКСТ ПЕСНИ (КАРАОКЕ) ==================== */
-    .lyrics-panel {
-      position: fixed;
-      bottom: 80px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 90%;
-      max-width: 600px;
-      max-height: 300px;
-      background: rgba(20, 20, 20, 0.95);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 20px;
-      overflow-y: auto;
-      display: none;
-      z-index: 150;
-      backdrop-filter: blur(10px);
-    }
-    .lyrics-panel.active { display: block; animation: slideUp 0.3s; }
-    @keyframes slideUp { from { opacity: 0; transform: translate(-50%, 20px); } to { opacity: 1; transform: translate(-50%, 0); } }
-    
-    .lyric-line {
-      padding: 6px 0;
-      opacity: 0.5;
-      transition: all 0.15s ease;
-      text-align: center;
-      font-size: 16px;
-    }
-    .lyric-line.active {
-      opacity: 1;
-      color: var(--primary);
-      font-weight: 600;
-      text-shadow: 0 0 12px var(--primary-glow);
-      transform: scale(1.03);
-    }
+  .auth-bg {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(135deg, #1a1a5e, #0d0d3b, #2a2a8e);
+    animation: bgScroll 8s ease-in-out infinite alternate;
+    z-index: 0;
+  }
+  @keyframes bgScroll {
+    0% { background-position: 0% 0%; }
+    100% { background-position: 100% 100%; }
+  }
 
-    /* ==================== 🪟 МОДАЛКИ ==================== */
-    .modal {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.8);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 300;
-      padding: 20px;
-    }
-    .modal.active { display: flex; animation: fadeIn 0.2s; }
-    .modal-content {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 24px;
-      width: 100%;
-      max-width: 500px;
-      max-height: 90vh;
-      overflow-y: auto;
-    }
-    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-    .modal-title { font-size: 20px; font-weight: 700; }
-    .modal-close { background: none; border: none; color: var(--text); font-size: 24px; cursor: pointer; }
-    
-    .form-group { margin-bottom: 16px; }
-    .form-group label { display: block; margin-bottom: 6px; font-size: 14px; color: var(--text-dim); }
-    .form-group input, .form-group textarea, .form-group select {
-      width: 100%;
-      padding: 10px 14px;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      color: var(--text);
-      font-size: 14px;
-    }
-    .form-group input:focus, .form-group textarea:focus {
-      outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px var(--primary-glow);
-    }
-    .btn {
-      padding: 12px 24px;
-      background: var(--primary);
-      color: #000;
-      border: none;
-      border-radius: 10px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
-      width: 100%;
-    }
-    .btn:hover { box-shadow: 0 0 20px var(--primary-glow); transform: translateY(-2px); }
-    .btn.secondary { background: transparent; border: 1px solid var(--border); color: var(--text); }
-    .btn.danger { background: var(--danger); color: #fff; }
-    .btn-group { display: flex; gap: 10px; margin-top: 20px; }
+  .skull {
+    position: absolute;
+    font-size: 30px;
+    opacity: 0.12;
+    z-index: 0;
+    animation: floatSkull linear infinite;
+    pointer-events: none;
+  }
+  @keyframes floatSkull {
+    0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+    10% { opacity: 0.12; }
+    90% { opacity: 0.12; }
+    100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+  }
 
-    /* ==================== 🔐 АВТОРИЗАЦИЯ ==================== */
-    .auth-container {
-      max-width: 400px;
-      margin: 100px auto;
-      padding: 30px;
-      background: var(--bg-card);
-      border-radius: 16px;
-      border: 1px solid var(--border);
-      text-align: center;
-    }
-    .auth-title { font-size: 24px; margin-bottom: 20px; }
-    .google-btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      background: #fff;
-      color: #333;
-      margin-bottom: 15px;
-    }
-    .google-btn:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
-    .auth-toggle { margin-top: 15px; color: var(--text-dim); font-size: 14px; }
-    .auth-toggle a { color: var(--primary); cursor: pointer; }
+  .auth-container {
+    position: relative;
+    z-index: 2;
+    width: 90%;
+    max-width: 420px;
+    background: rgba(0,0,0,0.55);
+    border-radius: 20px;
+    border: 2px solid rgba(255,255,255,0.15);
+    backdrop-filter: blur(10px);
+    padding: 30px 25px;
+    text-align: center;
+  }
 
-    /* ==================== 📱 АДАПТИВ ==================== */
-    @media (max-width: 900px) {
-      .side-panel { width: 70px; padding: 15px 10px; }
-      .side-panel .logo span, .side-panel .nav-btn span { display: none; }
-      .side-panel .logo { justify-content: center; font-size: 24px; }
-      .side-panel .nav-btn { justify-content: center; padding: 12px; }
-      .main-content, .player-bar { margin-right: 70px; }
-    }
-  </style>
+  .auth-tabs {
+    display: flex;
+    gap: 0;
+    margin-bottom: 25px;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 2px solid rgba(255,255,255,0.2);
+  }
+  .auth-tab {
+    flex: 1;
+    padding: 12px;
+    font-family: 'Russo One', sans-serif;
+    font-size: 16px;
+    cursor: pointer;
+    background: rgba(255,255,255,0.05);
+    color: #888;
+    transition: all 0.3s;
+    border: none;
+    outline: none;
+  }
+  .auth-tab.active {
+    background: linear-gradient(135deg, #4a4aff, #2a2adf);
+    color: #fff;
+  }
+
+  .auth-step {
+    display: none;
+  }
+  .auth-step.active {
+    display: block;
+    animation: fadeStep 0.4s ease;
+  }
+  @keyframes fadeStep {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .auth-title {
+    font-family: 'Russo One', sans-serif;
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #fff;
+  }
+
+  .auth-input {
+    width: 100%;
+    padding: 14px 18px;
+    border-radius: 12px;
+    border: 2px solid rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+    font-size: 16px;
+    outline: none;
+    margin-bottom: 15px;
+    transition: border-color 0.3s;
+  }
+  .auth-input:focus {
+    border-color: #4a4aff;
+  }
+  .auth-input::placeholder {
+    color: #666;
+  }
+
+  .auth-btn {
+    width: 100%;
+    padding: 14px;
+    border-radius: 12px;
+    border: none;
+    background: linear-gradient(135deg, #4a4aff, #2a2adf);
+    color: #fff;
+    font-family: 'Russo One', sans-serif;
+    font-size: 16px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    margin-top: 5px;
+  }
+  .auth-btn:hover {
+    transform: scale(1.03);
+    box-shadow: 0 4px 20px rgba(74,74,255,0.5);
+  }
+  .auth-btn:active {
+    transform: scale(0.97);
+  }
+
+  .auth-error {
+    color: #ff4444;
+    font-size: 13px;
+    margin-top: -10px;
+    margin-bottom: 10px;
+    min-height: 18px;
+  }
+
+  .auth-info {
+    color: #aaa;
+    font-size: 14px;
+    margin-bottom: 15px;
+    line-height: 1.5;
+  }
+
+  .auth-id-display {
+    background: rgba(255,255,255,0.1);
+    border-radius: 12px;
+    padding: 15px;
+    margin: 15px 0;
+    font-family: 'Courier New', monospace;
+    font-size: 18px;
+    color: #ffcc00;
+    letter-spacing: 3px;
+    border: 1px solid rgba(255,204,0,0.3);
+  }
+
+  .checkbox-container {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin: 15px 0;
+    text-align: left;
+  }
+  .checkbox-container input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    accent-color: #4a4aff;
+    margin-top: 2px;
+    flex-shrink: 0;
+  }
+  .checkbox-container label {
+    font-size: 13px;
+    color: #ccc;
+    line-height: 1.4;
+  }
+
+  /* ===== ПОДТВЕРЖДЕНИЕ АККАУНТА ===== */
+  .account-confirm-card {
+    background: rgba(255,255,255,0.08);
+    border-radius: 15px;
+    padding: 20px;
+    margin: 15px 0;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+  .account-nick {
+    font-family: 'Russo One', sans-serif;
+    font-size: 22px;
+    color: #ffcc00;
+    margin-bottom: 8px;
+  }
+  .account-trophies {
+    font-size: 16px;
+    color: #aaa;
+  }
+  .account-trophies span {
+    color: #ffcc00;
+    font-weight: 700;
+  }
+
+  .confirm-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+  }
+  .confirm-buttons .auth-btn {
+    flex: 1;
+  }
+  .btn-yes {
+    background: linear-gradient(135deg, #22cc44, #18a832) !important;
+  }
+  .btn-no {
+    background: linear-gradient(135deg, #cc2222, #a81818) !important;
+  }
+
+  .support-link {
+    color: #4488ff;
+    cursor: pointer;
+    font-weight: 700;
+    text-decoration: underline;
+  }
+  .support-link:hover {
+    color: #66aaff;
+  }
+
+  .error-message-box {
+    background: rgba(255,0,0,0.1);
+    border: 1px solid rgba(255,0,0,0.3);
+    border-radius: 12px;
+    padding: 15px;
+    margin: 15px 0;
+    font-size: 13px;
+    line-height: 1.6;
+    color: #ccc;
+    text-align: left;
+  }
+
+  /* ===== ЧАТ ПОДДЕРЖКИ ===== */
+  #screen-support {
+    position: relative;
+    overflow: hidden;
+  }
+  .support-container {
+    position: relative;
+    z-index: 2;
+    width: 95%;
+    max-width: 500px;
+    height: 85vh;
+    background: rgba(0,0,0,0.6);
+    border-radius: 20px;
+    border: 2px solid rgba(255,255,255,0.15);
+    backdrop-filter: blur(10px);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .support-header {
+    padding: 18px 20px;
+    background: rgba(74,74,255,0.3);
+    font-family: 'Russo One', sans-serif;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  .support-back-btn {
+    background: rgba(255,255,255,0.15);
+    border: none;
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 5px 12px;
+    border-radius: 8px;
+    font-family: 'Russo One', sans-serif;
+  }
+  .support-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .support-msg {
+    max-width: 80%;
+    padding: 10px 15px;
+    border-radius: 15px;
+    font-size: 14px;
+    line-height: 1.4;
+  }
+  .support-msg.bot {
+    align-self: flex-start;
+    background: rgba(74,74,255,0.3);
+    border-bottom-left-radius: 4px;
+  }
+  .support-msg.user {
+    align-self: flex-end;
+    background: rgba(255,255,255,0.15);
+    border-bottom-right-radius: 4px;
+  }
+  .support-input-area {
+    display: flex;
+    gap: 8px;
+    padding: 12px 15px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+  }
+  .support-input {
+    flex: 1;
+    padding: 10px 15px;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+    font-size: 14px;
+    outline: none;
+  }
+  .support-send-btn {
+    padding: 10px 20px;
+    border-radius: 20px;
+    border: none;
+    background: #4a4aff;
+    color: #fff;
+    font-family: 'Russo One', sans-serif;
+    cursor: pointer;
+  }
+
+  /* ===== ГЛАВНОЕ МЕНЮ ===== */
+  #screen-menu {
+    position: relative;
+    overflow: hidden;
+  }
+  .menu-bg {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(135deg, #1a1a5e, #0d0d3b, #2a2a8e);
+    animation: bgScroll 8s ease-in-out infinite alternate;
+    z-index: 0;
+  }
+  .menu-container {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    width: 100%;
+  }
+  .menu-logo {
+    font-family: 'Russo One', sans-serif;
+    font-size: 48px;
+    margin-bottom: 10px;
+  }
+  .menu-logo .fell { color: #ff2d2d; }
+  .menu-logo .brawl { color: #fff; }
+
+  .menu-player-info {
+    background: rgba(0,0,0,0.4);
+    border-radius: 15px;
+    padding: 15px 25px;
+    display: inline-block;
+    margin: 15px 0;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+  .menu-player-nick {
+    font-family: 'Russo One', sans-serif;
+    font-size: 22px;
+    color: #ffcc00;
+  }
+  .menu-player-id {
+    font-size: 12px;
+    color: #888;
+    margin-top: 3px;
+    font-family: 'Courier New', monospace;
+  }
+  .menu-player-trophies {
+    font-size: 16px;
+    color: #aaa;
+    margin-top: 5px;
+  }
+  .menu-player-trophies span { color: #ffcc00; font-weight: 700; }
+
+  .menu-play-btn {
+    padding: 18px 60px;
+    border-radius: 15px;
+    border: none;
+    background: linear-gradient(135deg, #ff6b00, #ff9500);
+    color: #fff;
+    font-family: 'Russo One', sans-serif;
+    font-size: 24px;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    box-shadow: 0 4px 20px rgba(255,107,0,0.4);
+  }
+  .menu-play-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 30px rgba(255,107,0,0.6);
+  }
+
+  .menu-footer {
+    position: absolute;
+    bottom: 20px;
+    width: 100%;
+    text-align: center;
+    color: #555;
+    font-size: 12px;
+    z-index: 2;
+  }
+
+  /* ===== СКРОЛЛБАР ===== */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 3px; }
+
+  /* ===== УВЕДОМЛЕНИЕ ===== */
+  .toast {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-100px);
+    background: rgba(0,0,0,0.85);
+    color: #fff;
+    padding: 12px 25px;
+    border-radius: 12px;
+    font-size: 14px;
+    z-index: 9999;
+    transition: transform 0.4s ease;
+    border: 1px solid rgba(255,255,255,0.2);
+    backdrop-filter: blur(10px);
+  }
+  .toast.show {
+    transform: translateX(-50%) translateY(0);
+  }
+  .toast.success { border-color: #22cc44; }
+  .toast.error { border-color: #ff4444; }
+</style>
 </head>
 <body>
 
-  <!-- ==================== 🔐 АВТОРИЗАЦИЯ ==================== -->
-  <div id="auth-page" class="auth-container">
-    <div class="logo" style="justify-content:center;margin-bottom:30px">
-      <span class="r">R</span>izzy
-    </div>
-    <h2 class="auth-title">Войти в Rizzy</h2>
-    
-    <button class="btn google-btn" onclick="signInWithGoogle()">
-      <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-      Войти через Google
-    </button>
-    
-    <div style="margin: 15px 0; color: var(--text-dim);">или</div>
-    
-    <form id="email-form" onsubmit="handleEmailAuth(event)">
-      <div class="form-group">
-        <input type="email" id="email" placeholder="Email" required>
-      </div>
-      <div class="form-group">
-        <input type="password" id="password" placeholder="Пароль" required minlength="6">
-      </div>
-      <button type="submit" class="btn" id="auth-submit">Войти</button>
-    </form>
-    
-    <p class="auth-toggle">
-      <span id="auth-toggle-text">Нет аккаунта?</span>
-      <a onclick="toggleAuthMode()" id="auth-toggle-link">Зарегистрироваться</a>
-    </p>
+<!-- ТОСТ УВЕДОМЛЕНИЕ -->
+<div class="toast" id="toast"></div>
+
+<!-- ===== ЭКРАН 1: ЧЕРНЫЙ ===== -->
+<div class="screen active" id="screen-black"></div>
+
+<!-- ===== ЭКРАН 2: BY WASHEDOUT ===== -->
+<div class="screen" id="screen-washedout">
+  <div class="washedout-text">by washedout</div>
+</div>
+
+<!-- ===== ЭКРАН 3: ЗАГРУЗКА ===== -->
+<div class="screen" id="screen-loading">
+  <div class="logo-container">
+    <span class="logo-fell">Fell</span>
+    <span class="logo-brawl">Brawl</span>
   </div>
-
-  <!-- ==================== 🌐 ОСНОВНОЙ САЙТ ==================== -->
-  <div id="app-page" style="display:none">
-    
-    <!-- Панель справа -->
-    <aside class="side-panel">
-      <div class="logo"><span class="r">R</span><span>izzy</span></div>
-      
-      <button class="nav-btn active" onclick="showPage('profile')">👤 <span>Профиль</span></button>
-      <button class="nav-btn" onclick="showPage('playlists')">🎵 <span>Плейлисты</span></button>
-      <button class="nav-btn" onclick="showPage('settings')">⚙️ <span>Настройки</span></button>
-      <button class="nav-btn" onclick="openUploadModal()">⬆️ <span>Загрузить трек</span></button>
-      
-      <!-- Кнопки только для админа -->
-      <button class="nav-btn admin-only" id="moderation-btn" onclick="showPage('moderation')" style="display:none">
-        🛡️ <span>Модерация</span>
-      </button>
-      <button class="nav-btn admin-only" id="admin-panel-btn" onclick="showPage('admin')" style="display:none">
-        👑 <span>Админ-панель</span>
-      </button>
-      
-      <div style="margin-top:auto">
-        <button class="nav-btn" onclick="signOut()" style="border-color:var(--danger);color:var(--danger)">
-          🚪 <span>Выйти</span>
-        </button>
-      </div>
-    </aside>
-
-    <!-- Контент -->
-    <main class="main-content">
-      
-      <!-- Профиль -->
-      <section id="profile-page" class="page active">
-        <div class="profile-header">
-          <div class="avatar" onclick="document.getElementById('avatar-input').click()">
-            <img id="avatar-img" src="" alt="avatar" style="display:none">
-            <span id="avatar-placeholder">?</span>
-            <input type="file" id="avatar-input" accept="image/*" onchange="uploadAvatar(event)">
-          </div>
-          <div class="profile-info">
-            <h2 id="profile-display-name">Загрузка...</h2>
-            <span class="username" id="profile-username">@...</span>
-            <p class="bio" id="profile-bio">Описание профиля...</p>
-            <div class="profile-stats">
-              <div><span id="profile-followers">0</span> подписчиков</div>
-              <div><span id="profile-following">0</span> подписок</div>
-            </div>
-          </div>
-        </div>
-        
-        <h3 style="margin:20px 0 15px">Мои треки</h3>
-        <div id="my-tracks-list"></div>
-      </section>
-
-      <!-- Плейлисты -->
-      <section id="playlists-page" class="page">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
-          <h2>Мои плейлисты</h2>
-          <button class="btn" style="width:auto;padding:10px 20px" onclick="openCreatePlaylistModal()">+ Создать</button>
-        </div>
-        <div id="playlists-list"></div>
-      </section>
-
-      <!-- Настройки -->
-      <section id="settings-page" class="page">
-        <h2 style="margin-bottom:25px">Настройки</h2>
-        
-        <div class="form-group">
-          <label>Тема оформления</label>
-          <div style="display:flex;gap:10px;flex-wrap:wrap">
-            <button class="icon-btn" style="background:#d633ff;border-color:#d633ff" onclick="setTheme('purple')"></button>
-            <button class="icon-btn" style="background:#ff4757;border-color:#ff4757" onclick="setTheme('red')"></button>
-            <button class="icon-btn" style="background:#3498db;border-color:#3498db" onclick="setTheme('blue')"></button>
-            <button class="icon-btn" style="background:#00ff88;border-color:#00ff88" onclick="setTheme('green')"></button>
-          </div>
-        </div>
-        
-        <div class="form-group">
-          <label>
-            <input type="checkbox" id="translator-toggle" onchange="toggleTranslator()"> 
-            Включить переводчик (названия треков)
-          </label>
-        </div>
-        
-        <div class="form-group" id="translator-lang-group" style="display:none">
-          <label>Язык перевода</label>
-          <select id="translator-lang">
-            <option value="ru">Русский</option>
-            <option value="en">English</option>
-          </select>
-        </div>
-        
-        <div class="form-group">
-          <label>
-            <input type="checkbox" id="lyrics-toggle" checked onchange="toggleLyricsUI()"> 
-            Показывать слова песни (караоке-режим)
-          </label>
-        </div>
-        
-        <div class="form-group">
-          <label>
-            <input type="checkbox" id="premium-toggle" onchange="togglePremium()"> 
-            Премиум-подписка (автопродление)
-          </label>
-        </div>
-        
-        <div class="form-group">
-          <button class="btn secondary" onclick="openReportModal()">🐛 Сообщить об ошибке</button>
-        </div>
-      </section>
-
-      <!-- Загрузка трека (модальное окно) -->
-      <div id="upload-modal" class="modal">
-        <div class="modal-content">
-          <div class="modal-header">
-            <div class="modal-title">Загрузить трек</div>
-            <button class="modal-close" onclick="closeModal('upload-modal')">&times;</button>
-          </div>
-          <form onsubmit="handleTrackUpload(event)">
-            <div class="form-group">
-              <label>Аудиофайл (MP3)</label>
-              <input type="file" id="upload-audio" accept="audio/mpeg" required>
-            </div>
-            <div class="form-group">
-              <label>Обложка (опционально)</label>
-              <input type="file" id="upload-cover" accept="image/*">
-            </div>
-            <div class="form-group">
-              <label>Название трека</label>
-              <input type="text" id="upload-title" required placeholder="Например: Ночной драйв">
-            </div>
-            <div class="form-group">
-              <label>Описание</label>
-              <textarea id="upload-desc" rows="3" placeholder="О чём этот трек?"></textarea>
-            </div>
-            <button type="submit" class="btn">Отправить на модерацию</button>
-          </form>
-          <p style="margin-top:15px;font-size:13px;color:var(--text-dim)">
-            После отправки трек появится в профиле со статусом "На модерации". 
-            После одобрения он станет доступен всем.
-          </p>
-        </div>
-      </div>
-
-      <!-- Модерация (только админ) -->
-      <section id="moderation-page" class="page">
-        <h2 style="margin-bottom:20px">🛡️ Треки на модерации</h2>
-        <div id="pending-tracks-list"></div>
-        
-        <h3 style="margin:30px 0 15px">🐛 Сообщения об ошибках</h3>
-        <div id="reports-list"></div>
-      </section>
-
-      <!-- Админ-панель (расширенная) -->
-      <section id="admin-page" class="page">
-        <h2>👑 Админ-панель</h2>
-        <p style="color:var(--text-dim);margin:10px 0 20px">
-          Здесь ты можешь удалять любые треки, банить пользователей и управлять платформой.
-        </p>
-        <div id="admin-controls"></div>
-      </section>
-
-    </main>
-
-    <!-- Плеер -->
-    <footer class="player-bar">
-      <div class="player-track">
-        <div class="player-cover"><img id="player-cover" src="" alt="" style="display:none"></div>
-        <div>
-          <div class="player-title" id="player-title">Выберите трек</div>
-          <div class="player-artist" id="player-artist">...</div>
-        </div>
-      </div>
-      
-      <div class="player-progress">
-        <span class="player-time" id="current-time">0:00</span>
-        <div class="progress-slider" id="progress-slider" onclick="seekTrack(event)">
-          <div class="progress-fill" id="progress-fill"></div>
-        </div>
-        <span class="player-time" id="duration">0:00</span>
-      </div>
-      
-      <div class="player-controls">
-        <button class="ctrl-btn secondary" onclick="prevTrack()">⏮</button>
-        <button class="ctrl-btn" id="play-pause-btn" onclick="togglePlay()">▶</button>
-        <button class="ctrl-btn secondary" onclick="nextTrack()">⏭</button>
-      </div>
-      
-      <div class="player-extras">
-        <button class="icon-btn" id="lyrics-toggle-btn" onclick="toggleLyricsPanel()" title="Текст песни">🎤</button>
-        <button class="icon-btn" onclick="openTrackMenu()">⋮</button>
-      </div>
-      
-      <audio id="audio-element" crossorigin="anonymous"></audio>
-    </footer>
-
-    <!-- Панель текста песни -->
-    <div id="lyrics-panel" class="lyrics-panel"></div>
-
-    <!-- Меню трека (3 точки) -->
-    <div id="track-menu-modal" class="modal">
-      <div class="modal-content" style="max-width:300px">
-        <div class="modal-header">
-          <div class="modal-title">Действия с треком</div>
-          <button class="modal-close" onclick="closeModal('track-menu-modal')">&times;</button>
-        </div>
-        <button class="btn secondary" style="margin-bottom:10px" onclick="likeCurrentTrack()">❤️ Лайк (в избранное)</button>
-        <button class="btn secondary" style="margin-bottom:10px" onclick="dislikeCurrentTrack()">👎 Дизлайк (удалить из избранного)</button>
-        <button class="btn secondary" style="margin-bottom:10px" onclick="addToPlaylistFromMenu()">📁 Добавить в плейлист</button>
-        <button class="btn danger" onclick="reportCurrentTrack()">🚩 Пожаловаться</button>
-      </div>
+  <div class="loading-bar-container">
+    <div class="loading-percent" id="loading-percent">0%</div>
+    <div class="loading-bar-bg">
+      <div class="loading-bar-fill" id="loading-bar-fill"></div>
     </div>
-
-    <!-- Создание плейлиста -->
-    <div id="create-playlist-modal" class="modal">
-      <div class="modal-content">
-        <div class="modal-header">
-          <div class="modal-title">Новый плейлист</div>
-          <button class="modal-close" onclick="closeModal('create-playlist-modal')">&times;</button>
-        </div>
-        <form onsubmit="handleCreatePlaylist(event)">
-          <div class="form-group">
-            <label>Обложка</label>
-            <input type="file" id="playlist-cover" accept="image/*">
-          </div>
-          <div class="form-group">
-            <label>Название</label>
-            <input type="text" id="playlist-title" required>
-          </div>
-          <div class="form-group">
-            <label>Описание</label>
-            <textarea id="playlist-desc" rows="2"></textarea>
-          </div>
-          <div class="form-group">
-            <label>
-              <input type="checkbox" id="playlist-public" checked> Публичный (виден всем)
-            </label>
-          </div>
-          <button type="submit" class="btn">Создать плейлист ✓</button>
-        </form>
-      </div>
-    </div>
-
-    <!-- Репорт -->
-    <div id="report-modal" class="modal">
-      <div class="modal-content">
-        <div class="modal-header">
-          <div class="modal-title">Сообщить об ошибке</div>
-          <button class="modal-close" onclick="closeModal('report-modal')">&times;</button>
-        </div>
-        <form onsubmit="handleReportSubmit(event)">
-          <div class="form-group">
-            <label>Описание проблемы</label>
-            <textarea id="report-reason" rows="4" required placeholder="Что случилось?"></textarea>
-          </div>
-          <div class="form-group">
-            <label>Скриншот (опционально)</label>
-            <input type="file" id="report-screenshot" accept="image/*">
-          </div>
-          <button type="submit" class="btn">Отправить репорт</button>
-        </form>
-      </div>
-    </div>
-
   </div>
+</div>
 
-  <!-- ==================== 🧠 JAVASCRIPT ==================== -->
-  <script>
-    // ====== КОНФИГУРАЦИЯ SUPABASE ======
-    const SUPABASE_URL = 'https://iyczykpvudewnajgpxgd.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml5Y3p5a3B2dWRld25hamdweGdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU5MzUyNzIsImV4cCI6MjA5MTUxMTI3Mn0.kSM6RSDuE9ThxdKlmYhks5AtebSLdu8EW8WkZuLskDY';
-    const ADMIN_EMAIL = 'sobakastalina123@gmail.com';
-    
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    
-    // ====== ГЛОБАЛЬНОЕ СОСТОЯНИЕ ======
-    let currentUser = null;
-    let isAdmin = false;
-    let currentTrack = null;
-    let isPlaying = false;
-    let hasPlayedFully = false; // для подсчёта прослушиваний
-    let lyricsData = [];
-    let theme = 'green';
-    let translatorEnabled = false;
-    let lyricsEnabled = true;
-    let premiumEnabled = false;
-    let isRegisterMode = false;
+<!-- ===== ЭКРАН 4: АВТОРИЗАЦИЯ ===== -->
+<div class="screen" id="screen-auth">
+  <div class="auth-bg" id="auth-bg"></div>
+  <div class="auth-container">
+    <div class="auth-tabs">
+      <button class="auth-tab active" onclick="switchAuthTab('register')">Регистрация</button>
+      <button class="auth-tab" onclick="switchAuthTab('login')">Вход</button>
+    </div>
 
-    // ====== ИНИЦИАЛИЗАЦИЯ ======
-    document.addEventListener('DOMContentLoaded', async () => {
-      // Проверка сессии
-      const {  { user } } = await supabase.auth.getUser();
-      if (user) {
-        await onAuthSuccess(user);
-      } else {
-        document.getElementById('auth-page').style.display = 'block';
-        document.getElementById('app-page').style.display = 'none';
-      }
-      
-      // Настройка аудио-элемента
-      const audio = document.getElementById('audio-element');
-      audio.addEventListener('timeupdate', onTimeUpdate);
-      audio.addEventListener('ended', onTrackEnd);
-      
-      // Загрузка настроек из localStorage
-      loadSettings();
-    });
+    <!-- РЕГИСТРАЦИЯ -->
+    <div id="auth-register">
+      <!-- Шаг 1: Почта -->
+      <div class="auth-step active" id="reg-step-1">
+        <div class="auth-title">Добро пожаловать в Fell Brawl!</div>
+        <div class="auth-info">Введите вашу электронную почту</div>
+        <input type="email" class="auth-input" id="reg-email" placeholder="example@mail.com">
+        <div class="auth-error" id="reg-email-error"></div>
+        <button class="auth-btn" onclick="regStep1()">Далее</button>
+      </div>
 
-    // ====== АВТОРИЗАЦИЯ ======
-    async function signInWithGoogle() {
-      const {  error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: { redirectTo: window.location.origin }
-      });
-      if (error) alert('Ошибка входа через Google: ' + error.message);
-    }
-
-    async function handleEmailAuth(e) {
-      e.preventDefault();
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-      
-      try {
-        if (isRegisterMode) {
-          const {  error } = await supabase.auth.signUp({ email, password });
-          if (error) throw error;
-          alert('Проверь почту для подтверждения регистрации!');
-        } else {
-          const {  error } = await supabase.auth.signInWithPassword({ email, password });
-          if (error) throw error;
-        }
-      } catch (err) {
-        alert('Ошибка: ' + err.message);
-      }
-    }
-
-    async function onAuthSuccess(user) {
-      currentUser = user;
-      isAdmin = user.email === ADMIN_EMAIL;
-      
-      // Показать/скрыть админ-кнопки
-      document.querySelectorAll('.admin-only').forEach(el => {
-        el.style.display = isAdmin ? '' : 'none';
-      });
-      
-      // Загрузить профиль
-      await loadProfile();
-      
-      // Переключить интерфейс
-      document.getElementById('auth-page').style.display = 'none';
-      document.getElementById('app-page').style.display = 'block';
-      
-      // Загрузить данные
-      loadMyTracks();
-      if (isAdmin) loadPendingTracks();
-    }
-
-    async function signOut() {
-      await supabase.auth.signOut();
-      window.location.reload();
-    }
-
-    function toggleAuthMode() {
-      isRegisterMode = !isRegisterMode;
-      document.getElementById('auth-submit').textContent = isRegisterMode ? 'Зарегистрироваться' : 'Войти';
-      document.getElementById('auth-toggle-text').textContent = isRegisterMode ? 'Уже есть аккаунт?' : 'Нет аккаунта?';
-      document.getElementById('auth-toggle-link').textContent = isRegisterMode ? 'Войти' : 'Зарегистрироваться';
-    }
-
-    // ====== ПРОФИЛЬ ======
-    async function loadProfile() {
-      // Загрузка данных профиля из БД
-      const {  profile } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', currentUser.id)
-        .single();
-      
-      if (profile) {
-        document.getElementById('profile-display-name').textContent = profile.display_name || 'Без имени';
-        document.getElementById('profile-username').textContent = '@' + (profile.username || 'noname');
-        document.getElementById('profile-bio').textContent = profile.bio || 'Нет описания';
-        document.getElementById('profile-followers').textContent = profile.followers_count || 0;
-        document.getElementById('profile-following').textContent = profile.following_count || 0;
-        
-        if (profile.avatar_url) {
-          document.getElementById('avatar-img').src = profile.avatar_url;
-          document.getElementById('avatar-img').style.display = 'block';
-          document.getElementById('avatar-placeholder').style.display = 'none';
-        }
-      }
-    }
-
-    async function uploadAvatar(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-      
-      const path = `avatars/${currentUser.id}/${Date.now()}_${file.name}`;
-      const { error } = await supabase.storage.from('music-files').upload(path, file);
-      if (error) return alert('Ошибка загрузки: ' + error.message);
-      
-      const {  { publicUrl } } = supabase.storage.from('music-files').getPublicUrl(path);
-      
-      await supabase.from('profiles').update({ avatar_url: publicUrl }).eq('id', currentUser.id);
-      loadProfile();
-    }
-
-    // ====== ТРЕКИ ======
-    async function handleTrackUpload(e) {
-      e.preventDefault();
-      
-      const audioFile = document.getElementById('upload-audio').files[0];
-      const coverFile = document.getElementById('upload-cover').files[0];
-      const title = document.getElementById('upload-title').value;
-      const description = document.getElementById('upload-desc').value;
-      
-      try {
-        // Загрузка аудио
-        const audioPath = `tracks/${currentUser.id}/${Date.now()}_${audioFile.name}`;
-        const { error: audioError } = await supabase.storage.from('music-files').upload(audioPath, audioFile);
-        if (audioError) throw audioError;
-        
-        const {  { publicUrl: audioUrl } } = supabase.storage.from('music-files').getPublicUrl(audioPath);
-        
-        // Загрузка обложки (если есть)
-        let coverUrl = null;
-        if (coverFile) {
-          const coverPath = `covers/${currentUser.id}/${Date.now()}_${coverFile.name}`;
-          const { error: coverError } = await supabase.storage.from('music-files').upload(coverPath, coverFile);
-          if (coverError) throw coverError;
-          const {  { publicUrl } } = supabase.storage.from('music-files').getPublicUrl(coverPath);
-          coverUrl = publicUrl;
-        }
-        
-        // Создание записи в БД
-        const { error: dbError } = await supabase.from('tracks').insert({
-          user_id: currentUser.id,
-          title,
-          description,
-          audio_url: audioUrl,
-          cover_url: coverUrl,
-          status: 'pending'
-        });
-        
-        if (dbError) throw dbError;
-        
-        alert('✅ Трек отправлен на модерацию!');
-        closeModal('upload-modal');
-        e.target.reset();
-        loadMyTracks();
-        
-      } catch (err) {
-        alert('Ошибка: ' + err.message);
-      }
-    }
-
-    async function loadMyTracks() {
-      const {  tracks } = await supabase
-        .from('tracks')
-        .select('*')
-        .eq('user_id', currentUser.id)
-        .order('created_at', { ascending: false });
-      
-      const container = document.getElementById('my-tracks-list');
-      container.innerHTML = tracks?.map(track => renderTrackCard(track, true)).join('') || '<p style="color:var(--text-dim)">Нет треков</p>';
-    }
-
-    function renderTrackCard(track, showStatus = false) {
-      const statusBadge = showStatus && track.status !== 'approved' 
-        ? `<span style="padding:4px 10px;background:var(--warning);color:#000;border-radius:20px;font-size:12px;font-weight:600">
-            ${track.status === 'pending' ? '⏳ На модерации' : '❌ Отклонён'}
-          </span>` 
-        : '';
-      
-      return `
-        <div class="track-card" onclick="playTrack('${track.id}', '${track.audio_url}', '${track.title}', '${track.cover_url}')">
-          <div class="track-cover">
-            ${track.cover_url ? `<img src="${track.cover_url}" alt="cover">` : '🎵'}
-          </div>
-          <div class="track-info">
-            <div class="track-title">${track.title}</div>
-            <div class="track-artist">${track.description?.substring(0, 50) || ''}${track.description?.length > 50 ? '...' : ''}</div>
-            <div class="track-meta">
-              <span>👁 ${track.plays_count || 0}</span>
-              ${statusBadge}
-            </div>
-          </div>
-          <div class="track-actions">
-            <button class="icon-btn" onclick="event.stopPropagation(); openTrackMenuFor('${track.id}')">⋮</button>
-          </div>
+      <!-- Шаг 2: Код -->
+      <div class="auth-step" id="reg-step-2">
+        <div class="auth-title">Подтверждение почты</div>
+        <div class="auth-info">На вашу почту отправлен код подтверждения.<br>Введите его ниже.</div>
+        <input type="text" class="auth-input" id="reg-code" placeholder="Введите код" maxlength="6">
+        <div class="auth-error" id="reg-code-error"></div>
+        <button class="auth-btn" onclick="regStep2()">Подтвердить</button>
+        <div class="auth-info" style="margin-top:10px;font-size:12px;color:#888;">
+          (Демо: код всегда <b style="color:#ffcc00;">123456</b>)
         </div>
-      `;
-    }
+      </div>
 
-    // ====== ПЛЕЕР ======
-    function playTrack(id, audioUrl, title, coverUrl, lyrics = []) {
-      const audio = document.getElementById('audio-element');
-      
-      currentTrack = { id, title, audioUrl, coverUrl, lyrics };
-      hasPlayedFully = false;
-      
-      audio.src = audioUrl;
-      document.getElementById('player-title').textContent = title;
-      document.getElementById('player-artist').textContent = 'Загрузка...';
-      
-      if (coverUrl) {
-        document.getElementById('player-cover').src = coverUrl;
-        document.getElementById('player-cover').style.display = 'block';
-      } else {
-        document.getElementById('player-cover').style.display = 'none';
-      }
-      
-      // Загрузка текста песни (если есть)
-      lyricsData = lyrics;
-      if (lyricsEnabled && lyrics.length > 0) {
-        renderLyrics(lyrics);
-      }
-      
-      audio.play();
-      isPlaying = true;
-      updatePlayButton();
-    }
+      <!-- Шаг 3: Никнейм -->
+      <div class="auth-step" id="reg-step-3">
+        <div class="auth-title">Придумайте никнейм</div>
+        <div class="auth-info">Ваш никнейм будет виден другим игрокам</div>
+        <input type="text" class="auth-input" id="reg-nickname" placeholder="Введите никнейм" maxlength="16">
+        <div class="auth-error" id="reg-nick-error"></div>
+        <button class="auth-btn" onclick="regStep3()">Далее</button>
+      </div>
 
-    function togglePlay() {
-      const audio = document.getElementById('audio-element');
-      if (!currentTrack) return;
-      
-      if (isPlaying) {
-        audio.pause();
-      } else {
-        audio.play();
-      }
-      isPlaying = !isPlaying;
-      updatePlayButton();
-    }
+      <!-- Шаг 4: Возраст -->
+      <div class="auth-step" id="reg-step-4">
+        <div class="auth-title">Укажите возраст</div>
+        <input type="number" class="auth-input" id="reg-age" placeholder="Ваш возраст" min="1" max="120">
+        <div class="auth-error" id="reg-age-error"></div>
+        <button class="auth-btn" onclick="regStep4()">Далее</button>
+      </div>
 
-    function updatePlayButton() {
-      document.getElementById('play-pause-btn').textContent = isPlaying ? '⏸' : '▶';
-    }
-
-    function onTimeUpdate() {
-      const audio = document.getElementById('audio-element');
-      const progress = (audio.currentTime / audio.duration) * 100;
-      document.getElementById('progress-fill').style.width = `${progress}%`;
-      document.getElementById('current-time').textContent = formatTime(audio.currentTime);
-      document.getElementById('duration').textContent = formatTime(audio.duration);
-      
-      // Синхронизация текста
-      if (lyricsEnabled && lyricsData.length > 0) {
-        syncLyrics(audio.currentTime);
-      }
-      
-      // Проверка полного прослушивания (без перемотки)
-      if (audio.duration > 0 && audio.currentTime >= audio.duration - 1 && !hasPlayedFully) {
-        incrementPlayCount(currentTrack.id);
-        hasPlayedFully = true;
-      }
-    }
-
-    function onTrackEnd() {
-      isPlaying = false;
-      updatePlayButton();
-      // Автопереключение на следующий трек можно добавить здесь
-    }
-
-    function seekTrack(e) {
-      const slider = document.getElementById('progress-slider');
-      const rect = slider.getBoundingClientRect();
-      const percent = (e.clientX - rect.left) / rect.width;
-      const audio = document.getElementById('audio-element');
-      audio.currentTime = percent * audio.duration;
-      
-      // Сброс флага полного прослушивания при перемотке
-      hasPlayedFully = false;
-    }
-
-    function formatTime(seconds) {
-      if (!seconds || isNaN(seconds)) return '0:00';
-      const mins = Math.floor(seconds / 60);
-      const secs = Math.floor(seconds % 60);
-      return `${mins}:${secs.toString().padStart(2, '0')}`;
-    }
-
-    async function incrementPlayCount(trackId) {
-      await supabase.from('tracks').update({ 
-        plays_count: supabase.rpc('increment', { count: 1 }) 
-      }).eq('id', trackId);
-    }
-
-    // ====== ТЕКСТ ПЕСНИ (КАРАОКЕ) ======
-    function renderLyrics(lyrics) {
-      const container = document.getElementById('lyrics-panel');
-      container.innerHTML = lyrics.map((line, i) => 
-        `<div class="lyric-line" id="lyric-${i}" data-start="${line.start}" data-end="${line.end}">${line.text}</div>`
-      ).join('');
-    }
-
-    function syncLyrics(currentTime) {
-      lyricsData.forEach((line, i) => {
-        const el = document.getElementById(`lyric-${i}`);
-        if (!el) return;
-        if (currentTime >= line.start && currentTime <= line.end) {
-          el.classList.add('active');
-          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        } else {
-          el.classList.remove('active');
-        }
-      });
-    }
-
-    function toggleLyricsPanel() {
-      const panel = document.getElementById('lyrics-panel');
-      panel.classList.toggle('active');
-      document.getElementById('lyrics-toggle-btn').classList.toggle('active');
-    }
-
-    // ====== МОДАЛКИ И ИНТЕРФЕЙС ======
-    function showPage(pageId) {
-      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-      
-      document.getElementById(`${pageId}-page`).classList.add('active');
-      event.currentTarget?.classList.add('active');
-    }
-
-    function openModal(modalId) {
-      document.getElementById(modalId).classList.add('active');
-    }
-
-    function closeModal(modalId) {
-      document.getElementById(modalId).classList.remove('active');
-    }
-
-    function openUploadModal() { openModal('upload-modal'); }
-    function openCreatePlaylistModal() { openModal('create-playlist-modal'); }
-    function openReportModal() { openModal('report-modal'); }
-    function openTrackMenu() { openModal('track-menu-modal'); }
-    function openTrackMenuFor(trackId) { /* логика открытия меню для конкретного трека */ openModal('track-menu-modal'); }
-
-    // ====== НАСТРОЙКИ ======
-    function setTheme(themeName) {
-      theme = themeName;
-      document.documentElement.setAttribute('data-theme', themeName);
-      localStorage.setItem('rizzy-theme', themeName);
-    }
-
-    function toggleTranslator() {
-      translatorEnabled = !translatorEnabled;
-      document.getElementById('translator-lang-group').style.display = translatorEnabled ? 'block' : 'none';
-      localStorage.setItem('rizzy-translator', JSON.stringify(translatorEnabled));
-      // Тут можно добавить логику перевода названий треков
-    }
-
-    function toggleLyricsUI() {
-      lyricsEnabled = document.getElementById('lyrics-toggle').checked;
-      localStorage.setItem('rizzy-lyrics', JSON.stringify(lyricsEnabled));
-      if (!lyricsEnabled) {
-        document.getElementById('lyrics-panel').classList.remove('active');
-        document.getElementById('lyrics-toggle-btn').classList.remove('active');
-      }
-    }
-
-    function togglePremium() {
-      premiumEnabled = !premiumEnabled;
-      localStorage.setItem('rizzy-premium', JSON.stringify(premiumEnabled));
-      if (!premiumEnabled) {
-        alert('✅ Автопродление отключено. Деньги больше не будут списываться.');
-      }
-    }
-
-    function loadSettings() {
-      const savedTheme = localStorage.getItem('rizzy-theme');
-      if (savedTheme) setTheme(savedTheme);
-      
-      const savedTranslator = localStorage.getItem('rizzy-translator');
-      if (savedTranslator) {
-        translatorEnabled = JSON.parse(savedTranslator);
-        document.getElementById('translator-toggle').checked = translatorEnabled;
-        document.getElementById('translator-lang-group').style.display = translatorEnabled ? 'block' : 'none';
-      }
-      
-      const savedLyrics = localStorage.getItem('rizzy-lyrics');
-      if (savedLyrics) {
-        lyricsEnabled = JSON.parse(savedLyrics);
-        document.getElementById('lyrics-toggle').checked = lyricsEnabled;
-      }
-      
-      const savedPremium = localStorage.getItem('rizzy-premium');
-      if (savedPremium) {
-        premiumEnabled = JSON.parse(savedPremium);
-        document.getElementById('premium-toggle').checked = premiumEnabled;
-      }
-    }
-
-    // ====== МОДЕРАЦИЯ (АДМИН) ======
-    async function loadPendingTracks() {
-      if (!isAdmin) return;
-      
-      const {  tracks } = await supabase
-        .from('tracks')
-        .select(`*, profiles(username, display_name)`)
-        .eq('status', 'pending')
-        .order('created_at', { ascending: false });
-      
-      const container = document.getElementById('pending-tracks-list');
-      container.innerHTML = tracks?.map(track => `
-        <div class="track-card">
-          <div class="track-cover">${track.cover_url ? `<img src="${track.cover_url}">` : '🎵'}</div>
-          <div class="track-info">
-            <div class="track-title">${track.title}</div>
-            <div class="track-artist">Автор: ${track.profiles?.display_name || track.profiles?.username || 'Unknown'}</div>
-            <div class="track-meta">📅 ${new Date(track.created_at).toLocaleDateString()}</div>
-          </div>
-          <div class="track-actions">
-            <button class="icon-btn" style="background:var(--primary);color:#000" onclick="approveTrack('${track.id}')">✓</button>
-            <button class="icon-btn danger" onclick="rejectTrack('${track.id}')">✗</button>
-          </div>
+      <!-- Шаг 5: Согласие -->
+      <div class="auth-step" id="reg-step-5">
+        <div class="auth-title">Согласие на обработку данных</div>
+        <div class="checkbox-container">
+          <input type="checkbox" id="reg-consent">
+          <label for="reg-consent">Я соглашаюсь на обработку моих персональных данных в соответствии с политикой конфиденциальности Fell Brawl. Я подтверждаю, что ознакомлен с правилами игры.</label>
         </div>
-      `).join('') || '<p style="color:var(--text-dim)">Нет треков на модерации</p>';
-    }
+        <div class="auth-error" id="reg-consent-error"></div>
+        <button class="auth-btn" onclick="regStep5()">Принять и продолжить</button>
+      </div>
 
-    async function approveTrack(trackId) {
-      const reason = prompt('Комментарий для автора (опционально):') || '';
-      await supabase.from('tracks').update({ status: 'approved', moderation_reason: reason }).eq('id', trackId);
-      alert('✅ Трек одобрен!');
-      loadPendingTracks();
-    }
+      <!-- Шаг 6: ID -->
+      <div class="auth-step" id="reg-step-6">
+        <div class="auth-title">Ваш уникальный ID</div>
+        <div class="auth-info">Запомните этот ID! Он нужен для входа в аккаунт.</div>
+        <div class="auth-id-display" id="reg-id-display"></div>
+        <div class="auth-info" style="color:#ffcc00;">⚠️ Сохраните этот ID!</div>
+        <button class="auth-btn" onclick="regStep6()">Войти в игру</button>
+      </div>
+    </div>
 
-    async function rejectTrack(trackId) {
-      const reason = prompt('Причина отклонения (обязательно):');
-      if (!reason) return;
-      
-      await supabase.from('tracks').update({ status: 'rejected', moderation_reason: reason }).eq('id', trackId);
-      alert('❌ Трек отклонён');
-      loadPendingTracks();
-    }
+    <!-- ВХОД -->
+    <div id="auth-login" style="display:none;">
+      <!-- Шаг 1: ID + Почта -->
+      <div class="auth-step active" id="login-step-1">
+        <div class="auth-title">Вход в аккаунт</div>
+        <input type="text" class="auth-input" id="login-id" placeholder="Ваш уникальный ID">
+        <input type="email" class="auth-input" id="login-email" placeholder="Ваша электронная почта">
+        <div class="auth-error" id="login-error"></div>
+        <button class="auth-btn" onclick="loginStep1()">Войти</button>
+      </div>
 
-    // ====== РЕПОРТЫ ======
-    async function handleReportSubmit(e) {
-      e.preventDefault();
-      
-      const reason = document.getElementById('report-reason').value;
-      const screenshot = document.getElementById('report-screenshot').files[0];
-      
-      let screenshotUrl = null;
-      if (screenshot) {
-        const path = `reports/${currentUser.id}/${Date.now()}_${screenshot.name}`;
-        const { error } = await supabase.storage.from('music-files').upload(path, screenshot);
-        if (!error) {
-          const {  { publicUrl } } = supabase.storage.from('music-files').getPublicUrl(path);
-          screenshotUrl = publicUrl;
+      <!-- Шаг 2: Подтверждение аккаунта -->
+      <div class="auth-step" id="login-step-2">
+        <div class="auth-title">Это ваш аккаунт?</div>
+        <div class="account-confirm-card">
+          <div class="account-nick" id="login-confirm-nick"></div>
+          <div class="account-trophies">🏆 Кубки: <span id="login-confirm-trophies">0</span></div>
+        </div>
+        <div class="confirm-buttons">
+          <button class="auth-btn btn-yes" onclick="loginConfirm(true)">Да, это мой аккаунт</button>
+          <button class="auth-btn btn-no" onclick="loginConfirm(false)">Нет, это не мой аккаунт</button>
+        </div>
+      </div>
+
+      <!-- Шаг 3: Ошибка -->
+      <div class="auth-step" id="login-step-3">
+        <div class="auth-title">Аккаунт не найден</div>
+        <div class="error-message-box">
+          1. Перепроверьте действительную почту от аккаунта и ваш уникальный ID аккаунта.<br><br>
+          2. Если все данные верны, но вы не можете найти свой аккаунт — <span class="support-link" onclick="openSupport()">обратитесь в поддержку</span>
+        </div>
+        <button class="auth-btn" onclick="goToLoginStep(1)" style="margin-top:10px;">Вернуться ко входу</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ЭКРАН 5: ПОДДЕРЖКА ===== -->
+<div class="screen" id="screen-support">
+  <div class="auth-bg"></div>
+  <div class="support-container">
+    <div class="support-header">
+      <button class="support-back-btn" onclick="closeSupport()">←</button>
+      <span>Поддержка</span>
+    </div>
+    <div class="support-messages" id="support-messages">
+      <div class="support-msg bot">Здравствуйте! Чем можем помочь? Опишите вашу проблему.</div>
+    </div>
+    <div class="support-input-area">
+      <input type="text" class="support-input" id="support-input" placeholder="Введите сообщение...">
+      <button class="support-send-btn" onclick="sendSupportMsg()">➤</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ЭКРАН 6: ГЛАВНОЕ МЕНЮ ===== -->
+<div class="screen" id="screen-menu">
+  <div class="menu-bg"></div>
+  <div class="menu-container">
+    <div class="menu-logo">
+      <span class="fell">Fell</span> <span class="brawl">Brawl</span>
+    </div>
+    <div class="menu-player-info">
+      <div class="menu-player-nick" id="menu-nick">Player</div>
+      <div class="menu-player-id" id="menu-id">ID: 000000</div>
+      <div class="menu-player-trophies">🏆 Кубки: <span id="menu-trophies">0</span></div>
+    </div>
+    <br>
+    <button class="menu-play-btn" onclick="showToast('Игра скоро будет доступна!', 'success')">ИГРАТЬ</button>
+  </div>
+  <div class="menu-footer">Fell Brawl © 2026 | by washedout</div>
+</div>
+
+<!-- ===== FIREBASE SDK ===== -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+
+<script>
+// =============================================
+// ⚠️ ВСТАВЬ СЮДА СВОИ ДАННЫЕ FIREBASE!
+// Зайди в Firebase Console → создай проект →
+// Realtime Database → скопируй конфиг
+// =============================================
+const firebaseConfig = {
+  apiKey: "ВСТАВЬ_API_KEY",
+  authDomain: "ПРОЕКТ.firebaseapp.com",
+  databaseURL: "https://ПРОЕКТ-default-rtdb.firebaseio.com",
+  projectId: "ПРОЕКТ",
+  storageBucket: "ПРОЕКТ.appspot.com",
+  messagingSenderId: "000000000",
+  appId: "ВСТАВЬ_APP_ID"
+};
+
+// Инициализация Firebase
+let db;
+try {
+  firebase.initializeApp(firebaseConfig);
+  db = firebase.database();
+  console.log("Firebase подключён!");
+} catch(e) {
+  console.warn("Firebase не настроен. Использую localStorage для демо.", e);
+  db = null;
+}
+
+// =============================================
+// ВСТАВЬ ССЫЛКУ НА ФОН ЭКРАНА ЗАГРУЗКИ:
+// =============================================
+const LOADING_BG_URL = "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=1920";
+document.getElementById('screen-loading').style.backgroundImage = `url('${LOADING_BG_URL}')`;
+
+// =============================================
+// ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ
+// =============================================
+let currentUser = null;
+let regData = {};
+
+// =============================================
+// МАТ-ФИЛЬТР (расширенный)
+// =============================================
+const badWords = [
+  "хуй","хуе","хуйн","пизд","пизд","ебат","ебан","ебл","блять","бляд",
+  "сука","сукa","fuck","shit","bitch","ass","dick","pussy","cock",
+  "пидор","пидр","геи","гей","мудак","мудил","залуп","херн","хер",
+  "жопа","жоп","задниц","долбоёб","долбоеб","ёбан","ебуч","нахуй",
+  "похуй","пиздец","бля","суки","пизд","ебать","трах","член","сиськ",
+  "шлюх","проститут","порн","секс","18+","нагиб","ублюд","пидарас",
+  "пидорас","малафья","херня","говно","дерьм","отсос","минет","анал",
+  "орал","ипать","ёб","выблядок","конча","сперм","залупа","пизда"
+];
+
+function cleanString(str) {
+  // Удаляем пробелы, дефисы, точки, подчеркивания, и другие разделители между буквами
+  return str.toLowerCase()
+    .replace(/[\s\-\_\.\,\!\?\@\#\$\%\^\&\*\(\)\+\=\~\`\|\\\/\{\}\[\]]/g, '')
+    .replace(/ё/g, 'е')
+    .replace(/[aа]/g, 'a') // базовая нормализация
+    .trim();
+}
+
+function hasBadWords(text) {
+  const cleaned = cleanString(text);
+  for (let word of badWords) {
+    const cleanWord = word.replace(/ё/g, 'е');
+    if (cleaned.includes(cleanWord)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+// =============================================
+// ГЕНЕРАТОР ID
+// =============================================
+function generateUniqueId() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let id = 'FB-';
+  for (let i = 0; i < 8; i++) {
+    id += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return id;
+}
+
+// =============================================
+// TOAST УВЕДОМЛЕНИЯ
+// =============================================
+function showToast(msg, type = '') {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.className = 'toast show ' + type;
+  setTimeout(() => { toast.className = 'toast'; }, 3000);
+}
+
+// =============================================
+// ПЕРЕКЛЮЧЕНИЕ ЭКРАНОВ
+// =============================================
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+// =============================================
+// ЭКРАН ЗАГРУЗКИ
+// =============================================
+function startLoading() {
+  showScreen('screen-loading');
+
+  const percentEl = document.getElementById('loading-percent');
+  const barEl = document.getElementById('loading-bar-fill');
+
+  const milestones = [
+    { percent: 3, delay: 600 },
+    { percent: 8, delay: 800 },
+    { percent: 15, delay: 700 },
+    { percent: 25, delay: 900 }
+  ];
+
+  let i = 0;
+  let currentPercent = 0;
+
+  function nextMilestone() {
+    if (i < milestones.length) {
+      currentPercent = milestones[i].percent;
+      percentEl.textContent = currentPercent + '%';
+      barEl.style.width = currentPercent + '%';
+      i++;
+      setTimeout(nextMilestone, milestones[i-1].delay);
+    } else {
+      // Показываем "Подключение к серверу..."
+      percentEl.textContent = '';
+      barEl.style.width = '25%';
+      const serverText = document.createElement('div');
+      serverText.className = 'loading-server-text';
+      serverText.textContent = 'Подключение к серверу...';
+      serverText.id = 'server-text';
+      document.querySelector('.loading-bar-container').appendChild(serverText);
+
+      setTimeout(() => {
+        serverText.remove();
+        // Продолжаем до 100%
+        let p = 25;
+        const interval = setInterval(() => {
+          p += Math.floor(Math.random() * 4) + 1;
+          if (p >= 100) {
+            p = 100;
+            clearInterval(interval);
+            percentEl.textContent = '100%';
+            barEl.style.width = '100%';
+            setTimeout(() => {
+              showScreen('screen-auth');
+              createSkulls();
+            }, 600);
+          } else {
+            percentEl.textContent = p + '%';
+            barEl.style.width = p + '%';
+          }
+        }, 120);
+      }, 3000);
+    }
+  }
+
+  setTimeout(nextMilestone, 500);
+}
+
+// =============================================
+// ЧЕРЕПКИ НА ФОНЕ
+// =============================================
+function createSkulls() {
+  const bg = document.getElementById('auth-bg');
+  if (!bg) return;
+
+  for (let i = 0; i < 15; i++) {
+    const skull = document.createElement('div');
+    skull.className = 'skull';
+    skull.textContent = '💀';
+    skull.style.left = Math.random() * 100 + '%';
+    skull.style.fontSize = (20 + Math.random() * 30) + 'px';
+    skull.style.animationDuration = (8 + Math.random() * 12) + 's';
+    skull.style.animationDelay = Math.random() * 10 + 's';
+    bg.appendChild(skull);
+  }
+}
+
+// =============================================
+// ВКЛАДКИ АВТОРИЗАЦИИ
+// =============================================
+function switchAuthTab(tab) {
+  document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+  if (tab === 'register') {
+    document.querySelectorAll('.auth-tab')[0].classList.add('active');
+    document.getElementById('auth-register').style.display = 'block';
+    document.getElementById('auth-login').style.display = 'none';
+  } else {
+    document.querySelectorAll('.auth-tab')[1].classList.add('active');
+    document.getElementById('auth-register').style.display = 'none';
+    document.getElementById('auth-login').style.display = 'block';
+  }
+}
+
+// =============================================
+// ШАГИ РЕГИСТРАЦИИ
+// =============================================
+function showRegStep(num) {
+  document.querySelectorAll('#auth-register .auth-step').forEach(s => s.classList.remove('active'));
+  document.getElementById('reg-step-' + num).classList.add('active');
+}
+
+// Шаг 1: Почта
+function regStep1() {
+  const email = document.getElementById('reg-email').value.trim();
+  const errEl = document.getElementById('reg-email-error');
+
+  if (!email) {
+    errEl.textContent = 'Введите электронную почту';
+    return;
+  }
+  if (!email.includes('@') || !email.includes('.')) {
+    errEl.textContent = 'Некорректный формат почты';
+    return;
+  }
+
+  // Проверяем, есть ли уже аккаунт с такой почтой
+  if (db) {
+    db.ref('users').orderByChild('email').equalTo(email).once('value')
+      .then(snapshot => {
+        if (snapshot.exists()) {
+          errEl.textContent = 'Эта почта уже зарегистрирована';
+          return;
+        }
+        errEl.textContent = '';
+        regData.email = email;
+        showRegStep(2);
+      });
+  } else {
+    errEl.textContent = '';
+    regData.email = email;
+    showRegStep(2);
+  }
+}
+
+// Шаг 2: Код
+function regStep2() {
+  const code = document.getElementById('reg-code').value.trim();
+  const errEl = document.getElementById('reg-code-error');
+
+  if (!code) {
+    errEl.textContent = 'Введите код';
+    return;
+  }
+  // Демо: код всегда 123456
+  if (code !== '123456') {
+    errEl.textContent = 'Неверный код. Попробуйте ещё раз';
+    return;
+  }
+
+  errEl.textContent = '';
+  showRegStep(3);
+}
+
+// Шаг 3: Никнейм
+function regStep3() {
+  const nick = document.getElementById('reg-nickname').value.trim();
+  const errEl = document.getElementById('reg-nick-error');
+
+  if (!nick) {
+    errEl.textContent = 'Введите никнейм';
+    return;
+  }
+  if (nick.length < 2) {
+    errEl.textContent = 'Никнейм слишком короткий (мин. 2 символа)';
+    return;
+  }
+  if (nick.length > 16) {
+    errEl.textContent = 'Никнейм слишком длинный (макс. 16 символов)';
+    return;
+  }
+  if (hasBadWords(nick)) {
+    errEl.textContent = 'Этот никнейм содержит недопустимые слова';
+    return;
+  }
+
+  // Проверяем уникальность ника
+  if (db) {
+    db.ref('users').orderByChild('nickname').equalTo(nick).once('value')
+      .then(snapshot => {
+        if (snapshot.exists()) {
+          errEl.textContent = 'Этот никнейм уже занят';
+          return;
+        }
+        errEl.textContent = '';
+        regData.nickname = nick;
+        showRegStep(4);
+      });
+  } else {
+    errEl.textContent = '';
+    regData.nickname = nick;
+    showRegStep(4);
+  }
+}
+
+// Шаг 4: Возраст
+function regStep4() {
+  const age = parseInt(document.getElementById('reg-age').value);
+  const errEl = document.getElementById('reg-age-error');
+
+  if (!age || age < 1 || age > 120) {
+    errEl.textContent = 'Введите корректный возраст';
+    return;
+  }
+
+  errEl.textContent = '';
+  regData.age = age;
+  showRegStep(5);
+}
+
+// Шаг 5: Согласие
+function regStep5() {
+  const consent = document.getElementById('reg-consent').checked;
+  const errEl = document.getElementById('reg-consent-error');
+
+  if (!consent) {
+    errEl.textContent = 'Необходимо принять соглашение';
+    return;
+  }
+
+  errEl.textContent = '';
+
+  // Генерируем ID
+  const uniqueId = generateUniqueId();
+  regData.id = uniqueId;
+  regData.trophies = 0;
+  regData.avatar = '';
+  regData.createdAt = Date.now();
+
+  document.getElementById('reg-id-display').textContent = uniqueId;
+
+  // Сохраняем в Firebase
+  if (db) {
+    db.ref('users/' + uniqueId).set({
+      email: regData.email,
+      nickname: regData.nickname,
+      age: regData.age,
+      id: uniqueId,
+      trophies: 0,
+      avatar: '',
+      createdAt: regData.createdAt
+    }).then(() => {
+      showRegStep(6);
+    }).catch(err => {
+      console.error(err);
+      errEl.textContent = 'Ошибка сохранения. Попробуйте позже.';
+    });
+  } else {
+    // Демо: localStorage
+    const users = JSON.parse(localStorage.getItem('fb_users') || '{}');
+    users[uniqueId] = { ...regData };
+    localStorage.setItem('fb_users', JSON.stringify(users));
+    showRegStep(6);
+  }
+}
+
+// Шаг 6: Вход в игру
+function regStep6() {
+  currentUser = { ...regData };
+  if (db) {
+    localStorage.setItem('fb_currentUser', JSON.stringify(currentUser));
+  } else {
+    localStorage.setItem('fb_currentUser', JSON.stringify(currentUser));
+  }
+  enterMenu();
+}
+
+// =============================================
+// ШАГИ ВХОДА
+// =============================================
+function goToLoginStep(num) {
+  document.querySelectorAll('#auth-login .auth-step').forEach(s => s.classList.remove('active'));
+  document.getElementById('login-step-' + num).classList.add('active');
+}
+
+function loginStep1() {
+  const id = document.getElementById('login-id').value.trim().toUpperCase();
+  const email = document.getElementById('login-email').value.trim().toLowerCase();
+  const errEl = document.getElementById('login-error');
+
+  if (!id || !email) {
+    errEl.textContent = 'Заполните все поля';
+    return;
+  }
+
+  // Ищем аккаунт
+  if (db) {
+    db.ref('users/' + id).once('value')
+      .then(snapshot => {
+        if (snapshot.exists()) {
+          const user = snapshot.val();
+          if (user.email.toLowerCase() === email) {
+            errEl.textContent = '';
+            currentUser = user;
+            document.getElementById('login-confirm-nick').textContent = user.nickname;
+            document.getElementById('login-confirm-trophies').textContent = user.trophies || 0;
+            goToLoginStep(2);
+          } else {
+            errEl.textContent = 'Почта не совпадает с ID';
+          }
+        } else {
+          errEl.textContent = 'Аккаунт не найден';
+        }
+      });
+  } else {
+    // Демо: localStorage
+    const users = JSON.parse(localStorage.getItem('fb_users') || '{}');
+    if (users[id] && users[id].email.toLowerCase() === email) {
+      errEl.textContent = '';
+      currentUser = users[id];
+      document.getElementById('login-confirm-nick').textContent = currentUser.nickname;
+      document.getElementById('login-confirm-trophies').textContent = currentUser.trophies || 0;
+      goToLoginStep(2);
+    } else {
+      errEl.textContent = 'Аккаунт не найден. Проверьте ID и почту.';
+    }
+  }
+}
+
+function loginConfirm(isYes) {
+  if (isYes) {
+    localStorage.setItem('fb_currentUser', JSON.stringify(currentUser));
+    enterMenu();
+  } else {
+    goToLoginStep(3);
+  }
+}
+
+// =============================================
+// ПОДДЕРЖКА
+// =============================================
+function openSupport() {
+  showScreen('screen-support');
+  document.getElementById('support-messages').innerHTML =
+    '<div class="support-msg bot">Здравствуйте! Чем можем помочь? Опишите вашу проблему.</div>';
+}
+
+function closeSupport() {
+  showScreen('screen-auth');
+  switchAuthTab('login');
+  goToLoginStep(1);
+}
+
+function sendSupportMsg() {
+  const input = document.getElementById('support-input');
+  const msg = input.value.trim();
+  if (!msg) return;
+
+  const messagesEl = document.getElementById('support-messages');
+
+  // Сообщение пользователя
+  const userMsg = document.createElement('div');
+  userMsg.className = 'support-msg user';
+  userMsg.textContent = msg;
+  messagesEl.appendChild(userMsg);
+
+  input.value = '';
+  messagesEl.scrollTop = messagesEl.scrollHeight;
+
+  // Автоответ
+  setTimeout(() => {
+    const botMsg = document.createElement('div');
+    botMsg.className = 'support-msg bot';
+
+    const responses = [
+      'Спасибо за обращение! Мы рассмотрим вашу проблему в ближайшее время.',
+      'Понял вас. Наш специалист свяжется с вами. Обычно ответ занимает до 24 часов.',
+      'Попробуйте перезагрузить игру. Если проблема сохраняется — напишите нам подробнее.',
+      'Ваш запрос принят! ID тикета: #SUP-' + Math.floor(Math.random() * 90000 + 10000),
+      'Спасибо за обращение в поддержку Fell Brawl! Мы ценим каждого игрока.'
+    ];
+    botMsg.textContent = responses[Math.floor(Math.random() * responses.length)];
+    messagesEl.appendChild(botMsg);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+  }, 1000 + Math.random() * 2000);
+}
+
+// Enter для отправки
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    const supportInput = document.getElementById('support-input');
+    if (document.activeElement === supportInput) {
+      sendSupportMsg();
+    }
+  }
+});
+
+// =============================================
+// ГЛАВНОЕ МЕНЮ
+// =============================================
+function enterMenu() {
+  showScreen('screen-menu');
+  document.getElementById('menu-nick').textContent = currentUser.nickname;
+  document.getElementById('menu-id').textContent = 'ID: ' + currentUser.id;
+  document.getElementById('menu-trophies').textContent = currentUser.trophies || 0;
+
+  // Создаём черепки для меню
+  const menuBg = document.querySelector('.menu-bg');
+  for (let i = 0; i < 12; i++) {
+    const skull = document.createElement('div');
+    skull.className = 'skull';
+    skull.textContent = '💀';
+    skull.style.left = Math.random() * 100 + '%';
+    skull.style.fontSize = (20 + Math.random() * 30) + 'px';
+    skull.style.animationDuration = (8 + Math.random() * 12) + 's';
+    skull.style.animationDelay = Math.random() * 10 + 's';
+    menuBg.appendChild(skull);
+  }
+}
+
+// =============================================
+// ПРОВЕРКА АВТО-ВХОДА
+// =============================================
+function checkAutoLogin() {
+  const saved = localStorage.getItem('fb_currentUser');
+  if (saved) {
+    try {
+      currentUser = JSON.parse(saved);
+      if (currentUser && currentUser.id) {
+        // Проверяем аккаунт в Firebase
+        if (db) {
+          db.ref('users/' + currentUser.id).once('value')
+            .then(snapshot => {
+              if (snapshot.exists()) {
+                currentUser = snapshot.val();
+                enterMenu();
+                return;
+              }
+              // Если нет — идём через загрузку
+              startLoadingSequence();
+            });
+        } else {
+          enterMenu();
+          return;
         }
       }
-      
-      await supabase.from('reports').insert({
-        reporter_id: currentUser.id,
-        reason,
-        screenshot_url: screenshotUrl,
-        status: 'open'
-      });
-      
-      alert('✅ Репорт отправлен! Админ скоро проверит.');
-      closeModal('report-modal');
-      e.target.reset();
+    } catch(e) {
+      startLoadingSequence();
     }
+  } else {
+    startLoadingSequence();
+  }
+}
 
-    // ====== УТИЛИТЫ ======
-    function prevTrack() { /* логика предыдущего трека */ }
-    function nextTrack() { /* логика следующего трека */ }
-    function likeCurrentTrack() { /* добавить в избранное */ }
-    function dislikeCurrentTrack() { /* убрать из избранного */ }
-    function addToPlaylistFromMenu() { /* добавить в плейлист */ }
-    function reportCurrentTrack() { openReportModal(); }
-    
-    async function handleCreatePlaylist(e) {
-      e.preventDefault();
-      // Логика создания плейлиста (аналогично загрузке трека)
-      alert('🎵 Плейлист создан! (демо)');
-      closeModal('create-playlist-modal');
-    }
+function startLoadingSequence() {
+  showScreen('screen-black');
 
-    // Закрытие модалок по клику вне контента
-    document.querySelectorAll('.modal').forEach(modal => {
-      modal.addEventListener('click', (e) => {
-        if (e.target === modal) modal.classList.remove('active');
-      });
-    });
-  </script>
+  setTimeout(() => {
+    showScreen('screen-washedout');
+  }, 1500);
+
+  setTimeout(() => {
+    startLoading();
+  }, 4000);
+}
+
+// =============================================
+// ЗАПУСК
+// =============================================
+window.addEventListener('load', () => {
+  checkAutoLogin();
+});
+</script>
 </body>
 </html>
