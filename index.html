@@ -185,6 +185,12 @@
       justify-content: center;
       font-size: 2rem;
       border: 3px solid #fff;
+      overflow: hidden;
+    }
+    .player-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
     .player-nick {
       font-family: 'Russo One', sans-serif;
@@ -277,15 +283,20 @@
     .fighter-image {
       width: 300px;
       height: 300px;
-      background: linear-gradient(135deg, #4a5568, #2d3748);
       border-radius: 20px;
       border: 5px solid #ffd700;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 8rem;
       box-shadow: 0 10px 40px rgba(0,0,0,0.6);
       animation: fighterFloat 3s ease-in-out infinite;
+      overflow: hidden;
+      background: linear-gradient(135deg, #4a5568, #2d3748);
+    }
+    .fighter-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
     @keyframes fighterFloat {
       0%, 100% { transform: translateY(0); }
@@ -427,56 +438,6 @@
       font-weight: 700;
     }
     
-    /* Player HP Bar */
-    .player-hud {
-      position: absolute;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(0,0,0,0.7);
-      padding: 10px 20px;
-      border-radius: 15px;
-      border: 2px solid #fff;
-      z-index: 50;
-      display: flex;
-      align-items: center;
-      gap: 15px;
-    }
-    .hp-bar-container {
-      width: 200px;
-      height: 25px;
-      background: #333;
-      border-radius: 12px;
-      overflow: hidden;
-      border: 2px solid #000;
-    }
-    .hp-bar-fill {
-      height: 100%;
-      background: linear-gradient(90deg, #48bb78, #38a169);
-      transition: width 0.3s;
-    }
-    .hp-text {
-      font-family: 'Russo One', sans-serif;
-      font-size: 1rem;
-      min-width: 80px;
-    }
-    
-    /* Ammo */
-    .ammo-container {
-      display: flex;
-      gap: 5px;
-    }
-    .ammo-slot {
-      width: 30px;
-      height: 30px;
-      background: #ff8c00;
-      border: 2px solid #fff;
-      border-radius: 5px;
-    }
-    .ammo-slot.empty {
-      background: #333;
-    }
-    
     /* Joysticks */
     .joystick {
       position: absolute;
@@ -486,7 +447,6 @@
       border: 3px solid rgba(255,255,255,0.5);
       border-radius: 50%;
       z-index: 60;
-      touch-action: none;
     }
     .joystick-knob {
       position: absolute;
@@ -519,42 +479,100 @@
       background: rgba(239, 68, 68, 0.8);
     }
     
-    /* Victory/Defeat Screen */
+    /* Battle Result Screen */
     .battle-result {
       position: absolute;
       inset: 0;
-      background: rgba(0,0,0,0.9);
+      background: linear-gradient(135deg, #1e3a8a, #0f172a);
       display: none;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      flex-direction: column;
       z-index: 200;
-      gap: 30px;
+      gap: 20px;
+      padding: 20px;
     }
     .battle-result.show { display: flex; }
-    .result-title {
+    
+    .result-top {
       font-family: 'Russo One', sans-serif;
-      font-size: 4rem;
-      text-shadow: 4px 4px 0 #000;
+      font-size: 3.5rem;
+      color: #ffd700;
+      text-shadow: 3px 3px 0 #000;
+      margin-bottom: 10px;
     }
-    .result-title.victory { color: #48bb78; }
-    .result-title.defeat { color: #ff4444; }
-    .result-trophies {
+    .result-status {
+      font-family: 'Russo One', sans-serif;
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+    }
+    .result-status.victory { color: #48bb78; }
+    .result-status.defeat { color: #ff4444; }
+    
+    .result-trophy-change {
       font-size: 2rem;
       color: #ffd700;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
-    .result-btn {
-      padding: 15px 50px;
+    .result-trophy-change.positive { color: #48bb78; }
+    .result-trophy-change.negative { color: #ff4444; }
+    
+    .result-fighter-img {
+      width: 150px;
+      height: 150px;
+      border-radius: 15px;
+      border: 4px solid #ffd700;
+      overflow: hidden;
+      margin-bottom: 15px;
+      background: #2d3748;
+    }
+    .result-fighter-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .result-fighter-info {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .result-fighter-name {
+      font-family: 'Russo One', sans-serif;
       font-size: 1.5rem;
+      color: #fff;
+    }
+    .result-fighter-rank {
+      font-size: 1rem;
+      color: #aaa;
+      margin-top: 5px;
+    }
+    .result-trophy-anim {
+      font-size: 1.8rem;
+      font-weight: 900;
+      color: #ffd700;
+      transition: all 1s ease;
+    }
+    
+    .result-menu-btn {
+      position: absolute;
+      bottom: 40px;
+      right: 40px;
+      padding: 15px 30px;
       background: var(--btn-bg);
       color: var(--btn-text);
       border: none;
       border-radius: 15px;
+      font-family: 'Russo One', sans-serif;
+      font-size: 1.3rem;
       font-weight: 900;
       cursor: pointer;
       box-shadow: 0 6px 0 #b89600;
+      z-index: 210;
     }
-    .result-btn:active {
+    .result-menu-btn:active {
       transform: translateY(4px);
       box-shadow: 0 2px 0 #b89600;
     }
@@ -686,7 +704,7 @@
         <div class="text-center" style="padding:15px 0;">
           <div style="font-size:2.5rem;">👤</div>
           <div style="font-weight:900;font-size:1.2rem;margin:5px 0;" id="confirm-nick">---</div>
-          <div style="color:#ffd700;">🏆 <span id="confirm-trophies">0</span> кубков</div>
+          <div style="color:#ffd700;"> <span id="confirm-trophies">0</span> кубков</div>
         </div>
         <div style="display:flex;gap:10px;">
           <button class="btn" id="login-yes">Да, это мой</button>
@@ -697,7 +715,7 @@
         <h2>❌ Не удалось войти</h2>
         <div style="font-size:0.95rem;line-height:1.5;margin-bottom:20px;">
           1. Перепроверьте почту и ID.<br><br>
-          2. Если данные верны — <span class="link-text" id="open-support">обратитесь в поддержку</span>.
+          2. Если данные верны — <span class="link-text" onclick="alert('Поддержка в разработке')">обратитесь в поддержку</span>.
         </div>
         <button class="btn secondary" onclick="showScreen('login')">Назад</button>
       </div>
@@ -717,7 +735,9 @@
 <div id="main-menu">
   <div class="player-info">
     <div class="player-header">
-      <div class="player-avatar" id="player-avatar">👤</div>
+      <div class="player-avatar" id="player-avatar">
+        <img id="player-avatar-img" src="" alt="">
+      </div>
       <div class="player-nick" id="player-nick">Игрок</div>
     </div>
     <div class="player-stats">
@@ -750,7 +770,9 @@
   </div>
   
   <div class="fighter-container">
-    <div class="fighter-image" id="fighter-image"></div>
+    <div class="fighter-image" id="fighter-image">
+      <img id="fighter-img" src="" alt="">
+    </div>
     <div class="fighter-name" id="fighter-name">Шелли</div>
     <div class="fighter-rank">Ранг <span id="fighter-rank">1</span></div>
     <div class="fighter-trophies">
@@ -782,18 +804,6 @@
     <div class="battle-timer" id="battle-timer">00:00</div>
   </div>
   
-  <div class="player-hud">
-    <div class="hp-bar-container">
-      <div class="hp-bar-fill" id="player-hp-bar" style="width:100%"></div>
-    </div>
-    <div class="hp-text" id="player-hp-text">1000/1000</div>
-    <div class="ammo-container" id="ammo-container">
-      <div class="ammo-slot"></div>
-      <div class="ammo-slot"></div>
-      <div class="ammo-slot"></div>
-    </div>
-  </div>
-  
   <div class="joystick left" id="joystick-left">
     <div class="joystick-knob"></div>
   </div>
@@ -801,10 +811,20 @@
     <div class="joystick-knob"></div>
   </div>
   
+  <!-- Battle Result -->
   <div class="battle-result" id="battle-result">
-    <div class="result-title" id="result-title">ПОБЕДА</div>
-    <div class="result-trophies" id="result-trophies">+10 🏆</div>
-    <button class="result-btn" onclick="endBattle()">Продолжить</button>
+    <div class="result-top" id="result-top">ТОП 1</div>
+    <div class="result-status" id="result-status">ПОБЕДА</div>
+    <div class="result-trophy-change" id="result-trophy-change"> +10</div>
+    <div class="result-fighter-img">
+      <img id="result-fighter-img" src="" alt="">
+    </div>
+    <div class="result-fighter-info">
+      <div class="result-fighter-name" id="result-fighter-name">Шелли</div>
+      <div class="result-fighter-rank" id="result-fighter-rank">Ранг 1</div>
+      <div class="result-trophy-anim" id="result-trophy-anim">0 → +10 = 10</div>
+    </div>
+    <button class="result-menu-btn" onclick="returnToMenu()">В МЕНЮ</button>
   </div>
 </div>
 
@@ -814,19 +834,6 @@
     <h2>🚧 СКОРО</h2>
     <p id="coming-soon-text">Этот раздел в разработке</p>
     <button class="btn" onclick="closeComingSoon()">Понятно</button>
-  </div>
-</div>
-
-<!-- SUPPORT CHAT -->
-<div id="support-chat">
-  <div class="chat-header">
-    <span style="font-weight:900;font-size:1.2rem;">🛡️ Поддержка</span>
-    <button class="btn secondary" style="width:auto;padding:8px 12px;" onclick="closeSupport()">Назад</button>
-  </div>
-  <div class="chat-messages" id="chat-msgs"></div>
-  <div class="chat-input">
-    <input type="text" id="chat-input" placeholder="Введите сообщение...">
-    <button onclick="sendMessage()">➤</button>
   </div>
 </div>
 
@@ -861,25 +868,23 @@
     shelly: {
       id: 'shelly',
       name: 'Шелли',
-      emoji: '👧',
-      image: 'https://example.com/shelly.png',
+      image: 'https://static.wikia.nocookie.net/brawlstars/images/6/6f/Shelly_Skin-Default.png',
       size: 40,
       speed: 3.5,
       attackRange: 400,
       attackSize: 60,
       attackSpeed: 8,
-      attackType: 'instant', // instant, dot, stun
+      attackType: 'instant',
       attackImage: '💥',
       ammo: 3,
-      reloadTime: 1000, // ms per ammo
-      hp: [1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800],
-      damage: [200, 220, 240, 260, 280, 300, 320, 340, 360]
+      reloadTime: 1000,
+      hp: [3800, 4000, 4200, 4400, 4600, 4800, 5000, 5200, 5400],
+      damage: [300, 320, 340, 360, 380, 400, 420, 440, 460]
     },
     colt: {
       id: 'colt',
       name: 'Кольт',
-      emoji: '🤠',
-      image: 'https://example.com/colt.png',
+      image: 'https://static.wikia.nocookie.net/brawlstars/images/4/4c/Colt_Skin-Default.png',
       size: 35,
       speed: 3.8,
       attackRange: 600,
@@ -889,14 +894,13 @@
       attackImage: '🔫',
       ammo: 6,
       reloadTime: 600,
-      hp: [800, 880, 960, 1040, 1120, 1200, 1280, 1360, 1440],
-      damage: [150, 165, 180, 195, 210, 225, 240, 255, 270]
+      hp: [2800, 3000, 3200, 3400, 3600, 3800, 4000, 4200, 4400],
+      damage: [200, 220, 240, 260, 280, 300, 320, 340, 360]
     },
     bull: {
       id: 'bull',
       name: 'Булл',
-      emoji: '🐂',
-      image: 'https://example.com/bull.png',
+      image: 'https://static.wikia.nocookie.net/brawlstars/images/0/0e/Bull_Skin-Default.png',
       size: 45,
       speed: 3.2,
       attackRange: 300,
@@ -906,14 +910,13 @@
       attackImage: '💨',
       ammo: 4,
       reloadTime: 800,
-      hp: [1400, 1540, 1680, 1820, 1960, 2100, 2240, 2380, 2520],
-      damage: [250, 275, 300, 325, 350, 375, 400, 425, 450]
+      hp: [5000, 5200, 5400, 5600, 5800, 6000, 6200, 6400, 6600],
+      damage: [400, 420, 440, 460, 480, 500, 520, 540, 560]
     },
     jessie: {
       id: 'jessie',
       name: 'Джесси',
-      emoji: '👩‍🔧',
-      image: 'https://example.com/jessie.png',
+      image: 'https://static.wikia.nocookie.net/brawlstars/images/7/7f/Jessie_Skin-Default.png',
       size: 38,
       speed: 3.6,
       attackRange: 500,
@@ -923,14 +926,13 @@
       attackImage: '⚡',
       ammo: 3,
       reloadTime: 900,
-      hp: [900, 990, 1080, 1170, 1260, 1350, 1440, 1530, 1620],
-      damage: [180, 198, 216, 234, 252, 270, 288, 306, 324]
+      hp: [3200, 3400, 3600, 3800, 4000, 4200, 4400, 4600, 4800],
+      damage: [250, 270, 290, 310, 330, 350, 370, 390, 410]
     },
     brock: {
       id: 'brock',
       name: 'Брок',
-      emoji: '🚀',
-      image: 'https://example.com/brock.png',
+      image: 'https://static.wikia.nocookie.net/brawlstars/images/9/9e/Brock_Skin-Default.png',
       size: 36,
       speed: 3.7,
       attackRange: 700,
@@ -940,31 +942,29 @@
       attackImage: '🔥',
       ammo: 4,
       reloadTime: 750,
-      hp: [850, 935, 1020, 1105, 1190, 1275, 1360, 1445, 1530],
-      damage: [300, 330, 360, 390, 420, 450, 480, 510, 540]
+      hp: [2600, 2800, 3000, 3200, 3400, 3600, 3800, 4000, 4200],
+      damage: [500, 520, 540, 560, 580, 600, 620, 640, 660]
     },
     dynamike: {
       id: 'dynamike',
       name: 'Динамайк',
-      emoji: '🧨',
-      image: 'https://example.com/dynamike.png',
+      image: 'https://static.wikia.nocookie.net/brawlstars/images/d/d9/Dynamike_Skin-Default.png',
       size: 32,
       speed: 3.9,
       attackRange: 550,
       attackSize: 70,
       attackSpeed: 5,
       attackType: 'instant',
-      attackImage: '💣',
+      attackImage: '',
       ammo: 3,
       reloadTime: 1100,
-      hp: [750, 825, 900, 975, 1050, 1125, 1200, 1275, 1350],
-      damage: [280, 308, 336, 364, 392, 420, 448, 476, 504]
+      hp: [2400, 2600, 2800, 3000, 3200, 3400, 3600, 3800, 4000],
+      damage: [450, 470, 490, 510, 530, 550, 570, 590, 610]
     },
     bo: {
       id: 'bo',
       name: 'Бо',
-      emoji: '',
-      image: 'https://example.com/bo.png',
+      image: 'https://static.wikia.nocookie.net/brawlstars/images/c/c6/Bo_Skin-Default.png',
       size: 37,
       speed: 3.75,
       attackRange: 450,
@@ -974,33 +974,53 @@
       attackImage: '🏹',
       ammo: 3,
       reloadTime: 950,
-      hp: [880, 968, 1056, 1144, 1232, 1320, 1408, 1496, 1584],
-      damage: [190, 209, 228, 247, 266, 285, 304, 323, 342]
+      hp: [3000, 3200, 3400, 3600, 3800, 4000, 4200, 4400, 4600],
+      damage: [280, 300, 320, 340, 360, 380, 400, 420, 440]
     },
     crow: {
       id: 'crow',
       name: 'Ворон',
-      emoji: '🦅',
-      image: 'https://example.com/crow.png',
+      image: 'https://static.wikia.nocookie.net/brawlstars/images/0/0f/Crow_Skin-Default.png',
       size: 34,
       speed: 4.0,
       attackRange: 420,
       attackSize: 45,
       attackSpeed: 9,
-      attackType: 'dot', // damage over time
+      attackType: 'dot',
       attackImage: '🗡️',
       ammo: 3,
       reloadTime: 850,
-      hp: [700, 770, 840, 910, 980, 1050, 1120, 1190, 1260],
-      damage: [160, 176, 192, 208, 224, 240, 256, 272, 288]
+      hp: [2400, 2600, 2800, 3000, 3200, 3400, 3600, 3800, 4000],
+      damage: [200, 220, 240, 260, 280, 300, 320, 340, 360]
     }
   };
 
   const TOTAL_FIGHTERS = Object.keys(FIGHTERS_DB).length;
 
+  // ================= TROPHY REWARDS MODULE =================
+  function getTrophyReward(currentTrophies, place) {
+    let range, rewards;
+    
+    if(currentTrophies < 100) {
+      range = '0-100';
+      rewards = { 1: 10, 2: 8, 3: 6, 4: 4, 5: 2, 6: 0, 7: -2, 8: -4, 9: -6, 10: -8 };
+    } else if(currentTrophies < 500) {
+      range = '100-500';
+      rewards = { 1: 10, 2: 8, 3: 6, 4: 4, 5: 2, 6: 0, 7: -3, 8: -5, 9: -7, 10: -10 };
+    } else if(currentTrophies < 1000) {
+      range = '500-1000';
+      rewards = { 1: 12, 2: 9, 3: 6, 4: 3, 5: 0, 6: -3, 7: -6, 8: -9, 9: -12, 10: -15 };
+    } else {
+      range = '1000+';
+      rewards = { 1: 15, 2: 10, 3: 7, 4: 3, 5: -2, 6: -5, 7: -10, 8: -15, 9: -20, 10: -25 };
+    }
+    
+    return rewards[place] || 0;
+  }
+
   // ================= GLOBAL FUNCTIONS =================
   window.showScreen = (id) => {
-    ['splash','loading','auth','main-menu','support-chat','battle-arena'].forEach(s => {
+    ['splash','loading','auth','main-menu','battle-arena'].forEach(s => {
       const el = document.getElementById(s);
       if(!el) return;
       el.style.display = (s === id || (id==='auth' && s==='auth') || (id==='loading' && s==='loading')) ? 'flex' : 'none';
@@ -1086,7 +1106,7 @@
     try {
       const methods = await fetchSignInMethodsForEmail(auth, email);
       if(methods && methods.length > 0) {
-        err.textContent = '🔐 Эта почта уже зарегистрирована.';
+        err.textContent = ' Эта почта уже зарегистрирована.';
         btn.disabled = false;
         btn.textContent = 'Отправить код на почту';
         return;
@@ -1114,7 +1134,7 @@
       const errorMessages = {
         'auth/email-already-in-use': '🔐 Эта почта уже зарегистрирована.',
         'auth/invalid-email': '❌ Неверный формат почты',
-        'auth/operation-not-allowed': '⚙️ Email не включён в Firebase',
+        'auth/operation-not-allowed': '️ Email не включён в Firebase',
         'auth/too-many-requests': '⏳ Слишком много запросов.',
       };
       err.textContent = errorMessages[e.code] || `❌ Ошибка: ${e.message}`;
@@ -1137,7 +1157,7 @@
           await sleep(1000);
           goToStep('reg-flow', '2');
         } else {
-          alert('⏳ Почта ещё не подтверждена.');
+          alert(' Почта ещё не подтверждена.');
         }
       } else {
         alert('❌ Сессия истекла.');
@@ -1193,7 +1213,7 @@
     regData.fighterRank = 1;
     regData.fighterPower = 1;
     regData.fighterTrophies = 0;
-    regData.ownedFighters = ['shelly']; // Start with Shelly
+    regData.ownedFighters = ['shelly'];
     regData.createdAt = new Date().toISOString();
     regData.emailVerified = true;
     
@@ -1223,27 +1243,32 @@
       if(snap.exists()) {
         const data = snap.data();
         
-        // Player info
         document.getElementById('player-nick').textContent = data.nick || 'Игрок';
         document.getElementById('player-trophies').textContent = data.trophies || 0;
         document.getElementById('player-coins').textContent = data.coins || 0;
         document.getElementById('player-gems').textContent = data.gems || 0;
         document.getElementById('player-rank').textContent = data.fighterRank || 1;
         
-        // Fighters collected
         const ownedCount = (data.ownedFighters || ['shelly']).length;
         document.getElementById('fighters-count').textContent = `${ownedCount}/${TOTAL_FIGHTERS}`;
         
-        // Selected fighter
         const fighterId = data.selectedFighter || 'shelly';
         const fighter = FIGHTERS_DB[fighterId];
         const power = data.fighterPower || 1;
         
-        document.getElementById('fighter-image').textContent = fighter.emoji;
+        // Set fighter image
+        const fighterImgEl = document.getElementById('fighter-img');
+        fighterImgEl.src = fighter.image;
+        fighterImgEl.onerror = () => { fighterImgEl.style.display = 'none'; };
+        
         document.getElementById('fighter-name').textContent = fighter.name;
         document.getElementById('fighter-rank').textContent = data.fighterRank || 1;
         document.getElementById('fighter-trophies').textContent = data.fighterTrophies || 0;
         document.getElementById('fighter-power').textContent = power;
+        
+        // Player avatar
+        const avatarImg = document.getElementById('player-avatar-img');
+        avatarImg.src = fighter.image;
       }
     } catch(e) { console.error("Load menu error:", e); }
   }
@@ -1265,10 +1290,10 @@
     smokeZones: [],
     gameLoop: null,
     startTime: null,
-    fightersAlive: 10,
     battleOver: false,
-    leftJoystick: { active: false, dx: 0, dy: 0, originX: 0, originY: 0, knobX: 0, knobY: 0 },
-    rightJoystick: { active: false, dx: 0, dy: 0, originX: 0, originY: 0, knobX: 0, knobY: 0, fired: false }
+    userData: null,
+    leftJoystick: { active: false, dx: 0, dy: 0, originX: 0, originY: 0, knobX: 0, knobY: 0, touchId: null },
+    rightJoystick: { active: false, dx: 0, dy: 0, originX: 0, originY: 0, knobX: 0, knobY: 0, fired: false, touchId: null }
   };
 
   window.startBattle = async () => {
@@ -1278,12 +1303,11 @@
     const snap = await getDoc(doc(db, "users", userId));
     if(!snap.exists()) return;
     
-    const userData = snap.data();
-    const fighterId = userData.selectedFighter || 'shelly';
+    battleData.userData = snap.data();
+    const fighterId = battleData.userData.selectedFighter || 'shelly';
     const fighter = FIGHTERS_DB[fighterId];
-    const power = userData.fighterPower || 1;
+    const power = battleData.userData.fighterPower || 1;
     
-    // Initialize battle
     window.showScreen('battle-arena');
     document.getElementById('battle-arena').style.display = 'block';
     document.getElementById('battle-result').classList.remove('show');
@@ -1296,14 +1320,11 @@
     battleData.bots = [];
     battleData.projectiles = [];
     battleData.smokeZones = [];
-    battleData.fightersAlive = 10;
     battleData.battleOver = false;
     battleData.startTime = Date.now();
     
-    // Create walls
     createWalls();
     
-    // Create player
     battleData.player = {
       x: 100,
       y: battleData.canvas.height / 2,
@@ -1312,42 +1333,42 @@
       hp: fighter.hp[power - 1],
       maxHp: fighter.hp[power - 1],
       ammo: fighter.ammo,
+      maxAmmo: fighter.ammo,
       lastShot: 0,
-      reloading: false
+      nick: battleData.userData.nick || 'Игрок'
     };
     
-    // Create bots
+    // Spawn bots
     const botFighters = Object.values(FIGHTERS_DB);
+    const spawnPositions = [
+      { x: battleData.canvas.width - 100, y: 100 },
+      { x: battleData.canvas.width - 100, y: battleData.canvas.height / 2 },
+      { x: battleData.canvas.width - 100, y: battleData.canvas.height - 100 },
+      { x: battleData.canvas.width / 2, y: 100 },
+      { x: battleData.canvas.width / 2, y: battleData.canvas.height - 100 },
+      { x: 100, y: 100 },
+      { x: 100, y: battleData.canvas.height - 100 },
+      { x: battleData.canvas.width / 2, y: battleData.canvas.height / 2 },
+      { x: battleData.canvas.width * 0.7, y: battleData.canvas.height * 0.3 }
+    ];
+    
     for(let i = 0; i < 9; i++) {
       const botFighter = botFighters[Math.floor(Math.random() * botFighters.length)];
       const botPower = Math.floor(Math.random() * 9) + 1;
       
-      let spawnX, spawnY;
-      if(i < 3) { // Top
-        spawnX = Math.random() * (battleData.canvas.width - 200) + 100;
-        spawnY = 100;
-      } else if(i < 6) { // Bottom
-        spawnX = Math.random() * (battleData.canvas.width - 200) + 100;
-        spawnY = battleData.canvas.height - 100;
-      } else if(i < 8) { // Right
-        spawnX = battleData.canvas.width - 100;
-        spawnY = Math.random() * (battleData.canvas.height - 200) + 100;
-      } else { // Center
-        spawnX = battleData.canvas.width / 2;
-        spawnY = battleData.canvas.height / 2;
-      }
-      
       battleData.bots.push({
-        x: spawnX,
-        y: spawnY,
+        x: spawnPositions[i].x,
+        y: spawnPositions[i].y,
         fighter: botFighter,
         power: botPower,
         hp: botFighter.hp[botPower - 1],
         maxHp: botFighter.hp[botPower - 1],
         ammo: botFighter.ammo,
+        maxAmmo: botFighter.ammo,
         lastShot: 0,
         moveDir: { x: (Math.random() - 0.5) * 2, y: (Math.random() - 0.5) * 2 },
-        changeDirTime: 0
+        changeDirTime: 0,
+        nick: 'Бот ' + (i + 1)
       });
     }
     
@@ -1378,13 +1399,12 @@
     const w = battleData.canvas.width;
     const h = battleData.canvas.height;
     
-    // Random walls
-    for(let i = 0; i < 15; i++) {
+    for(let i = 0; i < 12; i++) {
       battleData.walls.push({
-        x: Math.random() * (w - 200) + 100,
-        y: Math.random() * (h - 200) + 100,
-        width: Math.random() * 150 + 50,
-        height: Math.random() * 150 + 50
+        x: Math.random() * (w - 250) + 100,
+        y: Math.random() * (h - 250) + 100,
+        width: Math.random() * 120 + 60,
+        height: Math.random() * 120 + 60
       });
     }
   }
@@ -1393,68 +1413,97 @@
     const leftJoy = document.getElementById('joystick-left');
     const rightJoy = document.getElementById('joystick-right');
     
-    // Left joystick (movement)
+    // Touch events for LEFT joystick (movement)
     leftJoy.addEventListener('touchstart', (e) => {
       e.preventDefault();
-      const touch = e.touches[0];
+      e.stopPropagation();
+      const touch = e.changedTouches[0];
+      const rect = leftJoy.getBoundingClientRect();
+      battleData.leftJoystick.active = true;
+      battleData.leftJoystick.touchId = touch.identifier;
+      battleData.leftJoystick.originX = rect.left + rect.width / 2;
+      battleData.leftJoystick.originY = rect.top + rect.height / 2;
+      updateJoystick(leftJoy, battleData.leftJoystick, touch.clientX, touch.clientY);
+    }, {passive: false});
+    
+    document.addEventListener('touchmove', (e) => {
+      for(let touch of e.changedTouches) {
+        if(touch.identifier === battleData.leftJoystick.touchId) {
+          e.preventDefault();
+          updateJoystick(leftJoy, battleData.leftJoystick, touch.clientX, touch.clientY);
+        }
+        if(touch.identifier === battleData.rightJoystick.touchId) {
+          e.preventDefault();
+          updateJoystick(rightJoy, battleData.rightJoystick, touch.clientX, touch.clientY);
+        }
+      }
+    }, {passive: false});
+    
+    document.addEventListener('touchend', (e) => {
+      for(let touch of e.changedTouches) {
+        if(touch.identifier === battleData.leftJoystick.touchId) {
+          battleData.leftJoystick.active = false;
+          battleData.leftJoystick.dx = 0;
+          battleData.leftJoystick.dy = 0;
+          battleData.leftJoystick.touchId = null;
+          resetJoystick(leftJoy);
+        }
+        if(touch.identifier === battleData.rightJoystick.touchId) {
+          if(battleData.rightJoystick.active && !battleData.rightJoystick.fired) {
+            if(Math.abs(battleData.rightJoystick.dx) > 15 || Math.abs(battleData.rightJoystick.dy) > 15) {
+              firePlayerAttack();
+            }
+          }
+          battleData.rightJoystick.active = false;
+          battleData.rightJoystick.fired = false;
+          battleData.rightJoystick.touchId = null;
+          resetJoystick(rightJoy);
+        }
+      }
+    });
+    
+    // Mouse fallback for testing on PC
+    let mouseDown = null;
+    leftJoy.addEventListener('mousedown', (e) => {
+      mouseDown = 'left';
       const rect = leftJoy.getBoundingClientRect();
       battleData.leftJoystick.active = true;
       battleData.leftJoystick.originX = rect.left + rect.width / 2;
       battleData.leftJoystick.originY = rect.top + rect.height / 2;
-      battleData.leftJoystick.knobX = battleData.leftJoystick.originX;
-      battleData.leftJoystick.knobY = battleData.leftJoystick.originY;
-      updateJoystick(leftJoy, battleData.leftJoystick, touch.clientX, touch.clientY);
-    }, {passive: false});
-    
-    leftJoy.addEventListener('touchmove', (e) => {
-      e.preventDefault();
-      if(battleData.leftJoystick.active) {
-        const touch = e.touches[0];
-        updateJoystick(leftJoy, battleData.leftJoystick, touch.clientX, touch.clientY);
-      }
-    }, {passive: false});
-    
-    leftJoy.addEventListener('touchend', (e) => {
-      e.preventDefault();
-      battleData.leftJoystick.active = false;
-      battleData.leftJoystick.dx = 0;
-      battleData.leftJoystick.dy = 0;
-      resetJoystick(leftJoy);
+      updateJoystick(leftJoy, battleData.leftJoystick, e.clientX, e.clientY);
     });
     
-    // Right joystick (aim)
-    rightJoy.addEventListener('touchstart', (e) => {
-      e.preventDefault();
-      const touch = e.touches[0];
+    rightJoy.addEventListener('mousedown', (e) => {
+      mouseDown = 'right';
+      battleData.rightJoystick.fired = false;
       const rect = rightJoy.getBoundingClientRect();
       battleData.rightJoystick.active = true;
-      battleData.rightJoystick.fired = false;
       battleData.rightJoystick.originX = rect.left + rect.width / 2;
       battleData.rightJoystick.originY = rect.top + rect.height / 2;
-      battleData.rightJoystick.knobX = battleData.rightJoystick.originX;
-      battleData.rightJoystick.knobY = battleData.rightJoystick.originY;
-      updateJoystick(rightJoy, battleData.rightJoystick, touch.clientX, touch.clientY);
-    }, {passive: false});
+      updateJoystick(rightJoy, battleData.rightJoystick, e.clientX, e.clientY);
+    });
     
-    rightJoy.addEventListener('touchmove', (e) => {
-      e.preventDefault();
-      if(battleData.rightJoystick.active && !battleData.rightJoystick.fired) {
-        const touch = e.touches[0];
-        updateJoystick(rightJoy, battleData.rightJoystick, touch.clientX, touch.clientY);
+    document.addEventListener('mousemove', (e) => {
+      if(mouseDown === 'left') updateJoystick(leftJoy, battleData.leftJoystick, e.clientX, e.clientY);
+      if(mouseDown === 'right') updateJoystick(rightJoy, battleData.rightJoystick, e.clientX, e.clientY);
+    });
+    
+    document.addEventListener('mouseup', (e) => {
+      if(mouseDown === 'left') {
+        battleData.leftJoystick.active = false;
+        battleData.leftJoystick.dx = 0;
+        battleData.leftJoystick.dy = 0;
+        resetJoystick(leftJoy);
       }
-    }, {passive: false});
-    
-    rightJoy.addEventListener('touchend', (e) => {
-      e.preventDefault();
-      if(battleData.rightJoystick.active && !battleData.rightJoystick.fired) {
-        // Fire if joystick was moved
-        if(Math.abs(battleData.rightJoystick.dx) > 10 || Math.abs(battleData.rightJoystick.dy) > 10) {
+      if(mouseDown === 'right') {
+        if(Math.abs(battleData.rightJoystick.dx) > 15 || Math.abs(battleData.rightJoystick.dy) > 15) {
           firePlayerAttack();
-          battleData.rightJoystick.fired = true;
         }
+        battleData.rightJoystick.active = false;
+        battleData.rightJoystick.fired = false;
+        resetJoystick(rightJoy);
       }
-      battleData.rightJoystick.active = false;
-      resetJoystick(rightJoy);
+      mouseDown = null;
     });
   }
 
@@ -1475,8 +1524,8 @@
     joyData.knobY = joyData.originY + dy;
     
     const knob = element.querySelector('.joystick-knob');
-    knob.style.left = (joyData.knobX - joyData.originX + 75) + 'px';
-    knob.style.top = (joyData.knobY - joyData.originY + 75) + 'px';
+    knob.style.left = (75 + dx) + 'px';
+    knob.style.top = (75 + dy) + 'px';
   }
 
   function resetJoystick(element) {
@@ -1490,11 +1539,10 @@
     const now = Date.now();
     
     if(player.ammo <= 0) return;
-    if(now - player.lastShot < 500) return; // Fire rate limit
+    if(now - player.lastShot < 300) return;
     
     player.ammo--;
     player.lastShot = now;
-    updateAmmoUI();
     
     const angle = Math.atan2(battleData.rightJoystick.dy, battleData.rightJoystick.dx);
     const speed = player.fighter.attackSpeed;
@@ -1508,19 +1556,9 @@
       size: player.fighter.attackSize,
       emoji: player.fighter.attackImage,
       owner: 'player',
-      attackType: player.fighter.attackType
+      attackType: player.fighter.attackType,
+      life: 60
     });
-  }
-
-  function updateAmmoUI() {
-    const container = document.getElementById('ammo-container');
-    container.innerHTML = '';
-    const player = battleData.player;
-    for(let i = 0; i < player.fighter.ammo; i++) {
-      const slot = document.createElement('div');
-      slot.className = 'ammo-slot' + (i >= player.ammo ? ' empty' : '');
-      container.appendChild(slot);
-    }
   }
 
   function startGameLoop() {
@@ -1529,10 +1567,8 @@
 
   function gameLoop() {
     if(battleData.battleOver) return;
-    
     update();
     render();
-    
     battleData.gameLoop = requestAnimationFrame(gameLoop);
   }
 
@@ -1540,42 +1576,44 @@
     const player = battleData.player;
     const now = Date.now();
     
-    // Update timer
     const elapsed = Math.floor((now - battleData.startTime) / 1000);
     const mins = Math.floor(elapsed / 60).toString().padStart(2, '0');
     const secs = (elapsed % 60).toString().padStart(2, '0');
     document.getElementById('battle-timer').textContent = `${mins}:${secs}`;
     
-    // Start smoke after 1 minute
-    if(elapsed >= 60) {
-      updateSmoke(elapsed - 60);
+    // Smoke after 30 seconds
+    if(elapsed >= 30) {
+      updateSmoke(elapsed - 30);
     }
     
     // Player movement
     if(battleData.leftJoystick.active) {
       const speed = player.fighter.speed;
-      const newX = player.x + (battleData.leftJoystick.dx / 60) * speed;
-      const newY = player.y + (battleData.leftJoystick.dy / 60) * speed;
+      const moveX = (battleData.leftJoystick.dx / 60) * speed;
+      const moveY = (battleData.leftJoystick.dy / 60) * speed;
+      const newX = player.x + moveX;
+      const newY = player.y + moveY;
       
       if(!checkWallCollision(newX, player.y, player.fighter.size)) player.x = newX;
       if(!checkWallCollision(player.x, newY, player.fighter.size)) player.y = newY;
       
-      // Keep in bounds
       player.x = Math.max(player.fighter.size, Math.min(battleData.canvas.width - player.fighter.size, player.x));
       player.y = Math.max(player.fighter.size, Math.min(battleData.canvas.height - player.fighter.size, player.y));
     }
     
     // Reload ammo
-    if(player.ammo < player.fighter.ammo && now - player.lastShot > player.fighter.reloadTime) {
+    if(player.ammo < player.maxAmmo && now - player.lastShot > player.fighter.reloadTime) {
       player.ammo++;
       player.lastShot = now;
-      updateAmmoUI();
     }
     
-    // Check smoke damage
+    // Smoke damage
     if(isInSmoke(player.x, player.y)) {
-      player.hp -= 1500 / 60; // 1500 per second
-      if(player.hp <= 0) endBattle(false);
+      player.hp -= 25; // ~1500 per second at 60fps
+      if(player.hp <= 0) {
+        player.hp = 0;
+        endBattle();
+      }
     }
     
     // Update bots
@@ -1584,13 +1622,15 @@
     // Update projectiles
     updateProjectiles();
     
-    // Update UI
-    updatePlayerHUD();
-    document.getElementById('fighters-alive').textContent = battleData.fightersAlive;
+    // Count alive
+    const aliveBots = battleData.bots.filter(b => b.hp > 0).length;
+    const playerAlive = player.hp > 0;
+    const totalAlive = aliveBots + (playerAlive ? 1 : 0);
+    document.getElementById('fighters-alive').textContent = totalAlive;
     
-    // Check win condition
-    if(battleData.fightersAlive === 1 && player.hp > 0) {
-      endBattle(true);
+    // Win condition
+    if(totalAlive <= 1 && player.hp > 0) {
+      endBattle();
     }
   }
 
@@ -1608,7 +1648,6 @@
     for(const bot of battleData.bots) {
       if(bot.hp <= 0) continue;
       
-      // Random movement
       if(now > bot.changeDirTime) {
         bot.moveDir = {
           x: (Math.random() - 0.5) * 2,
@@ -1624,44 +1663,37 @@
       if(!checkWallCollision(newX, bot.y, bot.fighter.size)) bot.x = newX;
       if(!checkWallCollision(bot.x, newY, bot.fighter.size)) bot.y = newY;
       
-      // Keep in bounds
       bot.x = Math.max(bot.fighter.size, Math.min(battleData.canvas.width - bot.fighter.size, bot.x));
       bot.y = Math.max(bot.fighter.size, Math.min(battleData.canvas.height - bot.fighter.size, bot.y));
       
-      // Random shooting
-      if(now - bot.lastShot > 1500 && Math.random() < 0.02) {
+      // Bot shooting
+      if(now - bot.lastShot > 1500 && Math.random() < 0.03 && bot.ammo > 0) {
         bot.ammo--;
         bot.lastShot = now;
         
-        if(bot.ammo > 0) {
-          const angle = Math.random() * Math.PI * 2;
-          battleData.projectiles.push({
-            x: bot.x,
-            y: bot.y,
-            vx: Math.cos(angle) * bot.fighter.attackSpeed,
-            vy: Math.sin(angle) * bot.fighter.attackSpeed,
-            damage: bot.fighter.damage[bot.power - 1],
-            size: bot.fighter.attackSize,
-            emoji: bot.fighter.attackImage,
-            owner: 'bot',
-            attackType: bot.fighter.attackType
-          });
-        }
+        const angle = Math.random() * Math.PI * 2;
+        battleData.projectiles.push({
+          x: bot.x,
+          y: bot.y,
+          vx: Math.cos(angle) * bot.fighter.attackSpeed,
+          vy: Math.sin(angle) * bot.fighter.attackSpeed,
+          damage: bot.fighter.damage[bot.power - 1],
+          size: bot.fighter.attackSize,
+          emoji: bot.fighter.attackImage,
+          owner: 'bot',
+          attackType: bot.fighter.attackType,
+          life: 60
+        });
       }
       
-      // Bot reload
-      if(bot.ammo < bot.fighter.ammo && now - bot.lastShot > bot.fighter.reloadTime) {
+      if(bot.ammo < bot.maxAmmo && now - bot.lastShot > bot.fighter.reloadTime) {
         bot.ammo++;
         bot.lastShot = now;
       }
       
-      // Smoke damage
       if(isInSmoke(bot.x, bot.y)) {
-        bot.hp -= 1500 / 60;
-        if(bot.hp <= 0) {
-          bot.hp = 0;
-          battleData.fightersAlive--;
-        }
+        bot.hp -= 25;
+        if(bot.hp <= 0) bot.hp = 0;
       }
     }
   }
@@ -1673,32 +1705,31 @@
       const proj = battleData.projectiles[i];
       proj.x += proj.vx;
       proj.y += proj.vy;
+      proj.life--;
       
-      // Remove if out of bounds
-      if(proj.x < 0 || proj.x > battleData.canvas.width || 
+      if(proj.life <= 0 || proj.x < 0 || proj.x > battleData.canvas.width || 
          proj.y < 0 || proj.y > battleData.canvas.height) {
         battleData.projectiles.splice(i, 1);
         continue;
       }
       
-      // Check wall collision
       if(checkWallCollision(proj.x, proj.y, proj.size / 2)) {
         battleData.projectiles.splice(i, 1);
         continue;
       }
       
-      // Check hit player
-      if(proj.owner === 'bot') {
+      // Hit player
+      if(proj.owner === 'bot' && player.hp > 0) {
         const dist = Math.hypot(proj.x - player.x, proj.y - player.y);
         if(dist < player.fighter.size + proj.size / 2) {
           player.hp -= proj.damage;
           battleData.projectiles.splice(i, 1);
-          if(player.hp <= 0) endBattle(false);
+          if(player.hp <= 0) { player.hp = 0; endBattle(); }
           continue;
         }
       }
       
-      // Check hit bots
+      // Hit bots
       if(proj.owner === 'player') {
         for(const bot of battleData.bots) {
           if(bot.hp <= 0) continue;
@@ -1706,10 +1737,7 @@
           if(dist < bot.fighter.size + proj.size / 2) {
             bot.hp -= proj.damage;
             battleData.projectiles.splice(i, 1);
-            if(bot.hp <= 0) {
-              bot.hp = 0;
-              battleData.fightersAlive--;
-            }
+            if(bot.hp <= 0) bot.hp = 0;
             break;
           }
         }
@@ -1718,51 +1746,36 @@
   }
 
   function updateSmoke(elapsed) {
-    const smokeRadius = elapsed * 50; // Expand 50px per second
-    const centerX = battleData.canvas.width / 2;
-    const centerY = battleData.canvas.height / 2;
-    
-    battleData.smokeZones = [{
-      x: centerX,
-      y: centerY,
-      radius: Math.max(0, Math.hypot(centerX, centerY) - smokeRadius)
-    }];
+    const smokeRadius = elapsed * 80;
+    const cx = battleData.canvas.width / 2;
+    const cy = battleData.canvas.height / 2;
+    battleData.smokeZones = [{ x: cx, y: cy, radius: Math.max(0, Math.hypot(cx, cy) - smokeRadius) }];
   }
 
   function isInSmoke(x, y) {
     if(battleData.smokeZones.length === 0) return false;
     const smoke = battleData.smokeZones[0];
-    const dist = Math.hypot(x - smoke.x, y - smoke.y);
-    return dist > smoke.radius;
-  }
-
-  function updatePlayerHUD() {
-    const player = battleData.player;
-    const hpPercent = (player.hp / player.maxHp) * 100;
-    document.getElementById('player-hp-bar').style.width = hpPercent + '%';
-    document.getElementById('player-hp-text').textContent = `${Math.ceil(player.hp)}/${player.maxHp}`;
+    return Math.hypot(x - smoke.x, y - smoke.y) > smoke.radius;
   }
 
   function render() {
     const ctx = battleData.ctx;
     const w = battleData.canvas.width;
     const h = battleData.canvas.height;
+    const player = battleData.player;
     
-    // Clear
+    // Sand background
     ctx.fillStyle = '#e8c49a';
     ctx.fillRect(0, 0, w, h);
     
-    // Draw sand pattern
     ctx.fillStyle = '#d4a574';
     for(let i = 0; i < w; i += 100) {
       for(let j = 0; j < h; j += 100) {
-        if((i + j) % 200 === 0) {
-          ctx.fillRect(i, j, 50, 50);
-        }
+        if((i + j) % 200 === 0) ctx.fillRect(i, j, 50, 50);
       }
     }
     
-    // Draw walls
+    // Walls
     ctx.fillStyle = '#8B4513';
     ctx.strokeStyle = '#654321';
     ctx.lineWidth = 3;
@@ -1771,12 +1784,12 @@
       ctx.strokeRect(wall.x, wall.y, wall.width, wall.height);
     }
     
-    // Draw smoke
+    // Smoke
     for(const smoke of battleData.smokeZones) {
-      const gradient = ctx.createRadialGradient(smoke.x, smoke.y, smoke.radius, smoke.x, smoke.y, smoke.radius + 200);
-      gradient.addColorStop(0, 'rgba(100, 100, 100, 0)');
-      gradient.addColorStop(1, 'rgba(100, 100, 100, 0.6)');
-      ctx.fillStyle = gradient;
+      const grad = ctx.createRadialGradient(smoke.x, smoke.y, smoke.radius, smoke.x, smoke.y, smoke.radius + 200);
+      grad.addColorStop(0, 'rgba(100, 100, 100, 0)');
+      grad.addColorStop(1, 'rgba(100, 100, 100, 0.5)');
+      ctx.fillStyle = grad;
       ctx.beginPath();
       ctx.arc(smoke.x, smoke.y, smoke.radius + 200, 0, Math.PI * 2);
       ctx.fill();
@@ -1786,68 +1799,187 @@
     for(const bot of battleData.bots) {
       if(bot.hp <= 0) continue;
       
-      // Bot body
-      ctx.font = `${bot.fighter.size * 2}px Arial`;
+      // Bot image (fallback to emoji)
+      ctx.save();
+      ctx.translate(bot.x, bot.y);
+      const imgSize = bot.fighter.size * 2;
+      
+      // Try to draw image
+      const botImg = new Image();
+      botImg.src = bot.fighter.image;
+      // We'll just draw a colored circle as fallback
+      ctx.beginPath();
+      ctx.arc(0, 0, bot.fighter.size, 0, Math.PI * 2);
+      ctx.fillStyle = '#666';
+      ctx.fill();
+      ctx.strokeStyle = '#fff';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      
+      ctx.font = `${bot.fighter.size}px Arial`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText(bot.fighter.emoji, bot.x, bot.y);
+      ctx.fillText(bot.fighter.name.substring(0, 2), 0, 0);
+      ctx.restore();
       
       // HP bar
-      const hpWidth = 40;
-      const hpHeight = 6;
-      ctx.fillStyle = '#333';
-      ctx.fillRect(bot.x - hpWidth/2, bot.y - bot.fighter.size - 15, hpWidth, hpHeight);
-      ctx.fillStyle = '#48bb78';
-      ctx.fillRect(bot.x - hpWidth/2, bot.y - bot.fighter.size - 15, hpWidth * (bot.hp / bot.maxHp), hpHeight);
+      drawHPBar(ctx, bot.x, bot.y - bot.fighter.size - 20, bot.hp, bot.maxHp, 40);
     }
     
     // Draw player
-    const player = battleData.player;
-    ctx.font = `${player.fighter.size * 2}px Arial`;
-    ctx.fillText(player.fighter.emoji, player.x, player.y);
+    if(player.hp > 0) {
+      ctx.save();
+      ctx.translate(player.x, player.y);
+      
+      ctx.beginPath();
+      ctx.arc(0, 0, player.fighter.size, 0, Math.PI * 2);
+      ctx.fillStyle = '#48bb78';
+      ctx.fill();
+      ctx.strokeStyle = '#ffd700';
+      ctx.lineWidth = 3;
+      ctx.stroke();
+      
+      ctx.font = `${player.fighter.size}px Arial`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(player.fighter.name.substring(0, 2), 0, 0);
+      ctx.restore();
+      
+      // Draw player HUD above character
+      drawPlayerHUD(ctx, player);
+    }
     
     // Draw projectiles
-    ctx.font = '20px Arial';
+    ctx.font = '24px Arial';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
     for(const proj of battleData.projectiles) {
       ctx.fillText(proj.emoji, proj.x, proj.y);
     }
   }
 
-  async function endBattle(victory) {
-    battleData.battleOver = true;
-    cancelAnimationFrame(battleData.gameLoop);
+  function drawHPBar(ctx, x, y, hp, maxHp, width) {
+    const height = 8;
+    const hpRatio = hp / maxHp;
     
-    const resultEl = document.getElementById('battle-result');
-    const titleEl = document.getElementById('result-title');
-    const trophiesEl = document.getElementById('result-trophies');
+    ctx.fillStyle = '#333';
+    ctx.fillRect(x - width/2, y, width, height);
     
-    resultEl.classList.add('show');
+    let color = '#48bb78';
+    if(hpRatio < 0.3) color = '#ff4444';
+    else if(hpRatio < 0.6) color = '#ffd700';
     
-    if(victory) {
-      titleEl.textContent = 'ПОБЕДА';
-      titleEl.className = 'result-title victory';
-      trophiesEl.textContent = '+10 🏆';
-      
-      // Update trophies in database
-      const userId = localStorage.getItem('mellbrawl_current_user');
-      if(userId) {
-        const snap = await getDoc(doc(db, "users", userId));
-        if(snap.exists()) {
-          const data = snap.data();
-          await setDoc(doc(db, "users", userId), {
-            trophies: (data.trophies || 0) + 10,
-            fighterTrophies: (data.fighterTrophies || 0) + 10
-          }, { merge: true });
-        }
-      }
-    } else {
-      titleEl.textContent = 'ПОРАЖЕНИЕ';
-      titleEl.className = 'result-title defeat';
-      trophiesEl.textContent = '';
+    ctx.fillStyle = color;
+    ctx.fillRect(x - width/2, y, width * hpRatio, height);
+    
+    ctx.strokeStyle = '#000';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(x - width/2, y, width, height);
+  }
+
+  function drawPlayerHUD(ctx, player) {
+    const hudY = player.y - player.fighter.size - 60;
+    
+    // Nick
+    ctx.font = 'bold 14px Nunito, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#fff';
+    ctx.strokeStyle = '#000';
+    ctx.lineWidth = 3;
+    ctx.strokeText(player.nick, player.x, hudY);
+    ctx.fillText(player.nick, player.x, hudY);
+    
+    // HP bar
+    const hpBarY = hudY + 18;
+    const hpWidth = 60;
+    const hpHeight = 10;
+    const hpRatio = player.hp / player.maxHp;
+    
+    let hpColor = '#48bb78';
+    if(hpRatio < 0.3) hpColor = '#ff4444';
+    else if(hpRatio < 0.6) hpColor = '#ffd700';
+    
+    ctx.fillStyle = '#333';
+    ctx.fillRect(player.x - hpWidth/2, hpBarY, hpWidth, hpHeight);
+    ctx.fillStyle = hpColor;
+    ctx.fillRect(player.x - hpWidth/2, hpBarY, hpWidth * hpRatio, hpHeight);
+    ctx.strokeStyle = '#fff';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(player.x - hpWidth/2, hpBarY, hpWidth, hpHeight);
+    
+    // Ammo
+    const ammoY = hpBarY + 15;
+    const ammoSlotSize = 12;
+    const ammoGap = 4;
+    const totalAmmoWidth = player.maxAmmo * (ammoSlotSize + ammoGap);
+    const ammoStartX = player.x - totalAmmoWidth / 2;
+    
+    for(let i = 0; i < player.maxAmmo; i++) {
+      ctx.fillStyle = i < player.ammo ? '#ff8c00' : '#333';
+      ctx.strokeStyle = '#fff';
+      ctx.lineWidth = 1;
+      ctx.fillRect(ammoStartX + i * (ammoSlotSize + ammoGap), ammoY, ammoSlotSize, ammoSlotSize);
+      ctx.strokeRect(ammoStartX + i * (ammoSlotSize + ammoGap), ammoY, ammoSlotSize, ammoSlotSize);
     }
   }
 
-  window.endBattle = () => {
+  async function endBattle() {
+    battleData.battleOver = true;
+    cancelAnimationFrame(battleData.gameLoop);
+    
+    const player = battleData.player;
+    const aliveBots = battleData.bots.filter(b => b.hp > 0).length;
+    
+    let place;
+    if(player.hp > 0) {
+      place = 1; // Won
+    } else {
+      place = aliveBots + 1; // Died, place = remaining bots + 1
+    }
+    
+    // Clamp place to 10
+    place = Math.min(10, Math.max(1, place));
+    
+    const fighterTrophies = battleData.userData.fighterTrophies || 0;
+    const trophyChange = getTrophyReward(fighterTrophies, place);
+    const newTrophies = fighterTrophies + trophyChange;
+    
+    const isVictory = place <= 4;
+    
+    // Show result screen
+    const resultEl = document.getElementById('battle-result');
+    resultEl.classList.add('show');
+    
+    document.getElementById('result-top').textContent = `ТОП ${place}`;
+    
+    const statusEl = document.getElementById('result-status');
+    statusEl.textContent = isVictory ? 'ПОБЕДА' : 'ПОРАЖЕНИЕ';
+    statusEl.className = 'result-status ' + (isVictory ? 'victory' : 'defeat');
+    
+    const trophyEl = document.getElementById('result-trophy-change');
+    trophyEl.textContent = `🏆 ${trophyChange >= 0 ? '+' : ''}${trophyChange}`;
+    trophyEl.className = 'result-trophy-change ' + (trophyChange >= 0 ? 'positive' : 'negative');
+    
+    const fighter = battleData.player.fighter;
+    document.getElementById('result-fighter-img').src = fighter.image;
+    document.getElementById('result-fighter-name').textContent = fighter.name;
+    document.getElementById('result-fighter-rank').textContent = `Ранг ${battleData.userData.fighterRank || 1}`;
+    
+    // Animate trophy change
+    const animEl = document.getElementById('result-trophy-anim');
+    animEl.textContent = `${fighterTrophies} → ${trophyChange >= 0 ? '+' : ''}${trophyChange} = ${newTrophies}`;
+    
+    // Save to Firebase
+    const userId = localStorage.getItem('mellbrawl_current_user');
+    if(userId) {
+      await setDoc(doc(db, "users", userId), {
+        trophies: (battleData.userData.trophies || 0) + (place === 1 ? 10 : 0),
+        fighterTrophies: newTrophies
+      }, { merge: true });
+    }
+  }
+
+  window.returnToMenu = () => {
     document.getElementById('battle-arena').style.display = 'none';
     window.showScreen('main-menu');
     loadMainMenu();
@@ -1871,7 +2003,7 @@
       }
       const userData = snap.data();
       if(!userData.emailVerified) {
-        return err.textContent = '⚠️ Подтвердите почту';
+        return err.textContent = '️ Подтвердите почту';
       }
       document.getElementById('confirm-nick').textContent = userData.nick;
       document.getElementById('confirm-trophies').textContent = userData.trophies;
@@ -1892,45 +2024,6 @@
     window.showScreen('main-menu');
   };
   document.getElementById('login-no').onclick = () => goToStep('login-flow', 'l3');
-
-  // ================= SUPPORT =================
-  document.getElementById('open-support').onclick = () => {
-    window.showScreen('support-chat');
-    document.getElementById('support-chat').style.display = 'flex';
-    loadChat();
-  };
-  window.closeSupport = () => {
-    document.getElementById('support-chat').style.display = 'none';
-    showScreen('login');
-  };
-  window.sendMessage = async () => {
-    const input = document.getElementById('chat-input');
-    const text = input.value.trim();
-    if(!text) return;
-    addMessage(text, 'user');
-    input.value = '';
-    const userId = localStorage.getItem('mellbrawl_current_user') || 'guest';
-    await addDoc(collection(db, "support_chats"), { text, user: userId, isSupport: false, ts: new Date() });
-  };
-  function addMessage(text, type) {
-    const div = document.createElement('div');
-    div.className = `msg ${type === 'user' ? 'user' : 'support'}`;
-    div.textContent = text;
-    document.getElementById('chat-msgs').appendChild(div);
-    div.scrollIntoView({behavior:'smooth'});
-  }
-  async function loadChat() {
-    const container = document.getElementById('chat-msgs');
-    container.innerHTML = '<div class="msg support">👋 Здравствуйте! Чем можем помочь?</div>';
-    const q = query(collection(db, "support_chats"), orderBy("ts"));
-    onSnapshot(q, (snap) => {
-      container.innerHTML = '<div class="msg support">👋 Здравствуйте! Чем можем помочь?</div>';
-      snap.forEach(d => {
-        const data = d.data();
-        addMessage(data.text, data.isSupport ? 'support' : 'user');
-      });
-    });
-  }
 
   // ================= NAVIGATION =================
   function goToStep(flowId, stepNum) {
