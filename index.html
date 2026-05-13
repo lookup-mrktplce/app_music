@@ -6,7 +6,7 @@
   <meta http-equiv="Cross-Origin-Opener-Policy" content="same-origin-allow-popups">
   <title>☁️ Cloudlu Shop</title>
   
-  <!-- Firebase SDK (Compat version для простоты) -->
+  <!-- Firebase SDK (Compat version) -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
@@ -34,12 +34,12 @@
     
     /* ===== БОКОВОЕ МЕНЮ (СЛЕВА!) ===== */
     .sidebar {
-      position: fixed; LEFT: 0; top: 70px; bottom: 0;  /* ← ИЗМЕНЕНО: было right: 0 */
+      position: fixed; left: 0; top: 70px; bottom: 0;
       width: 260px; background: white;
-      box-shadow: 2px 0 10px rgba(0,0,0,0.1);  /* ← тень теперь справа */
+      box-shadow: 2px 0 10px rgba(0,0,0,0.1);
       padding: 1rem; display: flex; flex-direction: column;
       gap: 0.5rem; z-index: 999;
-      transform: translateX(-100%); transition: transform 0.3s ease;  /* ← сдвиг влево */
+      transform: translateX(-100%); transition: transform 0.3s ease;
       overflow-y: auto;
     }
     .sidebar.open { transform: translateX(0); }
@@ -53,7 +53,7 @@
     .menu-btn:disabled { opacity: 0.6; cursor: not-allowed; }
     .menu-btn i { width: 20px; text-align: center; }
     .toggle-sidebar {
-      position: fixed; LEFT: 20px; top: 85px;  /* ← ИЗМЕНЕНО: было right */
+      position: fixed; left: 20px; top: 85px;
       background: #667eea; color: white; border: none;
       width: 40px; height: 40px; border-radius: 50%;
       cursor: pointer; z-index: 1001; display: flex;
@@ -63,7 +63,7 @@
     
     /* ===== ОСНОВНОЙ КОНТЕНТ ===== */
     .main-content { margin-left: 0; padding: 2rem; transition: margin-left 0.3s; }
-    .main-content.with-sidebar { margin-left: 260px; }  /* ← ИЗМЕНЕНО: было margin-right */
+    .main-content.with-sidebar { margin-left: 260px; }
     
     /* ===== КАРТОЧКИ ТОВАРОВ ===== */
     .products-grid {
@@ -259,7 +259,7 @@
     
     /* ===== УВЕДОМЛЕНИЯ ===== */
     .toast {
-      position: fixed; bottom: 20px; RIGHT: 20px;
+      position: fixed; bottom: 20px; right: 20px;
       background: #333; color: white; padding: 12px 20px;
       border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
       z-index: 3000; animation: slideIn 0.3s ease;
@@ -323,7 +323,7 @@
     </div>
   </header>
   
-  <!-- ===== КНОПКА ОТКРЫТИЯ МЕНЮ (теперь слева) ===== -->
+  <!-- ===== КНОПКА ОТКРЫТИЯ МЕНЮ ===== -->
   <button class="toggle-sidebar" id="toggleSidebar">☰</button>
   
   <!-- ===== БОКОВОЕ МЕНЮ (СЛЕВА!) ===== -->
@@ -335,14 +335,15 @@
     <button class="menu-btn" id="propose-product-btn" data-auth-required>✨ Предложить товар</button>
     <button class="menu-btn" data-page="chats" data-auth-required>💬 Чаты</button>
     <button class="menu-btn hidden" id="auth-login-btn">🔐 Войти</button>
-    <button class="menu-btn" id="logout-btn" class="hidden">🚪 Выйти</button>
-    <button class="menu-btn hidden" id="moderation-btn" style="background: #fff3e0; color: #ef6c00;">🛡️ Модерация</button>
+    <button class="menu-btn hidden" id="logout-btn">🚪 Выйти</button>
+    <!-- ИСПРАВЛЕНО: добавлен data-page="moderation" -->
+    <button class="menu-btn hidden" id="moderation-btn" data-page="moderation" style="background: #fff3e0; color: #ef6c00;">🛡️ Модерация</button>
   </nav>
   
   <!-- ===== ОСНОВНОЙ КОНТЕНТ ===== -->
   <main class="main-content" id="main-content">
     
-    <!-- ===== СТРАНИЦА: ГЛАВНАЯ (доступна всем) ===== -->
+    <!-- ===== СТРАНИЦА: ГЛАВНАЯ ===== -->
     <section id="home-page" class="page active">
       <h1 style="margin-bottom: 1.5rem;">🔥 Популярные товары</h1>
       <div class="products-grid" id="products-grid">
@@ -350,7 +351,7 @@
       </div>
     </section>
     
-    <!-- ===== СТРАНИЦА: КАТАЛОГ (только авторизованным) ===== -->
+    <!-- ===== СТРАНИЦА: КАТАЛОГ ===== -->
     <section id="catalog-page" class="page">
       <h1 style="margin-bottom: 1rem;">📂 Категории</h1>
       <div id="categories-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem;"></div>
@@ -358,7 +359,7 @@
       <div class="products-grid" id="category-products-grid"></div>
     </section>
     
-    <!-- ===== СТРАНИЦА: ПРОФИЛЬ (только авторизованным) ===== -->
+    <!-- ===== СТРАНИЦА: ПРОФИЛЬ ===== -->
     <section id="profile-page" class="page">
       <div class="profile-header">
         <div class="avatar-container">
@@ -384,7 +385,7 @@
       <div class="products-grid" id="my-products-grid"></div>
     </section>
     
-    <!-- ===== СТРАНИЦА: ПОДДЕРЖКА (только авторизованным) ===== -->
+    <!-- ===== СТРАНИЦА: ПОДДЕРЖКА ===== -->
     <section id="support-page" class="page">
       <h1 style="margin-bottom: 1rem;">💬 Чат с поддержкой</h1>
       <div class="chat-container">
@@ -396,7 +397,7 @@
       </div>
     </section>
     
-    <!-- ===== СТРАНИЦА: ЧАТЫ (только авторизованным) ===== -->
+    <!-- ===== СТРАНИЦА: ЧАТЫ ===== -->
     <section id="chats-page" class="page">
       <h1 style="margin-bottom: 1rem;">💬 Мои чаты</h1>
       <div id="chats-list" style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.5rem;"></div>
@@ -413,7 +414,7 @@
       </div>
     </section>
     
-    <!-- ===== СТРАНИЦА: МОДЕРАЦИЯ (только админу) ===== -->
+    <!-- ===== СТРАНИЦА: МОДЕРАЦИЯ ===== -->
     <section id="moderation-page" class="page">
       <h1 style="margin-bottom: 1rem;">🛡️ Панель модерации</h1>
       <p style="margin-bottom: 1.5rem; color: #666;">Доступ: sobakastalina123@gmail.com</p>
@@ -668,7 +669,7 @@
   
   <!-- ===== JAVASCRIPT ===== -->
   <script>
-    // ===== FIREBASE CONFIG (НОВЫЙ ПРОЕКТ) =====
+    // ===== FIREBASE CONFIG =====
     const firebaseConfig = {
       apiKey: "AIzaSyD0YkXZgk8gh01Y7XH3ZRVU5lCjGJ_IRCw",
       authDomain: "frwerwerwr.firebaseapp.com",
@@ -682,7 +683,7 @@
     // Инициализация
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
-    const db = firebase.firestore();  // ← FIRESTORE вместо Realtime Database!
+    const db = firebase.firestore();
     const storage = firebase.storage();
     
     // ImgBB
@@ -695,7 +696,7 @@
     let proposeProductData = {};
     let currentProposeStep = 1;
     let reviewRating = 0;
-    let unsubscribeChats = {};  // Для отписки от чатов
+    let unsubscribeChats = {};
     
     // ===== УТИЛИТЫ =====
     const showToast = (message, type = 'info') => {
@@ -754,25 +755,20 @@
     
     // ===== НАВИГАЦИЯ =====
     const showPage = (pageId) => {
-      // Проверка авторизации для защищённых страниц
       const protectedPages = ['catalog','profile','support','chats','moderation'];
       if(protectedPages.includes(pageId) && !currentUser) {
         showModal('auth-modal');
         return;
       }
       
-      // Смена страницы
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
       document.getElementById(`${pageId}-page`).classList.add('active');
       
-      // Активная кнопка меню
       document.querySelectorAll('.menu-btn').forEach(btn => btn.classList.remove('active'));
       document.querySelector(`.menu-btn[data-page="${pageId}"]`)?.classList.add('active');
       
-      // Закрыть сайдбар на мобильных
       if(window.innerWidth < 768) document.getElementById('sidebar').classList.remove('open');
       
-      // Загрузка данных
       if(pageId === 'home') loadProducts();
       if(pageId === 'catalog') loadCategories();
       if(pageId === 'profile') loadProfile();
@@ -790,11 +786,21 @@
     const updateDoc = (path, data) => db.doc(path).update(data);
     const deleteDoc = (path) => db.doc(path).delete();
     const addDoc = (collection, data) => db.collection(collection).add(data);
-    const collectionQuery = (collection, ...constraints) => db.collection(collection).where(...constraints);
+    
+    // ===== ПРОВЕРКА АДМИНА =====
+    const checkIsAdmin = async (user) => {
+      if (!user) return false;
+      if (user.email === 'sobakastalina123@gmail.com') return true;
+      try {
+        const token = await user.getIdTokenResult();
+        return token.claims.email === 'sobakastalina123@gmail.com';
+      } catch {
+        return false;
+      }
+    };
     
     // ===== АВТОРИЗАЦИЯ =====
     const setupAuth = () => {
-      // Вкладки авторизации
       document.querySelectorAll('.auth-tab').forEach(tab => {
         tab.addEventListener('click', () => {
           document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
@@ -804,7 +810,6 @@
         });
       });
       
-      // Google вход/регистрация
       const handleGoogleAuth = async () => {
         try {
           const provider = new firebase.auth.GoogleAuthProvider();
@@ -814,7 +819,6 @@
           const userDoc = await getDoc(`users/${user.uid}`);
           
           if(!userDoc.exists) {
-            // Новый пользователь
             const nick = generateNick();
             const password = generatePassword();
             
@@ -822,7 +826,7 @@
               uid: user.uid,
               email: user.email,
               nick,
-              password,  // ⚠️ В продакшене не хранить в открытом виде!
+              password,
               avatar: null,
               premium: false,
               premiumUntil: null,
@@ -855,19 +859,15 @@
       document.getElementById('google-login').addEventListener('click', handleGoogleAuth);
       document.getElementById('google-register').addEventListener('click', handleGoogleAuth);
       
-      // Пост-регистрация
       document.getElementById('post-register-next').addEventListener('click', () => {
         hideModal('post-register-modal');
         const user = auth.currentUser;
         if(user) getDoc(`users/${user.uid}`).then(snap => updateUIAfterLogin(snap.data()));
       });
       
-      // Выход
       document.getElementById('logout-btn').addEventListener('click', async () => {
-        // Отписаться от всех чатов
         Object.values(unsubscribeChats).forEach(unsub => unsub?.());
         unsubscribeChats = {};
-        
         await auth.signOut();
         currentUser = null;
         document.getElementById('user-info').classList.add('hidden');
@@ -878,107 +878,93 @@
         showToast('👋 Вы вышли', 'info');
       });
       
-      // Отслеживание состояния
- auth.onAuthStateChanged(async (user) => {
-  if (user) {
-    try {
-      const snap = await db.doc(`users/${user.uid}`).get();
-      
-      // ⚠️ ГЛАВНОЕ ИСПРАВЛЕНИЕ:
-      if (!snap.exists) {
-        // Документа нет — создаём базовый профиль
-        const nick = generateNick();
-        const password = generatePassword();
-        
-        await db.doc(`users/${user.uid}`).set({
-          uid: user.uid,
-          email: user.email,
-          nick: nick,
-          password: password,
-          avatar: null,
-          premium: false,
-          premiumUntil: null,
-          regDate: firebase.firestore.FieldValue.serverTimestamp(),
-          isBlocked: false,
-          createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
-        
-        // Показываем окно с паролем
-        document.getElementById('generated-nick').textContent = nick;
-        document.getElementById('generated-password').textContent = password;
-        showModal('post-register-modal');
-        return;
-      }
-      
-      const userData = snap.data();
-      
-      // Проверка на блокировку
-      if (userData?.isBlocked) {
-        await auth.signOut();
-        showToast('❌ Аккаунт заблокирован', 'error');
-        return;
-      }
-      
-      // Всё ок — обновляем интерфейс
-      currentUser = userData;
-      document.getElementById('user-info').classList.remove('hidden');
-      document.getElementById('user-nick-display').textContent = userData.nick || 'Пользователь';
-      document.getElementById('auth-login-btn').classList.add('hidden');
-      document.getElementById('logout-btn').classList.remove('hidden');
-      
-      if (userData.premium) {
-        document.getElementById('premium-indicator').classList.remove('hidden');
-      }
-      
-      if (user.email === 'sobakastalina123@gmail.com') {
-        document.getElementById('moderation-btn').classList.remove('hidden');
-      }
-      
-      updateUIAfterLogin(userData);
-      showToast(`✅ Привет, ${userData.nick}!`, 'success');
-      
-    } catch (error) {
-      console.error('Auth state error:', error);
-      showToast('Ошибка загрузки профиля', 'error');
-    }
-  } else {
-    // Пользователь вышел
-    currentUser = null;
-    document.getElementById('user-info').classList.add('hidden');
-    document.getElementById('moderation-btn').classList.add('hidden');
-    document.getElementById('auth-login-btn').classList.remove('hidden');
-    document.getElementById('logout-btn').classList.add('hidden');
-  }
-});
+      auth.onAuthStateChanged(async (user) => {
+        if (user) {
+          try {
+            const snap = await db.doc(`users/${user.uid}`).get();
+            
+            if (!snap.exists) {
+              const nick = generateNick();
+              const password = generatePassword();
+              
+              await db.doc(`users/${user.uid}`).set({
+                uid: user.uid, email: user.email, nick, password,
+                avatar: null, premium: false, premiumUntil: null,
+                regDate: firebase.firestore.FieldValue.serverTimestamp(),
+                isBlocked: false, createdAt: firebase.firestore.FieldValue.serverTimestamp()
+              });
+              
+              document.getElementById('generated-nick').textContent = nick;
+              document.getElementById('generated-password').textContent = password;
+              showModal('post-register-modal');
+              return;
+            }
+            
+            const userData = snap.data();
+            if (userData?.isBlocked) {
+              await auth.signOut();
+              showToast('❌ Аккаунт заблокирован', 'error');
+              return;
+            }
+            
+            currentUser = userData;
+            document.getElementById('user-info').classList.remove('hidden');
+            document.getElementById('user-nick-display').textContent = userData.nick || 'Пользователь';
+            document.getElementById('auth-login-btn').classList.add('hidden');
+            document.getElementById('logout-btn').classList.remove('hidden');
+            
+            if (userData.premium) {
+              document.getElementById('premium-indicator').classList.remove('hidden');
+            }
+            
+            // Надёжная проверка админа
+            if (await checkIsAdmin(user)) {
+              document.getElementById('moderation-btn').classList.remove('hidden');
+            }
+            
+            updateUIAfterLogin(userData);
+            showToast(`✅ Привет, ${userData.nick}!`, 'success');
+            
+          } catch (error) {
+            console.error('Auth state error:', error);
+            showToast('Ошибка: ' + error.message, 'error');
+          }
+        } else {
+          currentUser = null;
+          document.getElementById('user-info').classList.add('hidden');
+          document.getElementById('moderation-btn').classList.add('hidden');
+          document.getElementById('auth-login-btn').classList.remove('hidden');
+          document.getElementById('logout-btn').classList.add('hidden');
+        }
+      });
     };
     
     const updateUIAfterLogin = (userData) => {
-  // ⚠️ ПРОВЕРКА: если userData нет — выходим
-  if (!userData) {
-    console.warn('userData is undefined');
-    showToast('⚠️ Данные профиля не загружены', 'warning');
-    return;
-  }
-  
-  document.getElementById('profile-nick').textContent = userData.nick || 'Пользователь';
-  document.getElementById('profile-id').textContent = userData.uid || '—';
-  document.getElementById('profile-reg-date').textContent = userData.regDate?.toDate ? formatDate(userData.regDate.toDate()) : '—';
-  
-  const avatarEl = document.getElementById('user-avatar');
-  if (userData.avatar) {
-    avatarEl.innerHTML = `<img src="${userData.avatar}" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`;
-  } else {
-    avatarEl.innerHTML = '👤';
-  }
-  
-  if (userData.premium) {
-    document.getElementById('profile-premium').classList.remove('hidden');
-    document.getElementById('premium-indicator')?.classList.remove('hidden');
-  }
-  
-  loadOrders();
-  loadMyProducts();
-};
+      if (!userData) {
+        console.warn('userData is undefined');
+        showToast('⚠️ Данные профиля не загружены', 'warning');
+        return;
+      }
+      
+      document.getElementById('profile-nick').textContent = userData.nick || 'Пользователь';
+      document.getElementById('profile-id').textContent = userData.uid || '—';
+      document.getElementById('profile-reg-date').textContent = userData.regDate?.toDate ? formatDate(userData.regDate.toDate()) : '—';
+      
+      const avatarEl = document.getElementById('user-avatar');
+      if (userData.avatar) {
+        avatarEl.innerHTML = `<img src="${userData.avatar}" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`;
+      } else {
+        avatarEl.innerHTML = '👤';
+      }
+      
+      if (userData.premium) {
+        document.getElementById('profile-premium').classList.remove('hidden');
+        document.getElementById('premium-indicator')?.classList.remove('hidden');
+      }
+      
+      loadOrders();
+      loadMyProducts();
+    };
     
     // ===== ТОВАРЫ =====
     const loadProducts = async (category = null) => {
@@ -1174,19 +1160,25 @@
       
       try {
         const ordersSnap = await db.collection(`users/${currentUser.uid}/orders`).get();
-        const tokens = ordersSnap.docs.map(d => d.id);
         
-        if(tokens.length === 0) {
+        if (ordersSnap.empty) {
           container.innerHTML = '<p style="color:#666;text-align:center">Нет заказов</p>';
           return;
         }
         
         const orders = [];
-        for(const token of tokens) {
-          const snap = await getDoc(`orders/${token}`);
-          if(snap.exists) orders.push({ token, ...snap.data() });
+        for (const doc of ordersSnap.docs) {
+          try {
+            const orderSnap = await db.doc(`orders/${doc.id}`).get();
+            if (orderSnap.exists) {
+              orders.push({ token: doc.id, ...orderSnap.data() });
+            }
+          } catch (e) {
+            console.warn('Could not load order', doc.id, e);
+          }
         }
-        orders.sort((a,b) => (b.createdAt?.toDate?.()||0) - (a.createdAt?.toDate?.()||0));
+        
+        orders.sort((a, b) => (b.createdAt?.toDate?.() || 0) - (a.createdAt?.toDate?.() || 0));
         
         container.innerHTML = orders.map(o => `
           <div class="order-card" data-token="${o.token}">
@@ -1272,7 +1264,6 @@
       const container = document.getElementById('support-messages');
       container.innerHTML = '';
       
-      // Отписаться от предыдущего, если есть
       if(unsubscribeChats.support) unsubscribeChats.support();
       
       unsubscribeChats.support = db.collection(`chats/support/${currentUser.uid}`).orderBy('timestamp','asc').onSnapshot(snapshot => {
@@ -1473,8 +1464,17 @@
     };
     
     // ===== МОДЕРАЦИЯ =====
-    const loadModeration = () => {
-      if(auth.currentUser?.email !== 'sobakastalina123@gmail.com') { showToast('Доступ запрещён','error'); showPage('home'); return; }
+    const loadModeration = async () => {
+      // Надёжная проверка админа
+      const user = auth.currentUser;
+      const isAdminUser = user && await checkIsAdmin(user);
+      
+      if (!isAdminUser) { 
+        showToast('Доступ запрещён', 'error'); 
+        showPage('home'); 
+        return; 
+      }
+      
       document.querySelectorAll('.mod-tab').forEach(tab=>{
         tab.addEventListener('click',()=>{
           document.querySelectorAll('.mod-tab').forEach(t=>t.classList.remove('active'));
@@ -1482,9 +1482,9 @@
           tab.classList.add('active');
           document.getElementById(`mod-${tab.dataset.modTab}`).classList.remove('hidden');
           if(tab.dataset.modTab==='products') loadPendingProducts();
-          // Остальные вкладки можно доработать аналогично
         });
       });
+      
       document.getElementById('grant-premium').addEventListener('click', async ()=>{
         const uid=document.getElementById('premium-user-id').value.trim(), dur=parseInt(document.getElementById('premium-duration').value)||0;
         if(!uid){showToast('Введите ID','warning');return;}
@@ -1494,15 +1494,18 @@
           showToast('✅ Premium выдан','success');
         }catch(e){showToast('Ошибка: '+e.message,'error');}
       });
+      
       document.getElementById('revoke-premium').addEventListener('click', async ()=>{
         const uid=document.getElementById('premium-user-id').value.trim(); if(!uid){showToast('Введите ID','warning');return;}
         try{ await updateDoc(`users/${uid}`,{premium:false,premiumUntil:null}); showToast('✅ Premium отозван','success'); }catch(e){showToast('Ошибка','error');}
       });
+      
       document.getElementById('update-order-status').addEventListener('click', async ()=>{
         const token=document.getElementById('order-token-search').value.trim(), status=document.getElementById('order-status-select').value, comment=document.getElementById('order-status-comment').value.trim();
         if(!token){showToast('Введите токен','warning');return;}
         try{ await updateDoc(`orders/${token}`,{status,statusComment:comment,updatedAt:firebase.firestore.FieldValue.serverTimestamp()}); showToast('✅ Статус обновлён','success'); }catch(e){showToast('Ошибка','error');}
       });
+      
       document.getElementById('admin-product-form')?.addEventListener('submit',async(e)=>{
         e.preventDefault(); const form=e.target, fd=new FormData(form);
         try{
@@ -1515,6 +1518,7 @@
           form.reset(); showToast('✅ Товар опубликован','success'); loadProducts();
         }catch(err){showToast('Ошибка: '+err.message,'error');}
       });
+      
       loadPendingProducts();
     };
     
@@ -1551,19 +1555,15 @@
     
     // ===== ОБРАБОТЧИКИ =====
     const setupEventListeners = () => {
-      // Навигация
       document.querySelectorAll('.menu-btn[data-page]').forEach(btn=>btn.addEventListener('click',()=>showPage(btn.dataset.page)));
       document.getElementById('logo-home').addEventListener('click',()=>showPage('home'));
       
-      // Сайдбар
       document.getElementById('toggleSidebar').addEventListener('click',()=>document.getElementById('sidebar').classList.toggle('open'));
       
-      // Модальные окна
       document.querySelectorAll('.modal-close').forEach(btn=>btn.addEventListener('click',(e)=>hideModal(e.target.closest('.modal').id)));
       document.querySelectorAll('.modal').forEach(m=>m.addEventListener('click',(e)=>{if(e.target===m)hideModal(m.id)}));
       document.getElementById('auth-close').addEventListener('click',()=>hideModal('auth-modal'));
       
-      // Профиль: аватар
       document.getElementById('avatar-upload').addEventListener('change', async (e)=>{
         const file=e.target.files[0]; if(!file||!currentUser) return;
         showToast('🔄 Загрузка...','info');
@@ -1574,7 +1574,6 @@
         }catch(err){showToast('Ошибка: '+err.message,'error');}
       });
       
-      // Профиль: ник
       document.getElementById('edit-nick-btn').addEventListener('click',()=>{
         const newNick=prompt('Новый никнейм:',currentUser?.nick);
         if(newNick && newNick!==currentUser?.nick && newNick.length>=3){
@@ -1583,16 +1582,13 @@
         } else if(newNick) showToast('Минимум 3 символа','warning');
       });
       
-      // Поддержка
       document.getElementById('support-send').addEventListener('click',sendSupportMessage);
       document.getElementById('support-input').addEventListener('keypress',(e)=>{if(e.key==='Enter')sendSupportMessage()});
       
-      // Чат
       document.getElementById('chat-send').addEventListener('click',sendChatMessage);
       document.getElementById('chat-input').addEventListener('keypress',(e)=>{if(e.key==='Enter')sendChatMessage()});
       document.getElementById('close-chat').addEventListener('click',()=>{document.getElementById('active-chat-container').classList.add('hidden');document.getElementById('chats-list').classList.remove('hidden');currentChat=null;});
       
-      // Уведомления
       document.getElementById('payment-notice-ok').addEventListener('click',()=>{hideModal('payment-notice-modal');showPage('profile')});
       document.getElementById('payment-notice-support').addEventListener('click',()=>{hideModal('payment-notice-modal');showPage('support')});
       document.getElementById('premium-cancel').addEventListener('click',()=>hideModal('premium-offer-modal'));
