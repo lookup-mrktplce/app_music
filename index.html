@@ -18,10 +18,8 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: var(--font); }
         body { background: var(--bg); color: var(--text); line-height: 1.5; transition: background 0.3s, color 0.3s; }
         
-        /* LAYOUT */
         .app { display: flex; min-height: 100vh; }
         
-        /* SIDEBAR - FIXED */
         .sidebar {
             width: 72px; position: fixed; left: 0; top: 0; height: 100vh;
             background: var(--bg-soft); border-right: 1px solid var(--border);
@@ -62,7 +60,6 @@
         }
         .sidebar-footer .email { font-size: 10px; word-break: break-all; margin-bottom: 8px; }
         
-        /* MAIN CONTENT */
         .main {
             flex: 1; margin-left: 72px; padding: 40px; transition: margin-left 0.25s ease;
         }
@@ -72,7 +69,6 @@
         .page.active { display: block; }
         @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
         
-        /* MODALS */
         .modal {
             display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6);
             z-index: 200; align-items: center; justify-content: center;
@@ -95,7 +91,6 @@
             text-transform: uppercase; letter-spacing: 2px;
         }
         
-        /* FORMS */
         .form-group { margin-bottom: 18px; }
         .form-label {
             display: block; margin-bottom: 6px; font-size: 11px;
@@ -140,7 +135,6 @@
         }
         @keyframes spin { to { transform: rotate(360deg); } }
         
-        /* HOMEPAGE */
         .hero {
             min-height: 75vh; display: flex; align-items: center; justify-content: center;
             text-align: center; position: relative; overflow: hidden;
@@ -159,7 +153,22 @@
             background: repeating-linear-gradient(45deg, transparent, transparent 40px, var(--accent) 40px, var(--accent) 42px);
         }
         
-        /* PROFILE */
+        .showcase {
+            padding: 60px 20px; background: var(--bg-soft);
+        }
+        .showcase-title {
+            text-align: center; font-size: 32px; font-weight: 300;
+            letter-spacing: 8px; text-transform: uppercase; margin-bottom: 40px;
+        }
+        .showcase-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px; max-width: 1200px; margin: 0 auto;
+        }
+        .showcase-img {
+            width: 100%; aspect-ratio: 3/4; object-fit: cover;
+            border-radius: var(--radius); box-shadow: var(--shadow);
+        }
+        
         .profile-header {
             display: flex; align-items: center; gap: 24px; padding-bottom: 28px;
             border-bottom: 1px solid var(--border); margin-bottom: 32px;
@@ -181,7 +190,6 @@
         .profile-meta { font-size: 12px; color: var(--text-dim); margin-top: 4px; }
         .profile-meta div { margin: 2px 0; }
         
-        /* ORDERS */
         .section-title {
             font-size: 18px; font-weight: 500; margin: 28px 0 18px;
             padding-bottom: 12px; border-bottom: 1px solid var(--border);
@@ -219,7 +227,6 @@
         .btn-cancel:hover { opacity: 1; }
         .btn-cancel:disabled { opacity: 0.3; cursor: not-allowed; }
         
-        /* PRODUCT PAGE */
         .product-grid {
             display: grid; grid-template-columns: 1fr 1fr; gap: 48px;
             max-width: 1300px; margin: 0 auto;
@@ -250,7 +257,11 @@
         }
         .thumb.active { border-color: var(--accent); }
         
-        .p-info h1 { font-size: 28px; margin-bottom: 20px; font-weight: 400; }
+        .p-info h1 { font-size: 28px; margin-bottom: 8px; font-weight: 400; }
+        .product-id {
+            font-size: 12px; color: var(--text-dim); margin-bottom: 20px;
+            padding: 4px 10px; background: var(--bg-soft); border-radius: 4px; display: inline-block;
+        }
         .specs { margin: 20px 0; }
         .spec-row {
             display: flex; justify-content: space-between; padding: 8px 0;
@@ -268,6 +279,11 @@
         .stock { font-size: 13px; margin-bottom: 12px; }
         .in-stock { color: var(--success); font-weight: 500; }
         .out-stock { color: var(--error); font-weight: 600; }
+        .deleted-notice {
+            background: var(--error); color: white; padding: 12px;
+            text-align: center; border-radius: var(--radius); margin: 16px 0;
+            font-weight: 600; text-transform: uppercase; letter-spacing: 2px;
+        }
         
         .options { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
         .opt-group label {
@@ -281,7 +297,6 @@
         
         .desc { margin: 24px 0; line-height: 1.7; font-size: 14px; color: var(--text-dim); }
         
-        /* CATALOG & SEARCH */
         .catalog-grid, .results-grid {
             display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
             gap: 24px; margin-top: 24px;
@@ -311,7 +326,6 @@
         }
         .search-input:focus { outline: none; border-color: var(--accent); }
         
-        /* CART */
         .cart-table {
             width: 100%; border-collapse: collapse; margin: 24px 0; font-size: 13px;
         }
@@ -335,7 +349,6 @@
         }
         .delivery-note { font-size: 12px; color: var(--text-dim); margin-top: 8px; text-align: right; }
         
-        /* CHAT */
         .chat-box {
             max-width: 780px; margin: 0 auto; background: var(--bg-soft);
             border-radius: var(--radius); display: flex; flex-direction: column;
@@ -377,7 +390,6 @@
         }
         .chat-send:hover { opacity: 0.9; }
         
-        /* ADMIN PANEL */
         .admin-section {
             background: var(--bg-soft); border-radius: var(--radius);
             padding: 22px; margin-bottom: 20px;
@@ -402,7 +414,6 @@
         }
         .mod-item .actions { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
         
-        /* SETTINGS */
         .settings-list { display: flex; flex-direction: column; gap: 10px; max-width: 520px; }
         .setting-btn {
             background: var(--bg-soft); border: 1px solid var(--border);
@@ -412,16 +423,19 @@
         }
         .setting-btn:hover { background: var(--accent); color: var(--bg); border-color: var(--accent); }
         
-        /* REVIEWS */
         .review-card {
             background: var(--bg-soft); padding: 20px; border-radius: var(--radius);
-            margin-bottom: 12px;
+            margin-bottom: 12px; position: relative;
         }
         .review-head { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13px; }
         .review-stars { color: #f59e0b; font-size: 15px; margin: 4px 0; }
         .review-text { font-size: 14px; line-height: 1.6; color: var(--text-dim); }
+        .review-delete {
+            position: absolute; top: 16px; right: 16px; color: var(--error);
+            cursor: pointer; font-size: 18px; opacity: 0.6; transition: opacity 0.2s;
+        }
+        .review-delete:hover { opacity: 1; }
         
-        /* UTILS */
         .hidden { display: none !important; }
         .text-center { text-align: center; }
         .mt-16 { margin-top: 16px; }
@@ -433,7 +447,6 @@
         .gap-12 { gap: 12px; }
         .w-full { width: 100%; }
         
-        /* RESPONSIVE */
         @media (max-width: 1024px) {
             .sidebar { width: 64px; }
             .sidebar.expanded, .sidebar:hover { width: 220px; }
@@ -455,7 +468,6 @@
 </head>
 <body>
 <div class="app">
-    <!-- SIDEBAR -->
     <nav class="sidebar" id="sidebar">
         <div class="logo" onclick="navigate('home')">BYRMALDA</div>
         
@@ -495,9 +507,7 @@
         </div>
     </nav>
 
-    <!-- MAIN -->
     <main class="main">
-        <!-- HOME -->
         <section id="home" class="page active">
             <div class="hero">
                 <div class="hero-bg"></div>
@@ -510,9 +520,17 @@
                     <div class="quote-author">— BYRMALDA</div>
                 </div>
             </div>
+            
+            <div class="showcase">
+                <h2 class="showcase-title">New Byrmalda Collection SS26</h2>
+                <div class="showcase-grid">
+                    <img src="https://raw.githubusercontent.com/lookup-mrktplce/xcdzxc/main/IMG_20260515_101118.png" class="showcase-img" alt="Show 1">
+                    <img src="https://raw.githubusercontent.com/lookup-mrktplce/xcdzxc/main/IMG_20260515_103613.png" class="showcase-img" alt="Show 2">
+                    <img src="https://raw.githubusercontent.com/lookup-mrktplce/xcdzxc/main/file_00000000756c71f49ea43663444da286.png" class="showcase-img" alt="Show 3">
+                </div>
+            </div>
         </section>
 
-        <!-- PROFILE -->
         <section id="profile" class="page">
             <div class="profile-header">
                 <div class="avatar-wrap" onclick="openAvatarModal()">
@@ -534,7 +552,6 @@
             </div>
         </section>
 
-        <!-- SEARCH -->
         <section id="search" class="page">
             <div class="search-wrap">
                 <input type="text" class="search-input" id="search-input" placeholder="Поиск: футболка, free drun, кроссовки..." oninput="handleSearch(event)">
@@ -542,13 +559,11 @@
             <div class="results-grid" id="search-results"></div>
         </section>
 
-        <!-- CATALOG -->
         <section id="catalog" class="page">
             <h2 class="section-title" style="margin-top:0">Каталог</h2>
             <div class="catalog-grid" id="catalog-grid"></div>
         </section>
 
-        <!-- PRODUCT -->
         <section id="product" class="page">
             <button class="btn btn-outline btn-sm" style="margin-bottom:16px;width:auto" onclick="navigate('catalog')">← Назад</button>
             <div class="product-grid">
@@ -561,6 +576,7 @@
                     <div class="thumbs" id="p-thumbs"></div>
                 </div>
                 <div class="p-info">
+                    <div class="product-id" id="p-id">ID: -</div>
                     <h1 id="p-name">Название</h1>
                     <div class="specs" id="p-specs"></div>
                     <div class="desc" id="p-desc"></div>
@@ -568,6 +584,7 @@
                         <div class="price-usd" id="p-price-usd">$0.00</div>
                         <div class="price-conv" id="p-price-conv">≈ 0 ₽ / ≈ 0 ₴</div>
                         <div class="stock" id="p-stock"></div>
+                        <div id="p-deleted-notice" class="deleted-notice hidden">Товар удален</div>
                         <div class="options" id="p-options">
                             <div class="opt-group">
                                 <label>Размер</label>
@@ -592,7 +609,6 @@
             </div>
         </section>
 
-        <!-- CART -->
         <section id="cart" class="page">
             <h2 class="section-title" style="margin-top:0">Корзина</h2>
             <div id="cart-empty" class="text-center" style="padding:48px;color:var(--text-dim)">Корзина пуста</div>
@@ -609,7 +625,6 @@
             </div>
         </section>
 
-        <!-- SUPPORT -->
         <section id="support" class="page">
             <h2 class="section-title" style="margin-top:0">Поддержка</h2>
             <div class="chat-box">
@@ -621,7 +636,6 @@
             </div>
         </section>
 
-        <!-- SETTINGS -->
         <section id="settings" class="page">
             <h2 class="section-title" style="margin-top:0">Настройки</h2>
             <div class="settings-list">
@@ -634,7 +648,6 @@
             </div>
         </section>
 
-        <!-- REVIEWS -->
         <section id="reviews" class="page">
             <div class="flex justify-between items-center mb-16">
                 <h2 class="section-title" style="margin:0">Отзывы</h2>
@@ -643,7 +656,6 @@
             <div id="reviews-list"></div>
         </section>
 
-        <!-- ADMIN -->
         <section id="admin" class="page">
             <h2 class="section-title" style="margin-top:0">Панель администратора</h2>
             
@@ -662,9 +674,47 @@
                         <select class="admin-input" id="adm-aud"><option value="unisex">Унисекс</option><option value="male">Мужчина</option><option value="female">Женщина</option></select>
                     </div>
                     <div class="form-group"><label class="form-label">Материал</label><input class="admin-input" id="adm-mat"></div>
+                    <div class="form-group"><label class="form-label">Цвет</label><input class="admin-input" id="adm-color"></div>
+                    <div class="form-group"><label class="form-label">Год релиза</label><input type="number" class="admin-input" id="adm-year" placeholder="2026"></div>
+                    <div class="form-group"><label class="form-label">Коллаборация</label>
+                        <select class="admin-input" id="adm-collab-type" onchange="toggleCollabInput()">
+                            <option value="no">Нет</option>
+                            <option value="yes">Да</option>
+                        </select>
+                    </div>
+                    <div class="form-group hidden" id="adm-collab-group"><label class="form-label">Название бренда</label><input class="admin-input" id="adm-collab-name"></div>
                 </div>
+                <div class="form-group"><label class="form-label">Фотографии</label><input type="file" class="admin-input" id="adm-photos" accept="image/*" multiple></div>
                 <div class="form-group"><label class="form-label">Описание</label><textarea class="form-textarea" id="adm-desc"></textarea></div>
                 <button class="btn" onclick="admCreateProduct()">Опубликовать</button>
+            </div>
+            
+            <div class="admin-section">
+                <h3>✏️ Редактировать товар</h3>
+                <div class="flex gap-8" style="margin-bottom:16px">
+                    <input type="text" class="admin-input" id="adm-edit-id" placeholder="Введите ID товара" style="flex:1">
+                    <button class="btn btn-sm" onclick="admLoadProduct()">Загрузить</button>
+                </div>
+                <div id="adm-edit-form" class="hidden">
+                    <div class="admin-grid">
+                        <div class="form-group"><label class="form-label">Название</label><input class="admin-input" id="edit-name"></div>
+                        <div class="form-group"><label class="form-label">Цена</label><input type="number" class="admin-input" id="edit-price" step="0.01"></div>
+                        <div class="form-group"><label class="form-label">В наличии</label><input type="number" class="admin-input" id="edit-stock"></div>
+                        <div class="form-group"><label class="form-label">Масса</label><input type="number" class="admin-input" id="edit-weight"></div>
+                        <div class="form-group"><label class="form-label">Материал</label><input class="admin-input" id="edit-mat"></div>
+                        <div class="form-group"><label class="form-label">Цвет</label><input class="admin-input" id="edit-color"></div>
+                    </div>
+                    <div class="form-group"><label class="form-label">Описание</label><textarea class="form-textarea" id="edit-desc"></textarea></div>
+                    <button class="btn" onclick="admSaveProduct()">Сохранить изменения</button>
+                </div>
+            </div>
+            
+            <div class="admin-section">
+                <h3>🗑️ Удалить товар</h3>
+                <div class="flex gap-8">
+                    <input type="text" class="admin-input" id="adm-delete-id" placeholder="Введите ID товара" style="flex:1;min-width:200px">
+                    <button class="btn btn-danger btn-sm" onclick="admDeleteProduct()">Удалить</button>
+                </div>
             </div>
             
             <div class="admin-section">
@@ -842,13 +892,11 @@
 </div>
 
 <script type="module">
-// ===== FIREBASE IMPORTS =====
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification, onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-import { getFirestore, collection, doc, setDoc, getDoc, getDocs, query, where, orderBy, limit, updateDoc, deleteDoc, addDoc, serverTimestamp, arrayUnion } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+import { getFirestore, collection, doc, setDoc, getDoc, getDocs, query, where, orderBy, limit, updateDoc, deleteDoc, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-storage.js";
 
-// ===== CONFIG =====
 const firebaseConfig = {
     apiKey: "AIzaSyD0YkXZgk8gh01Y7XH3ZRVU5lCjGJ_IRCw",
     authDomain: "frwerwerwr.firebaseapp.com",
@@ -866,17 +914,15 @@ const IMGBB_KEY = "eeef3479094c5cf6bf42607927565065";
 const ADMIN_EMAIL = "sobakastalina123@gmail.com";
 const RATES = { USD_TO_RUB: 90, USD_TO_UAH: 37 };
 
-// ===== STATE =====
-let user = null, userData = null, cart = JSON.parse(localStorage.getItem('byrmalda_cart')) || [], curProd = null, galIdx = 0, chatUnread = 0, lang = 'ru', theme = localStorage.getItem('theme') || 'light', revStars = 0;
+let user = null, userData = null, cart = JSON.parse(localStorage.getItem('byrmalda_cart')) || [], curProd = null, galIdx = 0, chatUnread = 0, lang = 'ru', theme = localStorage.getItem('theme') || 'light', revStars = 0, hasSubmittedReview = false;
 
-// ===== UTILS =====
 const $ = id => document.getElementById(id);
 const show = el => el.classList.remove('hidden');
 const hide = el => el.classList.add('hidden');
 const fmtDate = ts => ts?.toDate?.()?.toLocaleDateString('ru-RU') || '...';
 const fmtPrice = usd => `$${usd.toFixed(2)} • ≈ ${Math.round(usd*RATES.USD_TO_RUB).toLocaleString('ru-RU')} ₽ • ≈ ${Math.round(usd*RATES.USD_TO_UAH).toLocaleString('ru-RU')} ₴`;
+const genId = () => Math.random().toString(36).substring(2, 10).toUpperCase();
 
-// ===== INIT =====
 window.addEventListener('DOMContentLoaded', async () => {
     applyTheme();
     onAuthStateChanged(auth, async u => {
@@ -894,6 +940,7 @@ window.addEventListener('DOMContentLoaded', async () => {
             }
             loadOrders();
             loadChat();
+            checkReviewSubmission();
         } else {
             user = userData = null;
             resetAuthUI();
@@ -905,7 +952,6 @@ window.addEventListener('DOMContentLoaded', async () => {
     setInterval(autoUpdateOrders, 300000);
 });
 
-// ===== AUTH =====
 async function loadUser() {
     if (!user) return;
     try {
@@ -919,7 +965,8 @@ async function createUserDoc() {
     const data = {
         uid: user.uid, email: user.email, name: user.displayName || user.email.split('@')[0],
         avatar: null, avatarPending: null, registrationDate: serverTimestamp(),
-        isBlocked: false, hasVerifiedProduct: false, language: 'ru', theme: 'light'
+        isBlocked: false, hasVerifiedProduct: false, language: 'ru', theme: 'light',
+        hasSubmittedReview: false
     };
     await setDoc(doc(db, 'artifacts/byrmalda-prod/users', user.uid), data);
     return data;
@@ -928,10 +975,12 @@ async function createUserDoc() {
 function renderProfile() {
     if (!userData) return;
     $('profile-name').textContent = userData.name || 'Пользователь';
-    $('profile-id').textContent = user.uid.slice(0,10)+'...';
+    $('profile-id').textContent = user.uid.substring(0,10)+'...';
     $('profile-email').textContent = user.email;
     $('profile-date').textContent = fmtDate(userData.registrationDate);
-    if (userData.avatar) $('avatar-display').innerHTML = `<img src="${userData.avatar}" style="width:100%;height:100%;object-fit:cover">`;
+    if (userData.avatar) {
+        $('avatar-display').innerHTML = `<img src="${userData.avatar}" style="width:100%;height:100%;object-fit:cover">`;
+    }
     if (userData.hasVerifiedProduct) $('profile-name').innerHTML = `<span class="verified">✓</span> ${userData.name}`;
 }
 
@@ -996,7 +1045,8 @@ window.regStep3 = async () => {
         await sendEmailVerification(cred.user);
         await setDoc(doc(db, 'artifacts/byrmalda-prod/users', cred.user.uid), {
             uid: cred.user.uid, email, name, avatar: null, avatarPending: null,
-            registrationDate: serverTimestamp(), isBlocked: false, hasVerifiedProduct: false, language: 'ru', theme: 'light'
+            registrationDate: serverTimestamp(), isBlocked: false, hasVerifiedProduct: false,
+            language: 'ru', theme: 'light', hasSubmittedReview: false
         });
         await updateProfile(cred.user, { displayName: name });
         $('reg-step-3').classList.add('hidden');
@@ -1032,7 +1082,6 @@ function showBlock() {
     m.onclick = e => { if (e.target === m) m.remove(); };
 }
 
-// ===== NAVIGATION =====
 window.navigate = page => {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     $(page).classList.add('active');
@@ -1048,12 +1097,10 @@ window.navigate = page => {
     if (page === 'support') { chatUnread = 0; updateSupportBadge(); }
 };
 
-// ===== MODALS =====
 window.openModal = id => $(id).classList.add('active');
 window.closeModal = id => $(id).classList.remove('active');
 document.querySelectorAll('.modal').forEach(m => m.onclick = e => { if (e.target === m) m.classList.remove('active'); });
 
-// ===== PROFILE & AVATAR =====
 window.openAvatarModal = () => { if (!user) openModal('login-modal'); else openModal('avatar-modal'); };
 
 window.submitAvatar = async () => {
@@ -1074,13 +1121,13 @@ window.submitAvatar = async () => {
     } catch(e) { console.error(e); alert('❌ Ошибка: '+e.message); }
 };
 
-// ===== CATALOG & SEARCH =====
 function genCatalog() {
     const cats = [
         {id:'tshirts',n:'Футболки',ic:'👕',t:'футболка'},{id:'hoodies',n:'Толстовки',ic:'🧥',t:'толстовка'},
         {id:'sneakers',n:'Кроссовки',ic:'👟',t:'кроссовки'},{id:'boots',n:'Обувь',ic:'🥾',t:'ботинки'},
         {id:'acc',n:'Аксессуары',ic:'🎒',t:'аксессуар'},{id:'pants',n:'Брюки',ic:'👖',t:'брюки'},
-        {id:'shorts',n:'Шорты',ic:'🩳',t:'шорты'},{id:'jackets',n:'Куртки',ic:'🧥',t:'куртка'}
+        {id:'shorts',n:'Шорты',ic:'🩳',t:'шорты'},{id:'jackets',n:'Куртки',ic:'🧥',t:'куртка'},
+        {id:'archive',n:'Архив',ic:'📁',t:'archive'}
     ];
     $('catalog-grid').innerHTML = cats.map(c => `
         <div class="cat-card" onclick="filterType('${c.t}')">
@@ -1095,17 +1142,25 @@ window.handleSearch = async e => { const q = e.target.value.trim().toLowerCase()
 async function searchProds(q) {
     const c = $('search-results'); c.innerHTML = '<div class="text-center" style="padding:32px"><div class="loading"></div></div>';
     try {
-        const snap = await getDocs(query(collection(db, 'artifacts/byrmalda-prod/public/data/products'), where('published','==',true)));
-        const res = []; snap.forEach(d => { const p = d.data(); if (`${p.name} ${p.type} ${p.category} ${p.desc}`.toLowerCase().includes(q)) res.push({...p,id:d.id}); });
-        if (!res.length) { c.innerHTML = `<div class="text-center" style="padding:32px;color:var(--text-dim)">Ничего не найдено</div>`; return; }
-        c.innerHTML = res.map(p => prodCard(p)).join('');
+        let coll = collection(db, 'artifacts/byrmalda-prod/public/data/products');
+        if (q === 'archive') {
+            const snap = await getDocs(query(coll, where('deleted','==',true)));
+            const res = []; snap.forEach(d => res.push({...d.data(),id:d.id}));
+            if (!res.length) { c.innerHTML = '<div class="text-center" style="padding:32px;color:var(--text-dim)">Архив пуст</div>'; return; }
+            c.innerHTML = res.map(p => prodCard(p)).join('');
+        } else {
+            const snap = await getDocs(query(coll, where('published','==',true), where('deleted','==',false)));
+            const res = []; snap.forEach(d => { const p = d.data(); if (`${p.name} ${p.type} ${p.category} ${p.desc}`.toLowerCase().includes(q)) res.push({...p,id:d.id}); });
+            if (!res.length) { c.innerHTML = `<div class="text-center" style="padding:32px;color:var(--text-dim)">Ничего не найдено</div>`; return; }
+            c.innerHTML = res.map(p => prodCard(p)).join('');
+        }
     } catch(e) { console.error(e); c.innerHTML = '<div class="text-center" style="padding:32px;color:var(--error)">Ошибка</div>'; }
 }
 
 function prodCard(p) {
     const stock = p.stock > 0;
     return `<div class="prod-card" onclick="openProd('${p.id}')">
-        <div class="card-img" style="background:var(--bg)">📦</div>
+        <div class="card-img" style="background:var(--bg)">${p.images?.[0]?`<img src="${p.images[0]}" style="width:100%;height:100%;object-fit:cover">`:'📦'}</div>
         <div class="card-body">
             <div class="card-title">${p.name}</div>
             <div class="card-price ${stock?'':'card-nostock'}">${stock?`$${p.price}`:'Нет в наличии'}</div>
@@ -1113,12 +1168,12 @@ function prodCard(p) {
     </div>`;
 }
 
-// ===== PRODUCT =====
 window.openProd = async id => {
     try {
         const snap = await getDoc(doc(db, 'artifacts/byrmalda-prod/public/data/products', id));
         if (!snap.exists()) return alert('Товар не найден');
         curProd = { ...snap.data(), id };
+        $('p-id').textContent = `ID: ${curProd.productId || id}`;
         $('p-name').textContent = curProd.name;
         $('p-specs').innerHTML = `
             <div class="spec-row"><span class="spec-l">Для кого</span><span class="spec-v">${curProd.audience||'Унисекс'}</span></div>
@@ -1127,15 +1182,34 @@ window.openProd = async id => {
             <div class="spec-row"><span class="spec-l">Цвет</span><span class="spec-v">${curProd.color||'-'}</span></div>
             <div class="spec-row"><span class="spec-l">Коллаборация</span><span class="spec-v">${curProd.collab||'Нет'}</span></div>
             <div class="spec-row"><span class="spec-l">Масса</span><span class="spec-v">${curProd.weight||'-'} г</span></div>
-            <div class="spec-row"><span class="spec-l">Год</span><span class="spec-v">${curProd.year||'-'}</span></div>
+            <div class="spec-row"><span class="spec-l">Год релиза</span><span class="spec-v">${curProd.year||'-'}</span></div>
             <div class="spec-row"><span class="spec-l">В наличии</span><span class="spec-v">${curProd.stock} шт</span></div>
         `;
         $('p-desc').textContent = curProd.desc || '';
         $('p-price-usd').textContent = `$${curProd.price}`;
         $('p-price-conv').textContent = `≈ ${Math.round(curProd.price*RATES.USD_TO_RUB).toLocaleString('ru-RU')} ₽ / ≈ ${Math.round(curProd.price*RATES.USD_TO_UAH).toLocaleString('ru-RU')} ₴`;
-        const stockEl = $('p-stock'), btn = $('p-action');
-        if (curProd.stock > 0) { stockEl.innerHTML = '<span class="in-stock">✓ В наличии</span>'; btn.textContent = 'Купить'; btn.onclick = addToCart; show($('p-options')); }
-        else { stockEl.innerHTML = '<span class="out-stock">✗ Нет в наличии</span>'; btn.textContent = 'Предзаказ'; btn.onclick = ()=>addToCart(true); hide($('p-options')); }
+        const stockEl = $('p-stock'), btn = $('p-action'), opts = $('p-options'), delNotice = $('p-deleted-notice');
+        
+        if (curProd.deleted) {
+            delNotice.classList.remove('hidden');
+            btn.textContent = 'Удален';
+            btn.disabled = true;
+            hide(opts);
+        } else if (curProd.stock > 0) {
+            delNotice.classList.add('hidden');
+            stockEl.innerHTML = '<span class="in-stock">✓ В наличии</span>';
+            btn.textContent = 'Купить';
+            btn.disabled = false;
+            btn.onclick = addToCart;
+            show(opts);
+        } else {
+            delNotice.classList.add('hidden');
+            stockEl.innerHTML = '<span class="out-stock">✗ Нет в наличии (Предзаказ)</span>';
+            btn.textContent = 'Предзаказ';
+            btn.disabled = false;
+            btn.onclick = ()=>addToCart(true);
+            hide(opts);
+        }
         galIdx = 0; updateGal();
         navigate('product');
     } catch(e) { console.error(e); alert('Ошибка загрузки товара'); }
@@ -1143,14 +1217,13 @@ window.openProd = async id => {
 
 function updateGal() {
     if (!curProd) return;
-    const imgs = curProd.images || ['https://via.placeholder.com/600/f5f5f5/111?text=BYRMALDA'];
+    const imgs = curProd.images && curProd.images.length ? curProd.images : ['https://via.placeholder.com/600/f5f5f5/111?text=BYRMALDA'];
     $('p-main-img').src = imgs[galIdx];
     $('p-thumbs').innerHTML = imgs.map((src,i) => `<img src="${src}" class="thumb ${i===galIdx?'active':''}" onclick="setGal(${i})">`).join('');
 }
 window.setGal = i => { galIdx = i; updateGal(); };
-window.galNav = d => { if (!curProd) return; galIdx = (galIdx + d + (curProd.images?.length||1)) % (curProd.images?.length||1); updateGal(); };
+window.galNav = d => { if (!curProd) return; const len = curProd.images?.length||1; galIdx = (galIdx + d + len) % len; updateGal(); };
 
-// ===== CART =====
 window.addToCart = (pre=false) => {
     if (!user) { openModal('login-modal'); return; }
     const item = {
@@ -1190,15 +1263,14 @@ window.checkout = () => { if (!user) openModal('login-modal'); else if (!cart.le
 
 window.confirmCheckout = async () => {
     closeModal('checkout-modal');
-    const oid = 'ORD-'+Math.random().toString(36).slice(2,10).toUpperCase();
+    const oid = 'ORD-'+genId();
     const total = parseFloat($('cart-total').textContent.replace('$',''));
     const order = {
         id: oid, userId: user.uid, items: [...cart], total,
-        status: 'Ожидает оплату', tracking: 'TRK-'+Math.random().toString(36).slice(2,9).toUpperCase(),
+        status: 'Ожидает оплату', tracking: 'TRK-'+genId(),
         createdAt: serverTimestamp(), updatedAt: serverTimestamp()
     };
     await setDoc(doc(db, 'artifacts/byrmalda-prod/public/data/orders', oid), order);
-    // Decrease stock
     for (const it of cart) {
         if (!it.pre) {
             const pd = await getDoc(doc(db, 'artifacts/byrmalda-prod/public/data/products', it.pid));
@@ -1210,7 +1282,6 @@ window.confirmCheckout = async () => {
     navigate('profile');
 };
 
-// ===== ORDERS =====
 async function loadOrders() {
     if (!user) return;
     const c = $('orders-list'); c.innerHTML = '<div class="text-center" style="padding:24px"><div class="loading"></div></div>';
@@ -1243,7 +1314,6 @@ window.cancelOrder = async (oid, st) => {
     } catch(e) { console.error(e); alert('❌ Ошибка'); }
 };
 
-// ===== CHAT =====
 async function loadChat() {
     if (!user) return;
     const c = $('chat-msgs'); c.innerHTML = '';
@@ -1259,7 +1329,7 @@ function addMsgToUI(m) {
     const isUser = m.uid === user?.uid, isAdmin = m.isAdmin;
     const el = document.createElement('div');
     el.className = `msg ${isUser?'user':'admin'}`;
-    el.innerHTML = `${m.text}<div class="msg-meta">${isAdmin?'Админ':(m.name||'Пользователь')} • ${m.ts?.toDate?.().toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})||''}${!isUser&&!isAdmin?` • ID: ${m.uid?.slice(0,6)}...`:''}</div>`;
+    el.innerHTML = `${m.text}<div class="msg-meta">${isAdmin?'Админ':(m.name||'Пользователь')} • ${m.ts?.toDate?.().toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})||''}${!isUser&&!isAdmin?` • UID: ${m.uid}`:''}</div>`;
     $('chat-msgs').appendChild(el);
     $('chat-msgs').scrollTop = $('chat-msgs').scrollHeight;
     if (!document.getElementById('support').classList.contains('active') && !isUser) { chatUnread++; updateSupportBadge(); }
@@ -1272,19 +1342,26 @@ window.sendMsg = async () => {
     const msg = { uid: user.uid, name: userData?.name || user.email.split('@')[0], text: txt, ts: serverTimestamp(), isAdmin: user.email === ADMIN_EMAIL };
     await addDoc(collection(db, 'artifacts/byrmalda-prod/public/data/support'), msg);
     $('chat-input').value = '';
-    // If admin sending to specific user: parse (UID) prefix
-    if (user.email === ADMIN_EMAIL && txt.match(/^\(\w+\)/)) {
-        // Message will appear for all, but UI shows only relevant - simplified for demo
-    }
     addMsgToUI({ ...msg, ts: new Date() });
 };
 
-// ===== SETTINGS =====
 window.toggleTheme = () => { theme = theme==='light'?'dark':'light'; localStorage.setItem('theme',theme); applyTheme(); };
 function applyTheme() { document.documentElement.setAttribute('data-theme',theme); $('theme-ind').textContent = theme==='dark'?'🌙':'☀️'; }
-window.toggleLang = () => { lang = lang==='ru'?'en':'ru'; $('cur-lang').textContent = lang.toUpperCase(); alert(lang==='en'?'🇬🇧 English mode (full translation in production)':'🇷🇺 Русский режим'); };
+window.toggleLang = () => { lang = lang==='ru'?'en':'ru'; $('cur-lang').textContent = lang.toUpperCase(); alert(lang==='en'?'🇬 English mode':'🇷🇺 Русский режим'); };
 
-window.openReviewModal = () => { if (!user) openModal('login-modal'); else { openModal('review-modal'); revStars = 0; updStars(); } };
+async function checkReviewSubmission() {
+    if (!user) return;
+    try {
+        const snap = await getDocs(query(collection(db, 'artifacts/byrmalda-prod/public/data/reviews'), where('uid','==',user.uid)));
+        hasSubmittedReview = !snap.empty;
+    } catch(e) { console.error(e); }
+}
+
+window.openReviewModal = () => {
+    if (!user) { openModal('login-modal'); return; }
+    if (hasSubmittedReview) { alert('❌ Вы уже оставляли отзыв. Повторная отправка невозможна.'); return; }
+    openModal('review-modal'); revStars = 0; updStars();
+};
 window.setRating = n => { revStars = n; updStars(); };
 function updStars() { for (let i=0;i<5;i++) $('rev-stars').children[i].textContent = i<revStars?'★':'☆'; }
 window.submitReview = async () => {
@@ -1293,6 +1370,7 @@ window.submitReview = async () => {
     await addDoc(collection(db, 'artifacts/byrmalda-prod/public/data/reviews'), {
         uid: user.uid, name: userData?.name||'Пользователь', rating: revStars, text: txt, status: 'pending', ts: serverTimestamp()
     });
+    hasSubmittedReview = true;
     $('rev-ok').classList.remove('hidden'); setTimeout(()=>{ closeModal('review-modal'); $('rev-ok').classList.add('hidden'); $('rev-text').value=''; }, 1500);
 };
 
@@ -1332,7 +1410,6 @@ window.showSizeChart = type => {
     openModal('sizechart-modal');
 };
 
-// ===== ADMIN PANEL =====
 async function loadAdminPanels() {
     loadPendingReviews();
     loadPendingAvatars();
@@ -1350,7 +1427,7 @@ async function loadPendingReviews() {
             return `<div class="mod-item">
                 <div class="flex justify-between"><strong>${r.name}</strong><span>${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</span></div>
                 <div style="font-size:13px;color:var(--text-dim);margin:6px 0">${r.text}</div>
-                <div style="font-size:11px;color:var(--text-dim)">UID: ${r.uid?.slice(0,10)}...</div>
+                <div style="font-size:11px;color:var(--text-dim)">UID: ${r.uid}</div>
                 <div class="actions">
                     <button class="btn btn-success btn-sm" onclick="admApproveReview('${d.id}')">Одобрить</button>
                     <button class="btn btn-danger btn-sm" onclick="admRejectReview('${d.id}')">Отклонить</button>
@@ -1367,15 +1444,22 @@ async function loadPublicReviews() {
     try {
         const snap = await getDocs(query(collection(db, 'artifacts/byrmalda-prod/public/data/reviews'), where('status','==','approved'), orderBy('ts','desc'), limit(50)));
         if (snap.empty) { c.innerHTML = '<div style="color:var(--text-dim)">Отзывов пока нет</div>'; return; }
+        const isAdmin = user?.email === ADMIN_EMAIL;
         c.innerHTML = snap.docs.map(d => {
             const r = d.data();
             return `<div class="review-card">
+                ${isAdmin?`<span class="review-delete" onclick="admDeleteReview('${d.id}')">🗑️</span>`:''}
                 <div class="review-head"><strong>${r.name}</strong><span>${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</span></div>
                 <div class="review-text">${r.text}</div>
             </div>`;
         }).join('');
     } catch(e) { console.error(e); c.innerHTML = '<div style="color:var(--error)">Ошибка</div>'; }
 }
+window.admDeleteReview = async id => {
+    if (!confirm('Точно удалить этот отзыв?')) return;
+    await deleteDoc(doc(db, 'artifacts/byrmalda-prod/public/data/reviews', id));
+    loadPublicReviews();
+};
 
 async function loadPendingAvatars() {
     const c = $('adm-avatars-mod'); c.innerHTML = '<div class="text-center" style="padding:16px"><div class="loading"></div></div>';
@@ -1386,17 +1470,23 @@ async function loadPendingAvatars() {
             const u = d.data();
             return `<div class="mod-item flex items-center gap-12">
                 <img src="${u.avatarPending}" style="width:56px;height:56px;border-radius:50%;object-fit:cover;background:var(--bg)">
-                <div style="flex:1"><div style="font-weight:500">${u.name}</div><div style="font-size:11px;color:var(--text-dim)">UID: ${u.uid?.slice(0,10)}...</div></div>
+                <div style="flex:1"><div style="font-weight:500">${u.name}</div><div style="font-size:11px;color:var(--text-dim)">UID: ${u.uid}</div></div>
                 <div class="actions">
-                    <button class="btn btn-success btn-sm" onclick="admApproveAvatar('${d.id}','${u.avatarPending}')">Одобрить</button>
-                    <button class="btn btn-danger btn-sm" onclick="admRejectAvatar('${d.id}')">Отклонить</button>
+                    <button class="btn btn-success btn-sm" onclick="admApproveAvatar('${u.uid}','${u.avatarPending}')">Одобрить</button>
+                    <button class="btn btn-danger btn-sm" onclick="admRejectAvatar('${u.uid}')">Отклонить</button>
                 </div>
             </div>`;
         }).join('');
     } catch(e) { console.error(e); c.innerHTML = '<div style="color:var(--error)">Ошибка</div>'; }
 }
-window.admApproveAvatar = async (uid, url) => { await updateDoc(doc(db, 'artifacts/byrmalda-prod/users', uid), { avatar: url, avatarPending: null, avatarStatus: 'approved' }); loadPendingAvatars(); };
-window.admRejectAvatar = async uid => { await updateDoc(doc(db, 'artifacts/byrmalda-prod/users', uid), { avatarPending: null, avatarStatus: 'rejected' }); loadPendingAvatars(); };
+window.admApproveAvatar = async (uid, url) => {
+    await updateDoc(doc(db, 'artifacts/byrmalda-prod/users', uid), { avatar: url, avatarPending: null, avatarStatus: 'approved' });
+    loadPendingAvatars();
+};
+window.admRejectAvatar = async uid => {
+    await updateDoc(doc(db, 'artifacts/byrmalda-prod/users', uid), { avatarPending: null, avatarStatus: 'rejected' });
+    loadPendingAvatars();
+};
 
 async function loadPendingSuggestions() {
     const c = $('adm-suggestions'); c.innerHTML = '<div class="text-center" style="padding:16px"><div class="loading"></div></div>';
@@ -1422,19 +1512,18 @@ window.admApproveSuggestion = async id => {
     const snap = await getDoc(doc(db, 'artifacts/byrmalda-prod/public/data/suggestions', id));
     if (!snap.exists()) return;
     const s = snap.data();
-    // Create real product
     await addDoc(collection(db, 'artifacts/byrmalda-prod/public/data/products'), {
         name: s.name, category: s.category, type: s.type, price: s.price, stock: 10, weight: s.weight||200,
         audience: s.audience||'unisex', material: s.material||'', color: s.color||'', collab: s.collab||'Нет',
-        year: new Date().getFullYear(), desc: s.desc||'', images: s.img?[s.img]:[], published: true,
-        fromUser: true, suggestedBy: s.uid, createdAt: serverTimestamp()
+        year: new Date().getFullYear(), desc: s.desc||'', images: s.img?[s.img]:[], published: true, deleted: false,
+        fromUser: true, suggestedBy: s.uid, productId: genId(), createdAt: serverTimestamp()
     });
     await updateDoc(doc(db, 'artifacts/byrmalda-prod/public/data/suggestions', id), { status: 'approved' });
     await updateDoc(doc(db, 'artifacts/byrmalda-prod/users', s.uid), { hasVerifiedProduct: true });
     loadPendingSuggestions(); alert('✅ Товар опубликован!');
 };
 window.admRejectSuggestion = async id => { await deleteDoc(doc(db, 'artifacts/byrmalda-prod/public/data/suggestions', id)); loadPendingSuggestions(); };
-window.admEditSuggestion = async id => { alert('Редактирование: в продакшене откроется форма предзаполненная данными'); };
+window.admEditSuggestion = async id => { alert('Редактирование: в продакшене откроется форма'); };
 
 async function loadReports() {
     const c = $('adm-reports'); c.innerHTML = '<div class="text-center" style="padding:16px"><div class="loading"></div></div>';
@@ -1444,28 +1533,100 @@ async function loadReports() {
         c.innerHTML = snap.docs.map(d => {
             const r = d.data();
             return `<div class="mod-item">
-                <div style="font-weight:500;margin-bottom:6px">${r.name} <span style="font-size:11px;color:var(--text-dim)">UID: ${r.uid?.slice(0,10)}...</span></div>
+                <div style="font-weight:500;margin-bottom:6px">${r.name} <span style="font-size:11px;color:var(--text-dim)">UID: ${r.uid}</span></div>
                 <div style="font-size:13px;color:var(--text-dim);margin:6px 0">${r.text}</div>
                 <div class="actions">
-                    <button class="btn btn-sm" onclick="this.closest('.mod-item').remove()">Просмотрено</button>
+                    <button class="btn btn-sm" onclick="admMarkReportViewed('${d.id}')">Просмотрено</button>
                 </div>
             </div>`;
         }).join('');
     } catch(e) { console.error(e); c.innerHTML = '<div style="color:var(--error)">Ошибка</div>'; }
 }
+window.admMarkReportViewed = async id => {
+    await updateDoc(doc(db, 'artifacts/byrmalda-prod/public/data/reports', id), { status: 'viewed' });
+    loadReports();
+};
+
+window.toggleCollabInput = () => {
+    if ($('adm-collab-type').value === 'yes') show($('adm-collab-group'));
+    else hide($('adm-collab-group'));
+};
 
 window.admCreateProduct = async () => {
-    const name = $('adm-name').value.trim(), cat = $('adm-cat').value, type = $('adm-type').value.trim(), price = parseFloat($('adm-price').value), stock = parseInt($('adm-stock').value), weight = parseInt($('adm-weight').value);
+    const name = $('adm-name').value.trim(), cat = $('adm-cat').value, type = $('adm-type').value.trim(),
+          price = parseFloat($('adm-price').value), stock = parseInt($('adm-stock').value),
+          weight = parseInt($('adm-weight').value), year = parseInt($('adm-year').value) || new Date().getFullYear(),
+          collabType = $('adm-collab-type').value, collabName = $('adm-collab-name').value.trim();
     if (!name || !type || !price || stock===undefined || !weight) { alert('Заполните обязательные поля'); return; }
+    const collab = collabType === 'yes' && collabName ? `Да, ${collabName}` : 'Нет';
+    
+    const files = $('adm-photos').files;
+    let images = [];
+    if (files.length > 0) {
+        for (let i = 0; i < files.length; i++) {
+            const fd = new FormData(); fd.append('image', files[i]); fd.append('key', IMGBB_KEY);
+            const res = await fetch('https://api.imgbb.com/1/upload', { method: 'POST', body: fd });
+            const data = await res.json();
+            if (data.success) images.push(data.data.url);
+        }
+    }
+    
+    const productId = genId();
+    await addDoc(collection(db, 'artifacts/byrmalda-prod/public/data/products'), {
+        productId, name, category: cat, type, price, stock, weight, audience: $('adm-aud').value,
+        material: $('adm-mat').value, color: $('adm-color').value, collab, year, desc: $('adm-desc').value,
+        images, published: true, deleted: false, fromUser: false, createdAt: serverTimestamp()
+    });
+    alert(`✅ Товар опубликован! ID: ${productId}`);
+    ['adm-name','adm-type','adm-price','adm-stock','adm-weight','adm-mat','adm-color','adm-desc','adm-collab-name'].forEach(id => $(id).value = '');
+    $('adm-photos').value = '';
+    hide($('adm-collab-group'));
+};
+
+window.admLoadProduct = async () => {
+    const pid = $('adm-edit-id').value.trim();
+    if (!pid) { alert('Введите ID'); return; }
     try {
-        await addDoc(collection(db, 'artifacts/byrmalda-prod/public/data/products'), {
-            name, category: cat, type, price, stock, weight, audience: $('adm-aud').value, material: $('adm-mat').value,
-            color: '', collab: 'Нет', year: new Date().getFullYear(), desc: $('adm-desc').value, images: [],
-            published: true, fromUser: false, createdAt: serverTimestamp()
+        const snap = await getDoc(doc(db, 'artifacts/byrmalda-prod/public/data/products', pid));
+        if (!snap.exists()) { alert('Товар не найден'); return; }
+        const p = snap.data();
+        $('edit-name').value = p.name;
+        $('edit-price').value = p.price;
+        $('edit-stock').value = p.stock;
+        $('edit-weight').value = p.weight;
+        $('edit-mat').value = p.material||'';
+        $('edit-color').value = p.color||'';
+        $('edit-desc').value = p.desc||'';
+        show($('adm-edit-form'));
+    } catch(e) { console.error(e); alert('Ошибка'); }
+};
+
+window.admSaveProduct = async () => {
+    const pid = $('adm-edit-id').value.trim();
+    if (!pid) return;
+    try {
+        await updateDoc(doc(db, 'artifacts/byrmalda-prod/public/data/products', pid), {
+            name: $('edit-name').value.trim(),
+            price: parseFloat($('edit-price').value),
+            stock: parseInt($('edit-stock').value),
+            weight: parseInt($('edit-weight').value),
+            material: $('edit-mat').value.trim(),
+            color: $('edit-color').value.trim(),
+            desc: $('edit-desc').value.trim()
         });
-        alert('✅ Товар опубликован!');
-        // Clear form
-        ['adm-name','adm-type','adm-price','adm-stock','adm-weight','adm-mat','adm-desc'].forEach(id => $(id).value = '');
+        alert('✅ Изменения сохранены!');
+        hide($('adm-edit-form'));
+    } catch(e) { console.error(e); alert('❌ Ошибка: '+e.message); }
+};
+
+window.admDeleteProduct = async () => {
+    const pid = $('adm-delete-id').value.trim();
+    if (!pid) { alert('Введите ID'); return; }
+    if (!confirm('Удалить этот товар? Он переместится в архив.')) return;
+    try {
+        await updateDoc(doc(db, 'artifacts/byrmalda-prod/public/data/products', pid), { deleted: true, published: false });
+        alert('✅ Товар удален и перемещен в архив');
+        $('adm-delete-id').value = '';
     } catch(e) { console.error(e); alert('❌ Ошибка: '+e.message); }
 };
 
@@ -1503,7 +1664,6 @@ window.admFindOrder = async () => {
 };
 window.admSetOrderStatus = async (oid, st) => { await updateDoc(doc(db, 'artifacts/byrmalda-prod/public/data/orders', oid), { status: st, updatedAt: serverTimestamp() }); alert(`✅ Статус изменён на «${st}»`); admFindOrder(); };
 
-// ===== SUGGEST PRODUCT =====
 window.openSuggest = () => { if (!user) openModal('login-modal'); else openModal('suggest-modal'); };
 window.submitSuggestion = async () => {
     const name = $('sug-name').value.trim(), cat = $('sug-cat').value, type = $('sug-type').value.trim(), price = parseFloat($('sug-price').value);
@@ -1526,45 +1686,37 @@ window.submitSuggestion = async () => {
     loadPendingSuggestions();
 };
 
-// ===== AUTO UPDATE ORDERS =====
 async function autoUpdateOrders() {
     if (user?.email !== ADMIN_EMAIL) return;
     try {
         const now = Date.now();
-        const snap = await getDocs(query(collection(db, 'artifacts/byrmalda-prod/public/data/orders'), where('status','==','Создан')));
-        snap.forEach(async d => {
-            const o = d.data(); const created = o.createdAt?.toDate?.().getTime();
-            if (created && now - created > 4*24*60*60*1000) { // 4 days
-                await updateDoc(doc(db, 'artifacts/byrmalda-prod/public/data/orders', d.id), { status: 'Передача товара в доставку', updatedAt: serverTimestamp() });
-            }
+        const created = await getDocs(query(collection(db, 'artifacts/byrmalda-prod/public/data/orders'), where('status','==','Создан')));
+        created.forEach(async d => {
+            const o = d.data(); const t = o.createdAt?.toDate?.().getTime();
+            if (t && now - t > 4*24*60*60*1000) await updateDoc(doc(db, 'artifacts/byrmalda-prod/public/data/orders', d.id), { status: 'Передача товара в доставку', updatedAt: serverTimestamp() });
         });
         const shipping = await getDocs(query(collection(db, 'artifacts/byrmalda-prod/public/data/orders'), where('status','==','Передача товара в доставку')));
         shipping.forEach(async d => {
-            const o = d.data(); const updated = o.updatedAt?.toDate?.().getTime();
-            if (updated && now - updated > 15*60*60*1000) { // 15 hours
-                await updateDoc(doc(db, 'artifacts/byrmalda-prod/public/data/orders', d.id), { status: 'В пути', updatedAt: serverTimestamp() });
-            }
+            const o = d.data(); const t = o.updatedAt?.toDate?.().getTime();
+            if (t && now - t > 15*60*60*1000) await updateDoc(doc(db, 'artifacts/byrmalda-prod/public/data/orders', d.id), { status: 'В пути', updatedAt: serverTimestamp() });
         });
     } catch(e) { console.error('autoUpdate:', e); }
 }
 
-// ===== EVENT LISTENERS =====
 function setupListeners() {
-    // Close modals on Escape
     document.addEventListener('keydown', e => { if (e.key === 'Escape') document.querySelectorAll('.modal.active').forEach(m => m.classList.remove('active')); });
 }
 
-// ===== EXPOSE GLOBALS =====
 Object.assign(window, {
     navigate, openModal, closeModal, openLogin, switchReg, doLogin, regStep1, regStep2, regStep3, doLogout,
     openAvatarModal, submitAvatar, filterType, handleSearch, openProd, setGal, galNav, addToCart, updCart, delCart, checkout, confirmCheckout,
     cancelOrder, sendMsg, toggleTheme, toggleLang, openReviewModal, setRating, submitReview, openReport, submitReport, showSizeChart,
-    admCreateProduct, admBlockUser, admUnblockUser, admFindOrder, admSetOrderStatus,
-    admApproveReview, admRejectReview, admApproveAvatar, admRejectAvatar, admApproveSuggestion, admRejectSuggestion, admEditSuggestion,
-    openSuggest, submitSuggestion
+    admCreateProduct, admLoadProduct, admSaveProduct, admDeleteProduct, admBlockUser, admUnblockUser, admFindOrder, admSetOrderStatus,
+    admApproveReview, admRejectReview, admDeleteReview, admApproveAvatar, admRejectAvatar, admApproveSuggestion, admRejectSuggestion, admEditSuggestion,
+    admMarkReportViewed, openSuggest, submitSuggestion, toggleCollabInput
 });
 
-console.log('🚀 BYRMALDA loaded | Firebase:', firebaseConfig.projectId);
+console.log('🚀 BYRMALDA loaded');
 </script>
 </body>
 </html>
