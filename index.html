@@ -378,6 +378,9 @@
             font-size: 9px; opacity: 0.75; margin-top: 4px;
             text-transform: uppercase; letter-spacing: 0.3px;
         }
+        .msg-target {
+            font-size: 9px; color: #2563eb; margin-left: 6px; font-weight: 500;
+        }
         .chat-input-wrap {
             padding: 14px 18px; border-top: 1px solid var(--border);
             display: flex; gap: 10px;
@@ -393,6 +396,9 @@
             cursor: pointer; transition: opacity 0.2s; display: flex; align-items: center; justify-content: center;
         }
         .chat-send:hover { opacity: 0.9; }
+        .chat-hint {
+            font-size: 11px; color: var(--text-dim); margin-top: 8px; text-align: center;
+        }
         
         .admin-section {
             background: var(--bg-soft); border-radius: var(--radius);
@@ -633,6 +639,7 @@
                     <input type="text" class="chat-input" id="chat-input" placeholder="Напишите сообщение..." onkeypress="if(event.key==='Enter')sendMsg()">
                     <button class="chat-send" onclick="sendMsg()">➤</button>
                 </div>
+                <div class="chat-hint" id="chat-hint"></div>
             </div>
         </section>
 
@@ -1094,7 +1101,7 @@ window.navigate = page => {
     if (page === 'reviews') loadPublicReviews();
     if (page === 'admin' && user?.email === ADMIN_EMAIL) loadAdminPanels();
     if (window.innerWidth <= 1024) $('sidebar').classList.remove('expanded');
-    if (page === 'support') { chatUnread = 0; updateSupportBadge(); }
+    if (page === 'support') { chatUnread = 0; updateSupportBadge(); loadChat(); }
 };
 
 window.openModal = id => $(id).classList.add('active');
@@ -1177,13 +1184,10 @@ window.openProd = async id => {
         $('p-id').textContent = `ID: ${curProd.productId || id}`;
         $('p-name').textContent = curProd.name;
         
-        // Parse colors and sizes from product data
         const colors = (curProd.color || 'Белый').split(',').map(c => c.trim()).filter(c => c);
         const sizes = (curProd.sizes || 'S,M,L,XL').split(',').map(s => s.trim()).filter(s => s);
         
-        // Fill color dropdown or show static
         const colorGroup = $('opt-color-group');
-        const colorSelect = $('p-color');
         if (colors.length === 1) {
             colorGroup.innerHTML = `<label class="form-label">Цвет</label><div class="opt-static">${colors[0]}</div>`;
         } else {
@@ -1191,9 +1195,7 @@ window.openProd = async id => {
             $('p-color').innerHTML = colors.map(c => `<option>${c}</option>`).join('');
         }
         
-        // Fill size dropdown or show static
         const sizeGroup = $('opt-size-group');
-        const sizeSelect = $('p-size');
         if (sizes.length === 1) {
             sizeGroup.innerHTML = `<label class="form-label">Размер</label><div class="opt-static">${sizes[0]}</div>`;
         } else {
@@ -1223,20 +1225,18 @@ window.openProd = async id => {
             btn.disabled = true;
             hide(opts);
         } else if (curProd.stock > 0) {
-            // IN STOCK - regular order, not preorder
             delNotice.classList.add('hidden');
             stockEl.innerHTML = '<span class="in-stock">✓ В наличии</span>';
             btn.textContent = 'Купить';
             btn.disabled = false;
-            btn.onclick = () => addToCart(false); // false = not preorder
+            btn.onclick = () => addToCart(false);
             show(opts);
         } else {
-            // OUT OF STOCK - preorder only
             delNotice.classList.add('hidden');
             stockEl.innerHTML = '<span class="out-stock">✗ Нет в наличии (Предзаказ)</span>';
             btn.textContent = 'Предзаказ';
             btn.disabled = false;
-            btn.onclick = () => addToCart(true); // true = preorder
+            btn.onclick = () => addToCart(true);
             hide(opts);
         }
         galIdx = 0; updateGal();
@@ -1255,14 +1255,11 @@ window.galNav = d => { if (!curProd) return; const len = curProd.images?.length|
 
 window.addToCart = (isPreorder=false) => {
     if (!user) { openModal('login-modal'); return; }
-    
-    // Get selected size/color (handle static or select)
     let size = 'M', color = 'Белый';
     const sizeEl = $('p-size');
     const colorEl = $('p-color');
     if (sizeEl && sizeEl.tagName === 'SELECT') size = sizeEl.value;
     else if (sizeEl?.closest('.opt-group')?.querySelector('.opt-static')) size = sizeEl.closest('.opt-group').querySelector('.opt-static').textContent;
-    
     if (colorEl && colorEl.tagName === 'SELECT') color = colorEl.value;
     else if (colorEl?.closest('.opt-group')?.querySelector('.opt-static')) color = colorEl.closest('.opt-group').querySelector('.opt-static').textContent;
     
@@ -1308,41 +1305,22 @@ window.confirmCheckout = async () => {
     closeModal('checkout-modal');
     const oid = 'ORD-'+genId();
     const total = parseFloat($('cart-total').textContent.replace('$',''));
-    
-    // Create order with full details
     const order = {
-        id: oid,
-        userId: user.uid,
-        items: cart.map(it => ({...it})), // clone items
-        total: total,
-        status: 'Ожидает оплату',
-        tracking: 'TRK-'+genId(),
-        adminChangedStatus: false, // flag for auto-update logic
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp()
+        id: oid, userId: user.uid, items: cart.map(it => ({...it})), total,
+        status: 'Ожидает оплату', tracking: 'TRK-'+genId(),
+        adminChangedStatus: false, createdAt: serverTimestamp(), updatedAt: serverTimestamp()
     };
-    
     await setDoc(doc(db, 'artifacts/byrmalda-prod/public/data/orders', oid), order);
-    
-    // Decrease stock for in-stock items (not preorders)
     for (const it of cart) {
         if (!it.isPreorder) {
             const pd = await getDoc(doc(db, 'artifacts/byrmalda-prod/public/data/products', it.pid));
             if (pd.exists()) {
                 const d = pd.data();
-                await updateDoc(doc(db, 'artifacts/byrmalda-prod/public/data/products', it.pid), {
-                    stock: Math.max(0, (d.stock||0) - it.qty)
-                });
+                await updateDoc(doc(db, 'artifacts/byrmalda-prod/public/data/products', it.pid), { stock: Math.max(0, (d.stock||0) - it.qty) });
             }
         }
     }
-    
-    // Clear cart and reload
-    cart = [];
-    localStorage.removeItem('byrmalda_cart');
-    loadCartCount();
-    loadOrders(); // Reload profile orders
-    
+    cart = []; localStorage.removeItem('byrmalda_cart'); loadCartCount(); loadOrders();
     alert(`✅ Заказ #${oid} создан!\nСтатус: «Ожидает оплату»\nТрекинг: ${order.tracking}\n\nНапишите @fueum для подтверждения оплаты.`);
     navigate('profile');
 };
@@ -1353,87 +1331,193 @@ async function loadOrders() {
     try {
         const snap = await getDocs(query(collection(db, 'artifacts/byrmalda-prod/public/data/orders'), where('userId','==',user.uid), orderBy('createdAt','desc'), limit(50)));
         if (snap.empty) { c.innerHTML = '<div class="text-center" style="padding:32px;color:var(--text-dim)">Заказов пока нет</div>'; return; }
-        
         c.innerHTML = snap.docs.map(d => {
-            const o = d.data();
-            const st = o.status || 'Ожидает оплату';
-            const cls = {
-                'Ожидает оплату':'st-awaiting', 'Создан':'st-created',
-                'Передача товара в доставку':'st-shipping', 'В пути':'st-transit',
-                'Доставлен':'st-delivered', 'Отменён':'st-cancelled'
-            }[st] || 'st-awaiting';
+            const o = d.data(); const st = o.status || 'Ожидает оплату';
+            const cls = { 'Ожидает оплату':'st-awaiting', 'Создан':'st-created', 'Передача товара в доставку':'st-shipping', 'В пути':'st-transit', 'Доставлен':'st-delivered', 'Отменён':'st-cancelled' }[st] || 'st-awaiting';
             const canCancel = st === 'Создан';
             const firstItem = o.items?.[0] || {};
-            
             return `<div class="order-card" onclick="openProd('${firstItem.pid}')">
                 <div class="order-img">${firstItem.img?`<img src="${firstItem.img}" style="width:100%;height:100%;object-fit:cover">`:'📦'}</div>
                 <div class="order-info">
                     <div class="order-name">${firstItem.name||'Товар'}</div>
                     <span class="order-status ${cls}">${st}</span>
-                    <div class="order-meta">
-                        <div>Заказ: #${o.id}</div>
-                        <div>Трекинг: ${o.tracking||'-'}</div>
-                        <div>Сумма: $${o.total?.toFixed(2)||'0.00'}</div>
-                        <div>Дата: ${fmtDate(o.createdAt)}</div>
-                    </div>
+                    <div class="order-meta"><div>Заказ: #${o.id}</div><div>Трекинг: ${o.tracking||'-'}</div><div>Сумма: $${o.total?.toFixed(2)||'0.00'}</div><div>Дата: ${fmtDate(o.createdAt)}</div></div>
                 </div>
-                <div class="order-actions">
-                    <button class="btn-cancel" ${!canCancel?'disabled':''} title="${canCancel?'Отменить заказ':'Нельзя отменить на этом этапе'}" onclick="event.stopPropagation();cancelOrder('${o.id}','${st}')">×</button>
-                </div>
+                <div class="order-actions"><button class="btn-cancel" ${!canCancel?'disabled':''} title="${canCancel?'Отменить заказ':'Нельзя отменить на этом этапе'}" onclick="event.stopPropagation();cancelOrder('${o.id}','${st}')">×</button></div>
             </div>`;
         }).join('');
     } catch(e) { console.error(e); c.innerHTML = '<div class="text-center" style="padding:24px;color:var(--error)">Ошибка загрузки</div>'; }
 }
-
 window.cancelOrder = async (oid, st) => {
     if (st !== 'Создан') { alert('❌ Нельзя отменить заказ на этом этапе'); return; }
     if (!confirm('Отменить этот заказ?')) return;
     try {
-        await updateDoc(doc(db, 'artifacts/byrmalda-prod/public/data/orders', oid), {
-            status: 'Отменён', updatedAt: serverTimestamp()
-        });
+        await updateDoc(doc(db, 'artifacts/byrmalda-prod/public/data/orders', oid), { status: 'Отменён', updatedAt: serverTimestamp() });
         alert('✅ Заказ отменён'); loadOrders();
     } catch(e) { console.error(e); alert('❌ Ошибка'); }
 };
 
+// ==================== ЧАТ ПОДДЕРЖКИ - ИСПРАВЛЕННАЯ ЛОГИКА ====================
+
+// Загрузка чата с правильной фильтрацией
 async function loadChat() {
     if (!user) return;
-    const c = $('chat-msgs'); c.innerHTML = '';
+    const c = $('chat-msgs');
+    c.innerHTML = '<div class="text-center" style="padding:24px"><div class="loading"></div></div>';
+    
     try {
-        const q = query(collection(db, 'artifacts/byrmalda-prod/public/data/support'), orderBy('ts','asc'), limit(100));
+        const isAdmin = user.email === ADMIN_EMAIL;
+        const currentUserUid = user.uid;
+        
+        // Загружаем все сообщения
+        const q = query(collection(db, 'artifacts/byrmalda-prod/public/data/support'), orderBy('ts','asc'), limit(200));
         const snap = await getDocs(q);
-        snap.forEach(d => addMsgToUI(d.data()));
+        
+        c.innerHTML = '';
+        let visibleCount = 0;
+        
+        snap.forEach(d => {
+            const m = d.data();
+            let shouldShow = false;
+            
+            if (isAdmin) {
+                // Админ видит ВСЕ сообщения от ВСЕХ пользователей
+                shouldShow = true;
+            } else {
+                // Обычный пользователь видит:
+                // 1. Свои собственные сообщения
+                if (m.uid === currentUserUid) {
+                    shouldShow = true;
+                }
+                // 2. Ответы админа, адресованные ЕМУ (replyTo === его UID)
+                else if (m.isAdmin && m.replyTo === currentUserUid) {
+                    shouldShow = true;
+                }
+                // 3. Широковещательные сообщения админа (без replyTo)
+                else if (m.isAdmin && !m.replyTo) {
+                    shouldShow = true;
+                }
+                // Остальные сообщения админа (для других UID) — НЕ показывать
+            }
+            
+            if (shouldShow) {
+                addMsgToUI(m);
+                visibleCount++;
+            }
+        });
+        
+        if (visibleCount === 0 && !isAdmin) {
+            c.innerHTML = '<div class="text-center" style="padding:32px;color:var(--text-dim)">Нет сообщений. Напишите вопрос, и администратор ответит вам.</div>';
+        } else if (visibleCount === 0 && isAdmin) {
+            c.innerHTML = '<div class="text-center" style="padding:32px;color:var(--text-dim)">Пока нет сообщений от пользователей</div>';
+        }
+        
         c.scrollTop = c.scrollHeight;
-    } catch(e) { console.error(e); }
+    } catch(e) { 
+        console.error('loadChat:', e); 
+        c.innerHTML = '<div class="text-center" style="padding:24px;color:var(--error)">Ошибка загрузки чата</div>'; 
+    }
 }
 
+// Отображение сообщения в чате
 function addMsgToUI(m) {
-    const isUser = m.uid === user?.uid, isAdmin = m.isAdmin;
+    const isUser = m.uid === user?.uid;
+    const isAdmin = m.isAdmin;
     const el = document.createElement('div');
-    el.className = `msg ${isUser?'user':'admin'}`;
-    // Show full UID for admin to reply
-    const uidDisplay = !isUser && !isAdmin && m.uid ? ` • UID: ${m.uid}` : '';
-    el.innerHTML = `${m.text}<div class="msg-meta">${isAdmin?'Админ':(m.name||'Пользователь')} • ${m.ts?.toDate?.().toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})||''}${uidDisplay}</div>`;
+    
+    // Определяем класс сообщения для стилей
+    if (isAdmin) {
+        el.className = 'msg admin';
+    } else if (isUser) {
+        el.className = 'msg user';
+    } else {
+        el.className = 'msg admin'; // чужие сообщения от админа (если вдруг)
+    }
+    
+    // Формируем мета-информацию
+    let meta = '';
+    if (isAdmin) {
+        meta = 'Администратор';
+        // Если это ответ конкретному пользователю, показываем кому
+        if (m.replyTo) {
+            meta += `<span class="msg-target">→ @${m.replyTo.substring(0,8)}...</span>`;
+        }
+    } else {
+        meta = m.name || 'Пользователь';
+        // Для админа показываем полный UID отправителя
+        if (user.email === ADMIN_EMAIL && m.uid) {
+            meta += ` <span style="color:var(--text-dim)">[UID: ${m.uid}]</span>`;
+        }
+    }
+    
+    const time = m.ts?.toDate?.()?.toLocaleTimeString('ru-RU', {hour:'2-digit', minute:'2-digit'}) || '';
+    
+    el.innerHTML = `
+        ${m.text}
+        <div class="msg-meta">${meta} • ${time}</div>
+    `;
+    
     $('chat-msgs').appendChild(el);
     $('chat-msgs').scrollTop = $('chat-msgs').scrollHeight;
-    if (!document.getElementById('support').classList.contains('active') && !isUser) { chatUnread++; updateSupportBadge(); }
+    
+    // Уведомление о новых сообщениях (если не в чате)
+    if (!document.getElementById('support').classList.contains('active') && !isUser) {
+        chatUnread++;
+        updateSupportBadge();
+    }
 }
 
-function updateSupportBadge() { $('support-badge').textContent = chatUnread; $('nav-support').classList.toggle('has-badge', chatUnread>0); }
-
+// Отправка сообщения
 window.sendMsg = async () => {
-    const txt = $('chat-input').value.trim(); if (!txt || !user) return;
+    const txt = $('chat-input').value.trim();
+    if (!txt || !user) return;
+    
+    const isAdmin = user.email === ADMIN_EMAIL;
+    let replyTo = null;
+    let displayText = txt;
+    
+    // Если админ и сообщение начинается с @UID, извлекаем UID получателя
+    if (isAdmin) {
+        const match = txt.match(/^@([A-Za-z0-9_-]+)\s+(.+)/);
+        if (match) {
+            replyTo = match[1];
+            displayText = match[2];
+        }
+    }
+    
     const msg = {
         uid: user.uid,
         name: userData?.name || user.email.split('@')[0],
-        text: txt,
+        text: displayText,
+        rawText: txt, // сохраняем оригинал для отладки
+        replyTo: replyTo, // только если админ ответил конкретному пользователю
         ts: serverTimestamp(),
-        isAdmin: user.email === ADMIN_EMAIL
+        isAdmin: isAdmin
     };
-    await addDoc(collection(db, 'artifacts/byrmalda-prod/public/data/support'), msg);
-    $('chat-input').value = '';
-    addMsgToUI({ ...msg, ts: new Date() });
+    
+    try {
+        await addDoc(collection(db, 'artifacts/byrmalda-prod/public/data/support'), msg);
+        $('chat-input').value = '';
+        // Добавляем локально для мгновенного отображения
+        addMsgToUI({ ...msg, ts: new Date() });
+        
+        // Если админ отправил ответ конкретному пользователю, показываем подсказку
+        if (isAdmin && replyTo) {
+            alert(`✅ Ответ отправлен пользователю @${replyTo.substring(0,8)}...`);
+        }
+    } catch(e) {
+        console.error('sendMsg:', e);
+        alert('❌ Ошибка отправки: ' + e.message);
+    }
 };
+
+// Обновление бейджа уведомлений
+function updateSupportBadge() { 
+    $('support-badge').textContent = chatUnread; 
+    $('nav-support').classList.toggle('has-badge', chatUnread > 0); 
+}
+
+// ==================== ОСТАЛЬНЫЕ ФУНКЦИИ ====================
 
 window.toggleTheme = () => { theme = theme==='light'?'dark':'light'; localStorage.setItem('theme',theme); applyTheme(); };
 function applyTheme() { document.documentElement.setAttribute('data-theme',theme); $('theme-ind').textContent = theme==='dark'?'🌙':'☀️'; }
@@ -1736,7 +1820,6 @@ window.admFindOrder = async () => {
     const oid = $('adm-oid').value.trim(); if (!oid) { alert('Введите ID или трек-номер'); return; }
     const res = $('adm-order-res'); res.classList.remove('hidden');
     try {
-        // Try find by order ID first, then by tracking
         let snap = await getDoc(doc(db, 'artifacts/byrmalda-prod/public/data/orders', oid));
         if (!snap.exists()) {
             const q = query(collection(db, 'artifacts/byrmalda-prod/public/data/orders'), where('tracking','==',oid));
@@ -1749,10 +1832,7 @@ window.admFindOrder = async () => {
         const itemsHtml = o.items?.map(i => `
             <div style="display:flex;gap:10px;margin:8px 0;padding:8px;background:var(--bg-soft);border-radius:4px">
                 <img src="${i.img||'https://via.placeholder.com/50/f5f5f5/111?text=📦'}" style="width:50px;height:50px;object-fit:cover;border-radius:4px">
-                <div>
-                    <div style="font-weight:500">${i.name}</div>
-                    <div style="font-size:11px;color:var(--text-dim)">Размер: ${i.size} • Цвет: ${i.color} • ${i.qty} шт</div>
-                </div>
+                <div><div style="font-weight:500">${i.name}</div><div style="font-size:11px;color:var(--text-dim)">Размер: ${i.size} • Цвет: ${i.color} • ${i.qty} шт</div></div>
             </div>
         `).join('') || '-';
         
@@ -1765,12 +1845,8 @@ window.admFindOrder = async () => {
                     <button class="btn btn-success btn-sm" style="margin-right:8px" onclick="admSetOrderStatus('${o.id}','Создан')">Да</button>
                     <button class="btn btn-outline btn-sm" onclick="alert('⏳ Ожидание оплаты от покупателя...')">Нет</button>
                 </div>
-                <div style="margin:12px 0"><strong>Товары:</strong></div>
-                ${itemsHtml}
-                <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">
-                    <strong>Итого:</strong> $${o.total?.toFixed(2)||'0.00'}<br>
-                    <span style="font-size:12px;color:var(--text-dim)">Создан: ${fmtDate(o.createdAt)}</span>
-                </div>
+                <div style="margin:12px 0"><strong>Товары:</strong></div>${itemsHtml}
+                <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border)"><strong>Итого:</strong> $${o.total?.toFixed(2)||'0.00'}<br><span style="font-size:12px;color:var(--text-dim)">Создан: ${fmtDate(o.createdAt)}</span></div>
                 <div style="margin-top:12px">
                     <label style="font-size:11px;color:var(--text-dim);display:block;margin-bottom:4px">Изменить статус:</label>
                     <div style="display:flex;gap:8px;flex-wrap:wrap">
@@ -1789,13 +1865,10 @@ window.admFindOrder = async () => {
 window.admSetOrderStatus = async (oid, newStatus) => {
     try {
         await updateDoc(doc(db, 'artifacts/byrmalda-prod/public/data/orders', oid), {
-            status: newStatus,
-            updatedAt: serverTimestamp(),
-            adminChangedStatus: true // Mark that admin manually changed it
+            status: newStatus, updatedAt: serverTimestamp(), adminChangedStatus: true
         });
         alert(`✅ Статус изменён на «${newStatus}»`);
-        admFindOrder(); // Refresh view
-        loadOrders(); // Refresh user's order list if on profile
+        admFindOrder(); loadOrders();
     } catch(e) { console.error(e); alert('❌ Ошибка: '+e.message); }
 };
 
@@ -1817,41 +1890,27 @@ window.submitSuggestion = async () => {
         desc: $('sug-desc').value, status: 'pending', ts: serverTimestamp()
     });
     alert('✅ Предложение отправлено на модерацию!');
-    closeModal('suggest-modal');
-    loadPendingSuggestions();
+    closeModal('suggest-modal'); loadPendingSuggestions();
 };
 
 async function autoUpdateOrders() {
     if (user?.email !== ADMIN_EMAIL) return;
     try {
         const now = Date.now();
-        
-        // Update "Создан" → "Передача товара в доставку" after 1-4 days (if admin hasn't changed)
         const created = await getDocs(query(collection(db, 'artifacts/byrmalda-prod/public/data/orders'), where('status','==','Создан')));
         created.forEach(async d => {
-            const o = d.data();
-            // Skip if admin manually changed status
-            if (o.adminChangedStatus) return;
+            const o = d.data(); if (o.adminChangedStatus) return;
             const t = o.createdAt?.toDate?.().getTime();
-            if (t && now - t > 4*24*60*60*1000) { // 4 days
-                await updateDoc(doc(db, 'artifacts/byrmalda-prod/public/data/orders', d.id), {
-                    status: 'Передача товара в доставку',
-                    updatedAt: serverTimestamp()
-                });
+            if (t && now - t > 4*24*60*60*1000) {
+                await updateDoc(doc(db, 'artifacts/byrmalda-prod/public/data/orders', d.id), { status: 'Передача товара в доставку', updatedAt: serverTimestamp() });
             }
         });
-        
-        // Update "Передача товара в доставку" → "В пути" after 12-15 hours (if admin hasn't changed)
         const shipping = await getDocs(query(collection(db, 'artifacts/byrmalda-prod/public/data/orders'), where('status','==','Передача товара в доставку')));
         shipping.forEach(async d => {
-            const o = d.data();
-            if (o.adminChangedStatus) return;
+            const o = d.data(); if (o.adminChangedStatus) return;
             const t = o.updatedAt?.toDate?.().getTime();
-            if (t && now - t > 15*60*60*1000) { // 15 hours
-                await updateDoc(doc(db, 'artifacts/byrmalda-prod/public/data/orders', d.id), {
-                    status: 'В пути',
-                    updatedAt: serverTimestamp()
-                });
+            if (t && now - t > 15*60*60*1000) {
+                await updateDoc(doc(db, 'artifacts/byrmalda-prod/public/data/orders', d.id), { status: 'В пути', updatedAt: serverTimestamp() });
             }
         });
     } catch(e) { console.error('autoUpdate:', e); }
@@ -1870,7 +1929,7 @@ Object.assign(window, {
     admMarkReportViewed, openSuggest, submitSuggestion, toggleCollabInput
 });
 
-console.log('🚀 BYRMALDA loaded');
+console.log('🚀 BYRMALDA loaded | Chat logic: FIXED');
 </script>
 </body>
 </html>
