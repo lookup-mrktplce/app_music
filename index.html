@@ -4,6 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BYRMALDA | Premium Fashion</title>
+    
+    <!-- 🔐 Content Security Policy (CSP) - защита от XSS -->
+    <meta http-equiv="Content-Security-Policy" 
+          content="default-src 'self'; 
+                   script-src 'self' 'unsafe-inline' https://www.gstatic.com https://apis.google.com https://www.google.com; 
+                   style-src 'self' 'unsafe-inline'; 
+                   img-src 'self' https: data: blob:; 
+                   connect-src 'self' https://*.googleapis.com https://*.firebaseio.com https://api.imgbb.com https://www.google.com;
+                   frame-src https://www.google.com;">
+    
+    <!-- 🔐 reCAPTCHA v3 для Firebase App Check -->
+    <script src="https://www.google.com/recaptcha/api.js?render=6LchEOwsAAAAAPqAkyDyf2wFoucWytU6ThkQKoGB"></script>
+    
     <style>
         :root {
             --bg: #ffffff; --bg-soft: #f9f9f9; --text: #111111; --text-dim: #666666;
@@ -900,10 +913,13 @@
 </div>
 
 <script type="module">
+// 🔐 БЕЗОПАСНОСТЬ: Импорт модулей безопасности
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification, onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 import { getFirestore, collection, doc, setDoc, getDoc, getDocs, query, where, orderBy, limit, updateDoc, deleteDoc, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-storage.js";
+// 🔐 Firebase App Check для защиты от ботов и несанкционированного доступа
+import { initializeAppCheck, ReCaptchaV3Provider, getToken } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app-check.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyD0YkXZgk8gh01Y7XH3ZRVU5lCjGJ_IRCw",
@@ -914,7 +930,21 @@ const firebaseConfig = {
     appId: "1:969880048160:web:9001a95f7ea28e98912245",
     measurementId: "G-HCQEFD2SJF"
 };
+
+// Инициализация Firebase
 const app = initializeApp(firebaseConfig);
+
+// 🔐 ИНИЦИАЛИЗАЦИЯ FIREBASE APP CHECK (защита от ботов и кражи ключей)
+const appCheck = initializeAppCheck(app, {
+    provider: new ReCaptchaV3Provider("6LchEOwsAAAAAPqAkyDyf2wFoucWytU6ThkQKoGB"),
+    isTokenAutoRefreshEnabled: true
+});
+
+// 🔐 Проверка токена для отладки (можно удалить в продакшене)
+getToken(appCheck, true)
+    .then(() => console.log('🔐 App Check: активирован и готов к работе'))
+    .catch(err => console.error('🔐 App Check ошибка:', err.message));
+
 const auth = getAuth(app);
 const db = getFirestore(app);
 const storage = getStorage(app);
@@ -922,21 +952,89 @@ const IMGBB_KEY = "eeef3479094c5cf6bf42607927565065";
 const ADMIN_EMAIL = "sobakastalina123@gmail.com";
 const RATES = { USD_TO_RUB: 90, USD_TO_UAH: 37 };
 
-let user = null, userData = null, cart = JSON.parse(localStorage.getItem('byrmalda_cart')) || [], curProd = null, galIdx = 0, chatUnread = 0, lang = 'ru', theme = localStorage.getItem('theme') || 'light', revStars = 0, hasSubmittedReview = false;
+// 🔐 Глобальные переменные состояния
+let user = null, userData = null, cart = JSON.parse(localStorage.getItem('byrmalda_cart')) || [], 
+    curProd = null, galIdx = 0, chatUnread = 0, lang = 'ru', 
+    theme = localStorage.getItem('theme') || 'light', 
+    revStars = 0, hasSubmittedReview = false;
 
+// 🔐 Утилиты безопасности
 const $ = id => document.getElementById(id);
 const show = el => el.classList.remove('hidden');
 const hide = el => el.classList.add('hidden');
 const fmtDate = ts => ts?.toDate?.()?.toLocaleDateString('ru-RU') || '...';
 const genId = () => Math.random().toString(36).substring(2, 10).toUpperCase();
 
+// 🔐 Валидация входных данных (защита от инъекций)
+function sanitizeInput(str) {
+    if (typeof str !== 'string') return str;
+    return str.replace(/[<>\"'&]/g, char => ({
+        '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;', '&': '&amp;'
+    })[char]);
+}
+
+function validateEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function validatePrice(price) {
+    return typeof price === 'number' && price >= 0 && price <= 100000;
+}
+
+function validateStock(stock) {
+    return Number.isInteger(stock) && stock >= 0 && stock <= 10000;
+}
+
+// 🔐 Аудит-логирование важных действий
+async function logSecurityEvent(action, details = {}) {
+    try {
+        await addDoc(collection(db, 'artifacts/byrmalda-prod/security_logs'), {
+            action,
+            details,
+            userId: user?.uid || null,
+            email: user?.email || null,
+            timestamp: serverTimestamp(),
+            userAgent: navigator.userAgent.substring(0, 200)
+        });
+    } catch(e) {
+        // Не прерываем работу при ошибке логирования
+        console.warn('Security log failed:', e);
+    }
+}
+
+// 🔐 Rate limiting на фронтенде (базовая защита от спама)
+const rateLimit = {
+    counters: {},
+    check(key, maxRequests = 10, windowMs = 60000) {
+        const now = Date.now();
+        const record = this.counters[key] || { count: 0, resetAt: now + windowMs };
+        
+        if (now > record.resetAt) {
+            this.counters[key] = { count: 1, resetAt: now + windowMs };
+            return true;
+        }
+        
+        if (record.count >= maxRequests) return false;
+        
+        record.count++;
+        return true;
+    }
+};
+
+// ==================== ИНИЦИАЛИЗАЦИЯ ПРИЛОЖЕНИЯ ====================
+
 window.addEventListener('DOMContentLoaded', async () => {
     applyTheme();
+    
     onAuthStateChanged(auth, async u => {
         if (u) {
             user = u;
             await loadUser();
             updateAuthUI();
+            
+            // 🔐 Логирование входа
+            await logSecurityEvent('user_login', { email: u.email });
+            
             if (u.email === ADMIN_EMAIL) {
                 $('nav-admin').classList.remove('hidden');
                 $('nav-suggest').classList.add('hidden');
@@ -953,11 +1051,14 @@ window.addEventListener('DOMContentLoaded', async () => {
             resetAuthUI();
         }
     });
+    
     loadCartCount();
     genCatalog();
     setupListeners();
     setInterval(autoUpdateOrders, 300000);
 });
+
+// ==================== ПОЛЬЗОВАТЕЛЬ ====================
 
 async function loadUser() {
     if (!user) return;
@@ -965,7 +1066,10 @@ async function loadUser() {
         const snap = await getDoc(doc(db, 'artifacts/byrmalda-prod/users', user.uid));
         userData = snap.exists() ? snap.data() : await createUserDoc();
         renderProfile();
-    } catch(e) { console.error('loadUser:',e); }
+    } catch(e) { 
+        console.error('loadUser:', e);
+        await logSecurityEvent('load_user_error', { error: e.message });
+    }
 }
 
 async function createUserDoc() {
@@ -981,20 +1085,23 @@ async function createUserDoc() {
 
 function renderProfile() {
     if (!userData) return;
-    $('profile-name').textContent = userData.name || 'Пользователь';
+    $('profile-name').textContent = sanitizeInput(userData.name) || 'Пользователь';
     $('profile-id').textContent = user.uid.substring(0,10)+'...';
-    $('profile-email').textContent = user.email;
+    $('profile-email').textContent = sanitizeInput(user.email);
     $('profile-date').textContent = fmtDate(userData.registrationDate);
     if (userData.avatar) {
-        $('avatar-display').innerHTML = `<img src="${userData.avatar}" style="width:100%;height:100%;object-fit:cover">`;
+        // 🔐 Валидация URL аватарки
+        if (userData.avatar.startsWith('https://')) {
+            $('avatar-display').innerHTML = `<img src="${sanitizeInput(userData.avatar)}" style="width:100%;height:100%;object-fit:cover">`;
+        }
     }
-    if (userData.hasVerifiedProduct) $('profile-name').innerHTML = `<span class="verified">✓</span> ${userData.name}`;
+    if (userData.hasVerifiedProduct) $('profile-name').innerHTML = `<span class="verified">✓</span> ${sanitizeInput(userData.name)}`;
 }
 
 function updateAuthUI() {
     $('auth-btn').textContent = 'Выйти';
     $('auth-btn').onclick = doLogout;
-    $('user-email').textContent = user.email;
+    $('user-email').textContent = sanitizeInput(user.email);
 }
 
 function resetAuthUI() {
@@ -1008,33 +1115,77 @@ function resetAuthUI() {
     $('avatar-display').innerHTML = '👤';
 }
 
+// ==================== АВТОРИЗАЦИЯ ====================
+
 window.openLogin = () => openModal('login-modal');
 window.switchReg = () => { closeModal('login-modal'); openModal('reg-modal'); showStep(1); };
 
 window.doLogin = async () => {
-    const email = $('log-email').value.trim(), pass = $('log-pass').value;
+    const email = $('log-email').value.trim();
+    const pass = $('log-pass').value;
     $('log-err').textContent = '';
-    if (!email || !pass) { $('log-err').textContent = 'Заполните поля'; return; }
+    
+    // 🔐 Валидация ввода
+    if (!validateEmail(email)) {
+        $('log-err').textContent = 'Неверный формат email';
+        return;
+    }
+    if (!pass || pass.length < 6) {
+        $('log-err').textContent = 'Пароль слишком короткий';
+        return;
+    }
+    
+    // 🔐 Rate limit на попытки входа
+    if (!rateLimit.check(`login_${email}`, 5, 300000)) {
+        $('log-err').textContent = 'Слишком много попыток. Попробуйте позже.';
+        await logSecurityEvent('login_rate_limit', { email });
+        return;
+    }
+    
     try {
         const cred = await signInWithEmailAndPassword(auth, email, pass);
         const u = cred.user;
-        if (!u.emailVerified) { await signOut(auth); $('log-err').textContent = 'Подтвердите email. Проверьте почту.'; return; }
+        
+        if (!u.emailVerified) { 
+            await signOut(auth); 
+            $('log-err').textContent = 'Подтвердите email. Проверьте почту.'; 
+            return; 
+        }
+        
         const ud = await getDoc(doc(db, 'artifacts/byrmalda-prod/users', u.uid));
-        if (ud.exists() && ud.data().isBlocked) { await signOut(auth); showBlock(); return; }
+        if (ud.exists() && ud.data().isBlocked) { 
+            await signOut(auth); 
+            showBlock(); 
+            await logSecurityEvent('login_blocked', { email });
+            return; 
+        }
+        
+        await logSecurityEvent('login_success', { email });
         closeModal('login-modal');
     } catch(e) {
         console.error(e.code);
-        $('log-err').textContent = e.code === 'auth/user-not-found' || e.code === 'auth/wrong-password' ? 'Аккаунт не найден или неверный пароль' : 'Ошибка: '+e.message;
+        await logSecurityEvent('login_failed', { email, error: e.code });
+        $('log-err').textContent = e.code === 'auth/user-not-found' || e.code === 'auth/wrong-password' 
+            ? 'Аккаунт не найден или неверный пароль' 
+            : 'Ошибка: '+e.message;
     }
 };
 
 window.regStep1 = async () => {
     const email = $('reg-email').value.trim();
-    if (!email) { alert('Введите email'); return; }
+    if (!validateEmail(email)) { 
+        alert('Введите корректный email'); 
+        return; 
+    }
+    
     try {
         const methods = await auth.fetchSignInMethodsForEmail(email);
-        if (methods.length > 0) { $('reg-err').textContent = 'Email уже зарегистрирован'; return; }
+        if (methods.length > 0) { 
+            $('reg-err').textContent = 'Email уже зарегистрирован'; 
+            return; 
+        }
     } catch(e) {}
+    
     sessionStorage.setItem('pending_email', email);
     showStep(2);
 };
@@ -1042,25 +1193,46 @@ window.regStep1 = async () => {
 window.regStep2 = () => showStep(3);
 
 window.regStep3 = async () => {
-    const email = sessionStorage.getItem('pending_email'), name = $('reg-name').value.trim(), p1 = $('reg-pass').value, p2 = $('reg-pass2').value;
+    const email = sessionStorage.getItem('pending_email');
+    const name = sanitizeInput($('reg-name').value.trim());
+    const p1 = $('reg-pass').value;
+    const p2 = $('reg-pass2').value;
+    
     $('reg-err').textContent = '';
-    if (!name || !p1 || !p2) { $('reg-err').textContent = 'Заполните все поля'; return; }
-    if (p1 !== p2) { $('reg-err').textContent = 'Пароли не совпадают'; return; }
-    if (p1.length < 6) { $('reg-err').textContent = 'Пароль минимум 6 символов'; return; }
+    
+    // 🔐 Валидация данных регистрации
+    if (!name || name.length < 2 || name.length > 50) {
+        $('reg-err').textContent = 'Имя должно быть от 2 до 50 символов';
+        return;
+    }
+    if (!p1 || p1.length < 6) {
+        $('reg-err').textContent = 'Пароль минимум 6 символов';
+        return;
+    }
+    if (p1 !== p2) {
+        $('reg-err').textContent = 'Пароли не совпадают';
+        return;
+    }
+    
     try {
         const cred = await createUserWithEmailAndPassword(auth, email, p1);
         await sendEmailVerification(cred.user);
+        
         await setDoc(doc(db, 'artifacts/byrmalda-prod/users', cred.user.uid), {
             uid: cred.user.uid, email, name, avatar: null, avatarPending: null,
             registrationDate: serverTimestamp(), isBlocked: false, hasVerifiedProduct: false,
             language: 'ru', theme: 'light', hasSubmittedReview: false
         });
+        
         await updateProfile(cred.user, { displayName: name });
+        await logSecurityEvent('user_registered', { email, name });
+        
         $('reg-step-3').classList.add('hidden');
         $('reg-ok').classList.remove('hidden');
         await signOut(auth);
     } catch(e) {
         console.error(e.code);
+        await logSecurityEvent('registration_failed', { email, error: e.code });
         if (e.code === 'auth/email-already-in-use') $('reg-err').textContent = 'Email уже занят';
         else if (e.code === 'auth/invalid-email') $('reg-err').textContent = 'Неверный email';
         else if (e.code === 'auth/weak-password') $('reg-err').textContent = 'Слабый пароль';
@@ -1075,7 +1247,14 @@ function showStep(n) {
     $('reg-title').textContent = ['Регистрация','Подтверждение почты','Завершение'][n-1];
 }
 
-window.doLogout = async () => { await signOut(auth); cart = []; localStorage.removeItem('byrmalda_cart'); loadCartCount(); navigate('home'); };
+window.doLogout = async () => { 
+    await logSecurityEvent('user_logout', { email: user?.email });
+    await signOut(auth); 
+    cart = []; 
+    localStorage.removeItem('byrmalda_cart'); 
+    loadCartCount(); 
+    navigate('home'); 
+};
 
 function showBlock() {
     const m = document.createElement('div'); m.className = 'modal active';
@@ -1088,6 +1267,8 @@ function showBlock() {
     document.body.appendChild(m);
     m.onclick = e => { if (e.target === m) m.remove(); };
 }
+
+// ==================== НАВИГАЦИЯ ====================
 
 window.navigate = page => {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -1108,25 +1289,46 @@ window.openModal = id => $(id).classList.add('active');
 window.closeModal = id => $(id).classList.remove('active');
 document.querySelectorAll('.modal').forEach(m => m.onclick = e => { if (e.target === m) m.classList.remove('active'); });
 
+// ==================== АВАТАРКА ====================
+
 window.openAvatarModal = () => { if (!user) openModal('login-modal'); else openModal('avatar-modal'); };
 
 window.submitAvatar = async () => {
     const file = $('av-file').files[0];
     if (!file) { alert('Выберите файл'); return; }
     if (file.size > 5*1024*1024) { alert('Макс. 5МБ'); return; }
+    
+    // 🔐 Валидация типа файла
+    if (!file.type.startsWith('image/')) {
+        alert('Только изображения');
+        return;
+    }
+    
     try {
         const fd = new FormData(); fd.append('image', file); fd.append('key', IMGBB_KEY);
         const res = await fetch('https://api.imgbb.com/1/upload', { method: 'POST', body: fd });
         const data = await res.json();
         if (!data.success) throw new Error('ImgBB error');
+        
+        // 🔐 Валидация полученного URL
+        if (!data.data?.url?.startsWith('https://')) throw new Error('Invalid URL');
+        
         await updateDoc(doc(db, 'artifacts/byrmalda-prod/users', user.uid), {
             avatarPending: data.data.url, avatarStatus: 'pending', avatarSubmittedAt: serverTimestamp()
         });
+        
+        await logSecurityEvent('avatar_upload', { userId: user.uid });
         alert('✅ Аватарка отправлена на модерацию!');
         closeModal('avatar-modal');
         loadPendingAvatars();
-    } catch(e) { console.error(e); alert('❌ Ошибка: '+e.message); }
+    } catch(e) { 
+        console.error(e); 
+        await logSecurityEvent('avatar_upload_error', { error: e.message });
+        alert('❌ Ошибка: '+e.message); 
+    }
 };
+
+// ==================== КАТАЛОГ И ПОИСК ====================
 
 function genCatalog() {
     const cats = [
@@ -1138,13 +1340,17 @@ function genCatalog() {
     ];
     $('catalog-grid').innerHTML = cats.map(c => `
         <div class="cat-card" onclick="filterType('${c.t}')">
-            <div class="card-img">${c.ic}</div><div class="card-body"><div class="card-title">${c.n}</div></div>
+            <div class="card-img">${c.ic}</div><div class="card-body"><div class="card-title">${sanitizeInput(c.n)}</div></div>
         </div>`).join('');
 }
 
 window.filterType = async type => { navigate('search'); $('search-input').value = type; await searchProds(type); };
 
-window.handleSearch = async e => { const q = e.target.value.trim().toLowerCase(); if (q.length >= 2) await searchProds(q); else if (!q) $('search-results').innerHTML = ''; };
+window.handleSearch = async e => { 
+    const q = e.target.value.trim().toLowerCase(); 
+    if (q.length >= 2) await searchProds(q); 
+    else if (!q) $('search-results').innerHTML = ''; 
+};
 
 async function searchProds(q) {
     const c = $('search-results'); c.innerHTML = '<div class="text-center" style="padding:32px"><div class="loading"></div></div>';
@@ -1157,23 +1363,32 @@ async function searchProds(q) {
             c.innerHTML = res.map(p => prodCard(p)).join('');
         } else {
             const snap = await getDocs(query(coll, where('published','==',true), where('deleted','==',false)));
-            const res = []; snap.forEach(d => { const p = d.data(); if (`${p.name} ${p.type} ${p.category} ${p.desc}`.toLowerCase().includes(q)) res.push({...p,id:d.id}); });
+            const res = []; snap.forEach(d => { 
+                const p = d.data(); 
+                const searchStr = `${p.name} ${p.type} ${p.category} ${p.desc}`.toLowerCase();
+                if (searchStr.includes(q)) res.push({...p,id:d.id}); 
+            });
             if (!res.length) { c.innerHTML = `<div class="text-center" style="padding:32px;color:var(--text-dim)">Ничего не найдено</div>`; return; }
             c.innerHTML = res.map(p => prodCard(p)).join('');
         }
-    } catch(e) { console.error(e); c.innerHTML = '<div class="text-center" style="padding:32px;color:var(--error)">Ошибка</div>'; }
+    } catch(e) { 
+        console.error(e); 
+        c.innerHTML = '<div class="text-center" style="padding:32px;color:var(--error)">Ошибка</div>'; 
+    }
 }
 
 function prodCard(p) {
     const stock = p.stock > 0;
     return `<div class="prod-card" onclick="openProd('${p.id}')">
-        <div class="card-img" style="background:var(--bg)">${p.images?.[0]?`<img src="${p.images[0]}" style="width:100%;height:100%;object-fit:cover">`:'📦'}</div>
+        <div class="card-img" style="background:var(--bg)">${p.images?.[0]?`<img src="${sanitizeInput(p.images[0])}" style="width:100%;height:100%;object-fit:cover">`:'📦'}</div>
         <div class="card-body">
-            <div class="card-title">${p.name}</div>
+            <div class="card-title">${sanitizeInput(p.name)}</div>
             <div class="card-price ${stock?'':'card-nostock'}">${stock?`$${p.price}`:'Нет в наличии'}</div>
         </div>
     </div>`;
 }
+
+// ==================== СТРАНИЦА ТОВАРА ====================
 
 window.openProd = async id => {
     try {
@@ -1182,10 +1397,10 @@ window.openProd = async id => {
         curProd = { ...snap.data(), id };
         
         $('p-id').textContent = `ID: ${curProd.productId || id}`;
-        $('p-name').textContent = curProd.name;
+        $('p-name').textContent = sanitizeInput(curProd.name);
         
-        const colors = (curProd.color || 'Белый').split(',').map(c => c.trim()).filter(c => c);
-        const sizes = (curProd.sizes || 'S,M,L,XL').split(',').map(s => s.trim()).filter(s => s);
+        const colors = (curProd.color || 'Белый').split(',').map(c => sanitizeInput(c.trim())).filter(c => c);
+        const sizes = (curProd.sizes || 'S,M,L,XL').split(',').map(s => sanitizeInput(s.trim())).filter(s => s);
         
         const colorGroup = $('opt-color-group');
         if (colors.length === 1) {
@@ -1204,16 +1419,16 @@ window.openProd = async id => {
         }
         
         $('p-specs').innerHTML = `
-            <div class="spec-row"><span class="spec-l">Для кого</span><span class="spec-v">${curProd.audience||'Унисекс'}</span></div>
-            <div class="spec-row"><span class="spec-l">Тип</span><span class="spec-v">${curProd.type}</span></div>
-            <div class="spec-row"><span class="spec-l">Материал</span><span class="spec-v">${curProd.material||'-'}</span></div>
-            <div class="spec-row"><span class="spec-l">Цвет</span><span class="spec-v">${curProd.color||'-'}</span></div>
-            <div class="spec-row"><span class="spec-l">Коллаборация</span><span class="spec-v">${curProd.collab||'Нет'}</span></div>
+            <div class="spec-row"><span class="spec-l">Для кого</span><span class="spec-v">${sanitizeInput(curProd.audience||'Унисекс')}</span></div>
+            <div class="spec-row"><span class="spec-l">Тип</span><span class="spec-v">${sanitizeInput(curProd.type)}</span></div>
+            <div class="spec-row"><span class="spec-l">Материал</span><span class="spec-v">${sanitizeInput(curProd.material||'-')}</span></div>
+            <div class="spec-row"><span class="spec-l">Цвет</span><span class="spec-v">${sanitizeInput(curProd.color||'-')}</span></div>
+            <div class="spec-row"><span class="spec-l">Коллаборация</span><span class="spec-v">${sanitizeInput(curProd.collab||'Нет')}</span></div>
             <div class="spec-row"><span class="spec-l">Масса</span><span class="spec-v">${curProd.weight||'-'} г</span></div>
             <div class="spec-row"><span class="spec-l">Год релиза</span><span class="spec-v">${curProd.year||'-'}</span></div>
             <div class="spec-row"><span class="spec-l">В наличии</span><span class="spec-v">${curProd.stock} шт</span></div>
         `;
-        $('p-desc').textContent = curProd.desc || '';
+        $('p-desc').textContent = sanitizeInput(curProd.desc || '');
         $('p-price-usd').textContent = `$${curProd.price}`;
         $('p-price-conv').textContent = `≈ ${Math.round(curProd.price*RATES.USD_TO_RUB).toLocaleString('ru-RU')} ₽ / ≈ ${Math.round(curProd.price*RATES.USD_TO_UAH).toLocaleString('ru-RU')} ₴`;
         
@@ -1241,32 +1456,50 @@ window.openProd = async id => {
         }
         galIdx = 0; updateGal();
         navigate('product');
-    } catch(e) { console.error(e); alert('Ошибка загрузки товара'); }
+    } catch(e) { 
+        console.error(e); 
+        alert('Ошибка загрузки товара'); 
+    }
 };
 
 function updateGal() {
     if (!curProd) return;
     const imgs = curProd.images && curProd.images.length ? curProd.images : ['https://via.placeholder.com/600/f5f5f5/111?text=BYRMALDA'];
-    $('p-main-img').src = imgs[galIdx];
-    $('p-thumbs').innerHTML = imgs.map((src,i) => `<img src="${src}" class="thumb ${i===galIdx?'active':''}" onclick="setGal(${i})">`).join('');
+    // 🔐 Валидация URL изображений
+    $('p-main-img').src = imgs[galIdx]?.startsWith('https://') ? imgs[galIdx] : 'https://via.placeholder.com/600/f5f5f5/111?text=BYRMALDA';
+    $('p-thumbs').innerHTML = imgs.map((src,i) => {
+        const safeSrc = src?.startsWith('https://') ? src : 'https://via.placeholder.com/60/f5f5f5/111?text=📦';
+        return `<img src="${safeSrc}" class="thumb ${i===galIdx?'active':''}" onclick="setGal(${i})">`;
+    }).join('');
 }
 window.setGal = i => { galIdx = i; updateGal(); };
 window.galNav = d => { if (!curProd) return; const len = curProd.images?.length||1; galIdx = (galIdx + d + len) % len; updateGal(); };
 
+// ==================== КОРЗИНА ====================
+
 window.addToCart = (isPreorder=false) => {
     if (!user) { openModal('login-modal'); return; }
+    
+    // 🔐 Rate limit на добавление в корзину
+    if (!rateLimit.check(`add_to_cart_${user.uid}`, 20, 60000)) {
+        alert('⚠️ Слишком быстро. Подождите немного.');
+        return;
+    }
+    
     let size = 'M', color = 'Белый';
     const sizeEl = $('p-size');
     const colorEl = $('p-color');
-    if (sizeEl && sizeEl.tagName === 'SELECT') size = sizeEl.value;
-    else if (sizeEl?.closest('.opt-group')?.querySelector('.opt-static')) size = sizeEl.closest('.opt-group').querySelector('.opt-static').textContent;
-    if (colorEl && colorEl.tagName === 'SELECT') color = colorEl.value;
-    else if (colorEl?.closest('.opt-group')?.querySelector('.opt-static')) color = colorEl.closest('.opt-group').querySelector('.opt-static').textContent;
+    if (sizeEl && sizeEl.tagName === 'SELECT') size = sanitizeInput(sizeEl.value);
+    else if (sizeEl?.closest('.opt-group')?.querySelector('.opt-static')) size = sanitizeInput(sizeEl.closest('.opt-group').querySelector('.opt-static').textContent);
+    if (colorEl && colorEl.tagName === 'SELECT') color = sanitizeInput(colorEl.value);
+    else if (colorEl?.closest('.opt-group')?.querySelector('.opt-static')) color = sanitizeInput(colorEl.closest('.opt-group').querySelector('.opt-static').textContent);
     
     const item = {
-        id: `${curProd.id}-${Date.now()}`, pid: curProd.id, name: curProd.name,
-        img: curProd.images?.[0] || '', size, color,
-        qty: parseInt($('p-qty')?.value)||1, price: curProd.price, weight: curProd.weight||200,
+        id: `${curProd.id}-${Date.now()}`, pid: curProd.id, name: sanitizeInput(curProd.name),
+        img: curProd.images?.[0]?.startsWith('https://') ? curProd.images[0] : '', 
+        size, color,
+        qty: Math.min(10, Math.max(1, parseInt($('p-qty')?.value)||1)), 
+        price: curProd.price, weight: curProd.weight||200,
         isPreorder: isPreorder, at: new Date().toISOString()
     };
     cart.push(item); localStorage.setItem('byrmalda_cart', JSON.stringify(cart));
@@ -1285,9 +1518,9 @@ function renderCart() {
     body.innerHTML = cart.map(it => {
         const tot = it.price * it.qty; sub += tot; kg += (it.weight * it.qty)/1000;
         return `<tr>
-            <td><input type="number" class="qty-input" value="${it.qty}" min="1" onchange="updCart('${it.id}','qty',this.value)"></td>
-            <td class="flex items-center gap-8"><img class="cart-img" src="${it.img||'https://via.placeholder.com/60/f5f5f5/111?text=📦'}"><div><div style="font-weight:500">${it.name}</div>${it.isPreorder?'<span style="font-size:11px;color:#1976d2;background:#e3f2fd;padding:2px 8px;border-radius:10px">Предзаказ</span>':'<span style="font-size:11px;color:#16a34a;background:#dcfce7;padding:2px 8px;border-radius:10px">Заказ</span>'}</div></td>
-            <td>${it.size}</td><td>${it.color}</td><td>$${it.price}</td>
+            <td><input type="number" class="qty-input" value="${it.qty}" min="1" max="10" onchange="updCart('${it.id}','qty',this.value)"></td>
+            <td class="flex items-center gap-8"><img class="cart-img" src="${it.img?.startsWith('https://')?it.img:'https://via.placeholder.com/60/f5f5f5/111?text=📦'}"><div><div style="font-weight:500">${sanitizeInput(it.name)}</div>${it.isPreorder?'<span style="font-size:11px;color:#1976d2;background:#e3f2fd;padding:2px 8px;border-radius:10px">Предзаказ</span>':'<span style="font-size:11px;color:#16a34a;background:#dcfce7;padding:2px 8px;border-radius:10px">Заказ</span>'}</div></td>
+            <td>${sanitizeInput(it.size)}</td><td>${sanitizeInput(it.color)}</td><td>$${it.price}</td>
             <td><button class="btn-cancel" onclick="delCart('${it.id}')">×</button></td>
         </tr>`;
     }).join('');
@@ -1296,8 +1529,10 @@ function renderCart() {
     $('cart-total').textContent = `$${total.toFixed(2)}`;
     $('.delivery-note').textContent = `Доставка: ${delRUB.toLocaleString('ru-RU')} ₽ (~$${delUSD})`;
 }
-window.updCart = (id,f,v) => { const it = cart.find(i=>i.id===id); if (!it) return; if (f==='qty') it.qty = Math.max(1,parseInt(v)||1); localStorage.setItem('byrmalda_cart', JSON.stringify(cart)); renderCart(); loadCartCount(); };
+window.updCart = (id,f,v) => { const it = cart.find(i=>i.id===id); if (!it) return; if (f==='qty') it.qty = Math.max(1, Math.min(10, parseInt(v)||1)); localStorage.setItem('byrmalda_cart', JSON.stringify(cart)); renderCart(); loadCartCount(); };
 window.delCart = id => { cart = cart.filter(i=>i.id!==id); localStorage.setItem('byrmalda_cart', JSON.stringify(cart)); renderCart(); loadCartCount(); };
+
+// ==================== ОФОРМЛЕНИЕ ЗАКАЗА ====================
 
 window.checkout = () => { if (!user) openModal('login-modal'); else if (!cart.length) alert('Корзина пуста'); else openModal('checkout-modal'); };
 
@@ -1305,25 +1540,43 @@ window.confirmCheckout = async () => {
     closeModal('checkout-modal');
     const oid = 'ORD-'+genId();
     const total = parseFloat($('cart-total').textContent.replace('$',''));
+    
+    // 🔐 Валидация данных заказа
+    if (!validatePrice(total) || cart.length === 0) {
+        alert('❌ Ошибка оформления заказа');
+        return;
+    }
+    
     const order = {
         id: oid, userId: user.uid, items: cart.map(it => ({...it})), total,
         status: 'Ожидает оплату', tracking: 'TRK-'+genId(),
         adminChangedStatus: false, createdAt: serverTimestamp(), updatedAt: serverTimestamp()
     };
+    
     await setDoc(doc(db, 'artifacts/byrmalda-prod/public/data/orders', oid), order);
+    
     for (const it of cart) {
         if (!it.isPreorder) {
             const pd = await getDoc(doc(db, 'artifacts/byrmalda-prod/public/data/products', it.pid));
             if (pd.exists()) {
                 const d = pd.data();
-                await updateDoc(doc(db, 'artifacts/byrmalda-prod/public/data/products', it.pid), { stock: Math.max(0, (d.stock||0) - it.qty) });
+                if (validateStock(d.stock)) {
+                    await updateDoc(doc(db, 'artifacts/byrmalda-prod/public/data/products', it.pid), { 
+                        stock: Math.max(0, (d.stock||0) - it.qty) 
+                    });
+                }
             }
         }
     }
+    
+    await logSecurityEvent('order_created', { orderId: oid, total, items: cart.length });
+    
     cart = []; localStorage.removeItem('byrmalda_cart'); loadCartCount(); loadOrders();
     alert(`✅ Заказ #${oid} создан!\nСтатус: «Ожидает оплату»\nТрекинг: ${order.tracking}\n\nНапишите @fueum для подтверждения оплаты.`);
     navigate('profile');
 };
+
+// ==================== ЗАКАЗЫ ====================
 
 async function loadOrders() {
     if (!user) return;
@@ -1337,9 +1590,9 @@ async function loadOrders() {
             const canCancel = st === 'Создан';
             const firstItem = o.items?.[0] || {};
             return `<div class="order-card" onclick="openProd('${firstItem.pid}')">
-                <div class="order-img">${firstItem.img?`<img src="${firstItem.img}" style="width:100%;height:100%;object-fit:cover">`:'📦'}</div>
+                <div class="order-img">${firstItem.img?.startsWith('https://')?`<img src="${firstItem.img}" style="width:100%;height:100%;object-fit:cover">`:'📦'}</div>
                 <div class="order-info">
-                    <div class="order-name">${firstItem.name||'Товар'}</div>
+                    <div class="order-name">${sanitizeInput(firstItem.name||'Товар')}</div>
                     <span class="order-status ${cls}">${st}</span>
                     <div class="order-meta"><div>Заказ: #${o.id}</div><div>Трекинг: ${o.tracking||'-'}</div><div>Сумма: $${o.total?.toFixed(2)||'0.00'}</div><div>Дата: ${fmtDate(o.createdAt)}</div></div>
                 </div>
@@ -1348,18 +1601,19 @@ async function loadOrders() {
         }).join('');
     } catch(e) { console.error(e); c.innerHTML = '<div class="text-center" style="padding:24px;color:var(--error)">Ошибка загрузки</div>'; }
 }
+
 window.cancelOrder = async (oid, st) => {
     if (st !== 'Создан') { alert('❌ Нельзя отменить заказ на этом этапе'); return; }
     if (!confirm('Отменить этот заказ?')) return;
     try {
         await updateDoc(doc(db, 'artifacts/byrmalda-prod/public/data/orders', oid), { status: 'Отменён', updatedAt: serverTimestamp() });
+        await logSecurityEvent('order_cancelled', { orderId: oid });
         alert('✅ Заказ отменён'); loadOrders();
     } catch(e) { console.error(e); alert('❌ Ошибка'); }
 };
 
-// ==================== ЧАТ ПОДДЕРЖКИ - ИСПРАВЛЕННАЯ ЛОГИКА ====================
+// ==================== ЧАТ ПОДДЕРЖКИ (БЕЗОПАСНАЯ ВЕРСИЯ) ====================
 
-// Загрузка чата с правильной фильтрацией
 async function loadChat() {
     if (!user) return;
     const c = $('chat-msgs');
@@ -1369,7 +1623,6 @@ async function loadChat() {
         const isAdmin = user.email === ADMIN_EMAIL;
         const currentUserUid = user.uid;
         
-        // Загружаем все сообщения
         const q = query(collection(db, 'artifacts/byrmalda-prod/public/data/support'), orderBy('ts','asc'), limit(200));
         const snap = await getDocs(q);
         
@@ -1381,23 +1634,17 @@ async function loadChat() {
             let shouldShow = false;
             
             if (isAdmin) {
-                // Админ видит ВСЕ сообщения от ВСЕХ пользователей
                 shouldShow = true;
             } else {
-                // Обычный пользователь видит:
-                // 1. Свои собственные сообщения
                 if (m.uid === currentUserUid) {
                     shouldShow = true;
                 }
-                // 2. Ответы админа, адресованные ЕМУ (replyTo === его UID)
                 else if (m.isAdmin && m.replyTo === currentUserUid) {
                     shouldShow = true;
                 }
-                // 3. Широковещательные сообщения админа (без replyTo)
                 else if (m.isAdmin && !m.replyTo) {
                     shouldShow = true;
                 }
-                // Остальные сообщения админа (для других UID) — НЕ показывать
             }
             
             if (shouldShow) {
@@ -1419,32 +1666,27 @@ async function loadChat() {
     }
 }
 
-// Отображение сообщения в чате
 function addMsgToUI(m) {
     const isUser = m.uid === user?.uid;
     const isAdmin = m.isAdmin;
     const el = document.createElement('div');
     
-    // Определяем класс сообщения для стилей
     if (isAdmin) {
         el.className = 'msg admin';
     } else if (isUser) {
         el.className = 'msg user';
     } else {
-        el.className = 'msg admin'; // чужие сообщения от админа (если вдруг)
+        el.className = 'msg admin';
     }
     
-    // Формируем мета-информацию
     let meta = '';
     if (isAdmin) {
         meta = 'Администратор';
-        // Если это ответ конкретному пользователю, показываем кому
         if (m.replyTo) {
             meta += `<span class="msg-target">→ @${m.replyTo.substring(0,8)}...</span>`;
         }
     } else {
-        meta = m.name || 'Пользователь';
-        // Для админа показываем полный UID отправителя
+        meta = sanitizeInput(m.name) || 'Пользователь';
         if (user.email === ADMIN_EMAIL && m.uid) {
             meta += ` <span style="color:var(--text-dim)">[UID: ${m.uid}]</span>`;
         }
@@ -1452,31 +1694,41 @@ function addMsgToUI(m) {
     
     const time = m.ts?.toDate?.()?.toLocaleTimeString('ru-RU', {hour:'2-digit', minute:'2-digit'}) || '';
     
+    // 🔐 Экранирование пользовательского контента
     el.innerHTML = `
-        ${m.text}
+        ${sanitizeInput(m.text)}
         <div class="msg-meta">${meta} • ${time}</div>
     `;
     
     $('chat-msgs').appendChild(el);
     $('chat-msgs').scrollTop = $('chat-msgs').scrollHeight;
     
-    // Уведомление о новых сообщениях (если не в чате)
     if (!document.getElementById('support').classList.contains('active') && !isUser) {
         chatUnread++;
         updateSupportBadge();
     }
 }
 
-// Отправка сообщения
 window.sendMsg = async () => {
     const txt = $('chat-input').value.trim();
     if (!txt || !user) return;
+    
+    // 🔐 Rate limit на сообщения
+    if (!rateLimit.check(`chat_${user.uid}`, 30, 60000)) {
+        alert('⚠️ Слишком много сообщений. Подождите.');
+        return;
+    }
+    
+    // 🔐 Валидация длины сообщения
+    if (txt.length > 2000) {
+        alert('Сообщение слишком длинное (макс. 2000 символов)');
+        return;
+    }
     
     const isAdmin = user.email === ADMIN_EMAIL;
     let replyTo = null;
     let displayText = txt;
     
-    // Если админ и сообщение начинается с @UID, извлекаем UID получателя
     if (isAdmin) {
         const match = txt.match(/^@([A-Za-z0-9_-]+)\s+(.+)/);
         if (match) {
@@ -1487,10 +1739,10 @@ window.sendMsg = async () => {
     
     const msg = {
         uid: user.uid,
-        name: userData?.name || user.email.split('@')[0],
-        text: displayText,
-        rawText: txt, // сохраняем оригинал для отладки
-        replyTo: replyTo, // только если админ ответил конкретному пользователю
+        name: sanitizeInput(userData?.name || user.email.split('@')[0]),
+        text: sanitizeInput(displayText),
+        rawText: txt,
+        replyTo: replyTo,
         ts: serverTimestamp(),
         isAdmin: isAdmin
     };
@@ -1498,12 +1750,11 @@ window.sendMsg = async () => {
     try {
         await addDoc(collection(db, 'artifacts/byrmalda-prod/public/data/support'), msg);
         $('chat-input').value = '';
-        // Добавляем локально для мгновенного отображения
         addMsgToUI({ ...msg, ts: new Date() });
         
-        // Если админ отправил ответ конкретному пользователю, показываем подсказку
         if (isAdmin && replyTo) {
             alert(`✅ Ответ отправлен пользователю @${replyTo.substring(0,8)}...`);
+            await logSecurityEvent('admin_reply_sent', { replyTo });
         }
     } catch(e) {
         console.error('sendMsg:', e);
@@ -1511,13 +1762,12 @@ window.sendMsg = async () => {
     }
 };
 
-// Обновление бейджа уведомлений
 function updateSupportBadge() { 
     $('support-badge').textContent = chatUnread; 
     $('nav-support').classList.toggle('has-badge', chatUnread > 0); 
 }
 
-// ==================== ОСТАЛЬНЫЕ ФУНКЦИИ ====================
+// ==================== НАСТРОЙКИ ====================
 
 window.toggleTheme = () => { theme = theme==='light'?'dark':'light'; localStorage.setItem('theme',theme); applyTheme(); };
 function applyTheme() { document.documentElement.setAttribute('data-theme',theme); $('theme-ind').textContent = theme==='dark'?'🌙':'☀️'; }
@@ -1540,20 +1790,28 @@ window.setRating = n => { revStars = n; updStars(); };
 function updStars() { for (let i=0;i<5;i++) $('rev-stars').children[i].textContent = i<revStars?'★':'☆'; }
 window.submitReview = async () => {
     if (!revStars) { alert('Выберите оценку'); return; }
-    const txt = $('rev-text').value.trim(); if (!txt) { alert('Напишите отзыв'); return; }
+    const txt = sanitizeInput($('rev-text').value.trim()); 
+    if (!txt) { alert('Напишите отзыв'); return; }
+    if (txt.length > 1000) { alert('Отзыв слишком длинный'); return; }
+    
     await addDoc(collection(db, 'artifacts/byrmalda-prod/public/data/reviews'), {
-        uid: user.uid, name: userData?.name||'Пользователь', rating: revStars, text: txt, status: 'pending', ts: serverTimestamp()
+        uid: user.uid, name: sanitizeInput(userData?.name||'Пользователь'), rating: revStars, text: txt, status: 'pending', ts: serverTimestamp()
     });
     hasSubmittedReview = true;
+    await logSecurityEvent('review_submitted', { rating: revStars });
     $('rev-ok').classList.remove('hidden'); setTimeout(()=>{ closeModal('review-modal'); $('rev-ok').classList.add('hidden'); $('rev-text').value=''; }, 1500);
 };
 
 window.openReport = () => { openModal('report-modal'); };
 window.submitReport = async () => {
-    const txt = $('rep-text').value.trim(); if (!txt) { alert('Опишите проблему'); return; }
+    const txt = sanitizeInput($('rep-text').value.trim()); 
+    if (!txt) { alert('Опишите проблему'); return; }
+    if (txt.length > 5000) { alert('Текст слишком длинный'); return; }
+    
     await addDoc(collection(db, 'artifacts/byrmalda-prod/public/data/reports'), {
-        uid: user.uid, name: userData?.name||'Пользователь', text: txt, ts: serverTimestamp(), status: 'new'
+        uid: user.uid, name: sanitizeInput(userData?.name||'Пользователь'), text: txt, ts: serverTimestamp(), status: 'new'
     });
+    await logSecurityEvent('report_submitted');
     $('rep-ok').classList.remove('hidden'); setTimeout(()=>{ closeModal('report-modal'); $('rep-ok').classList.add('hidden'); $('rep-text').value=''; }, 1500);
 };
 
@@ -1584,6 +1842,8 @@ window.showSizeChart = type => {
     openModal('sizechart-modal');
 };
 
+// ==================== АДМИН ПАНЕЛЬ ====================
+
 async function loadAdminPanels() {
     loadPendingReviews();
     loadPendingAvatars();
@@ -1599,8 +1859,8 @@ async function loadPendingReviews() {
         c.innerHTML = snap.docs.map(d => {
             const r = d.data();
             return `<div class="mod-item">
-                <div class="flex justify-between"><strong>${r.name}</strong><span>${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</span></div>
-                <div style="font-size:13px;color:var(--text-dim);margin:6px 0">${r.text}</div>
+                <div class="flex justify-between"><strong>${sanitizeInput(r.name)}</strong><span>${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</span></div>
+                <div style="font-size:13px;color:var(--text-dim);margin:6px 0">${sanitizeInput(r.text)}</div>
                 <div style="font-size:11px;color:var(--text-dim)">UID: ${r.uid}</div>
                 <div class="actions">
                     <button class="btn btn-success btn-sm" onclick="admApproveReview('${d.id}')">Одобрить</button>
@@ -1610,8 +1870,16 @@ async function loadPendingReviews() {
         }).join('');
     } catch(e) { console.error(e); c.innerHTML = '<div style="color:var(--error)">Ошибка</div>'; }
 }
-window.admApproveReview = async id => { await updateDoc(doc(db, 'artifacts/byrmalda-prod/public/data/reviews', id), { status: 'approved' }); loadPendingReviews(); loadPublicReviews(); };
-window.admRejectReview = async id => { await deleteDoc(doc(db, 'artifacts/byrmalda-prod/public/data/reviews', id)); loadPendingReviews(); };
+window.admApproveReview = async id => { 
+    await updateDoc(doc(db, 'artifacts/byrmalda-prod/public/data/reviews', id), { status: 'approved' }); 
+    await logSecurityEvent('review_approved', { reviewId: id });
+    loadPendingReviews(); loadPublicReviews(); 
+};
+window.admRejectReview = async id => { 
+    await deleteDoc(doc(db, 'artifacts/byrmalda-prod/public/data/reviews', id)); 
+    await logSecurityEvent('review_rejected', { reviewId: id });
+    loadPendingReviews(); 
+};
 
 async function loadPublicReviews() {
     const c = $('reviews-list'); c.innerHTML = '<div class="text-center" style="padding:24px"><div class="loading"></div></div>';
@@ -1623,8 +1891,8 @@ async function loadPublicReviews() {
             const r = d.data();
             return `<div class="review-card">
                 ${isAdmin?`<span class="review-delete" onclick="admDeleteReview('${d.id}')">🗑️</span>`:''}
-                <div class="review-head"><strong>${r.name}</strong><span>${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</span></div>
-                <div class="review-text">${r.text}</div>
+                <div class="review-head"><strong>${sanitizeInput(r.name)}</strong><span>${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</span></div>
+                <div class="review-text">${sanitizeInput(r.text)}</div>
             </div>`;
         }).join('');
     } catch(e) { console.error(e); c.innerHTML = '<div style="color:var(--error)">Ошибка</div>'; }
@@ -1632,6 +1900,7 @@ async function loadPublicReviews() {
 window.admDeleteReview = async id => {
     if (!confirm('Точно удалить этот отзыв?')) return;
     await deleteDoc(doc(db, 'artifacts/byrmalda-prod/public/data/reviews', id));
+    await logSecurityEvent('review_deleted_admin', { reviewId: id });
     loadPublicReviews();
 };
 
@@ -1643,8 +1912,8 @@ async function loadPendingAvatars() {
         c.innerHTML = users.docs.map(d => {
             const u = d.data();
             return `<div class="mod-item flex items-center gap-12">
-                <img src="${u.avatarPending}" style="width:56px;height:56px;border-radius:50%;object-fit:cover;background:var(--bg)">
-                <div style="flex:1"><div style="font-weight:500">${u.name}</div><div style="font-size:11px;color:var(--text-dim)">UID: ${u.uid}</div></div>
+                <img src="${u.avatarPending?.startsWith('https://')?u.avatarPending:'https://via.placeholder.com/56/f5f5f5/111?text=👤'}" style="width:56px;height:56px;border-radius:50%;object-fit:cover;background:var(--bg)">
+                <div style="flex:1"><div style="font-weight:500">${sanitizeInput(u.name)}</div><div style="font-size:11px;color:var(--text-dim)">UID: ${u.uid}</div></div>
                 <div class="actions">
                     <button class="btn btn-success btn-sm" onclick="admApproveAvatar('${u.uid}','${u.avatarPending}')">Одобрить</button>
                     <button class="btn btn-danger btn-sm" onclick="admRejectAvatar('${u.uid}')">Отклонить</button>
@@ -1654,11 +1923,14 @@ async function loadPendingAvatars() {
     } catch(e) { console.error(e); c.innerHTML = '<div style="color:var(--error)">Ошибка</div>'; }
 }
 window.admApproveAvatar = async (uid, url) => {
+    if (!url?.startsWith('https://')) { alert('❌ Неверный URL'); return; }
     await updateDoc(doc(db, 'artifacts/byrmalda-prod/users', uid), { avatar: url, avatarPending: null, avatarStatus: 'approved' });
+    await logSecurityEvent('avatar_approved', { userId: uid });
     loadPendingAvatars();
 };
 window.admRejectAvatar = async uid => {
     await updateDoc(doc(db, 'artifacts/byrmalda-prod/users', uid), { avatarPending: null, avatarStatus: 'rejected' });
+    await logSecurityEvent('avatar_rejected', { userId: uid });
     loadPendingAvatars();
 };
 
@@ -1670,9 +1942,9 @@ async function loadPendingSuggestions() {
         c.innerHTML = snap.docs.map(d => {
             const s = d.data();
             return `<div class="mod-item">
-                <div style="font-weight:500;margin-bottom:6px">${s.name} <span style="font-size:11px;color:#1976d2;background:#e3f2fd;padding:2px 8px;border-radius:10px">от ${s.userName||'пользователя'}</span></div>
-                <div style="font-size:13px;color:var(--text-dim);margin:4px 0">Тип: ${s.type} • Цена: $${s.price} • Категория: ${s.category}</div>
-                ${s.img?`<img src="${s.img}" style="width:80px;height:80px;object-fit:cover;border-radius:4px;margin:8px 0">`:''}
+                <div style="font-weight:500;margin-bottom:6px">${sanitizeInput(s.name)} <span style="font-size:11px;color:#1976d2;background:#e3f2fd;padding:2px 8px;border-radius:10px">от ${sanitizeInput(s.userName||'пользователя')}</span></div>
+                <div style="font-size:13px;color:var(--text-dim);margin:4px 0">Тип: ${sanitizeInput(s.type)} • Цена: $${s.price} • Категория: ${sanitizeInput(s.category)}</div>
+                ${s.img?.startsWith('https://')?`<img src="${s.img}" style="width:80px;height:80px;object-fit:cover;border-radius:4px;margin:8px 0">`:''}
                 <div class="actions">
                     <button class="btn btn-outline btn-sm" onclick="admEditSuggestion('${d.id}')">Редактировать</button>
                     <button class="btn btn-success btn-sm" onclick="admApproveSuggestion('${d.id}')">Одобрить</button>
@@ -1686,17 +1958,29 @@ window.admApproveSuggestion = async id => {
     const snap = await getDoc(doc(db, 'artifacts/byrmalda-prod/public/data/suggestions', id));
     if (!snap.exists()) return;
     const s = snap.data();
+    
+    // 🔐 Валидация данных перед созданием товара
+    if (!validatePrice(s.price) || !s.name || !s.type) {
+        alert('❌ Неверные данные товара');
+        return;
+    }
+    
     await addDoc(collection(db, 'artifacts/byrmalda-prod/public/data/products'), {
-        productId: genId(), name: s.name, category: s.category, type: s.type, price: s.price, stock: 10, weight: s.weight||200,
-        audience: s.audience||'unisex', material: s.material||'', color: s.color||'', sizes: s.sizes||'S,M,L',
-        collab: s.collab||'Нет', year: new Date().getFullYear(), desc: s.desc||'', images: s.img?[s.img]:[],
+        productId: genId(), name: sanitizeInput(s.name), category: sanitizeInput(s.category), type: sanitizeInput(s.type), price: s.price, stock: 10, weight: s.weight||200,
+        audience: sanitizeInput(s.audience||'unisex'), material: sanitizeInput(s.material||''), color: sanitizeInput(s.color||''), sizes: sanitizeInput(s.sizes||'S,M,L'),
+        collab: sanitizeInput(s.collab||'Нет'), year: new Date().getFullYear(), desc: sanitizeInput(s.desc||''), images: s.img?.startsWith('https://')?[s.img]:[],
         published: true, deleted: false, fromUser: true, suggestedBy: s.uid, createdAt: serverTimestamp()
     });
     await updateDoc(doc(db, 'artifacts/byrmalda-prod/public/data/suggestions', id), { status: 'approved' });
     await updateDoc(doc(db, 'artifacts/byrmalda-prod/users', s.uid), { hasVerifiedProduct: true });
+    await logSecurityEvent('suggestion_approved', { suggestionId: id, newProductId: genId() });
     loadPendingSuggestions(); alert('✅ Товар опубликован!');
 };
-window.admRejectSuggestion = async id => { await deleteDoc(doc(db, 'artifacts/byrmalda-prod/public/data/suggestions', id)); loadPendingSuggestions(); };
+window.admRejectSuggestion = async id => { 
+    await deleteDoc(doc(db, 'artifacts/byrmalda-prod/public/data/suggestions', id)); 
+    await logSecurityEvent('suggestion_rejected', { suggestionId: id });
+    loadPendingSuggestions(); 
+};
 window.admEditSuggestion = async id => { alert('Редактирование: в продакшене откроется форма'); };
 
 async function loadReports() {
@@ -1707,8 +1991,8 @@ async function loadReports() {
         c.innerHTML = snap.docs.map(d => {
             const r = d.data();
             return `<div class="mod-item">
-                <div style="font-weight:500;margin-bottom:6px">${r.name} <span style="font-size:11px;color:var(--text-dim)">UID: ${r.uid}</span></div>
-                <div style="font-size:13px;color:var(--text-dim);margin:6px 0">${r.text}</div>
+                <div style="font-weight:500;margin-bottom:6px">${sanitizeInput(r.name)} <span style="font-size:11px;color:var(--text-dim)">UID: ${r.uid}</span></div>
+                <div style="font-size:13px;color:var(--text-dim);margin:6px 0">${sanitizeInput(r.text)}</div>
                 <div class="actions">
                     <button class="btn btn-sm" onclick="admMarkReportViewed('${d.id}')">Просмотрено</button>
                 </div>
@@ -1718,6 +2002,7 @@ async function loadReports() {
 }
 window.admMarkReportViewed = async id => {
     await updateDoc(doc(db, 'artifacts/byrmalda-prod/public/data/reports', id), { status: 'viewed' });
+    await logSecurityEvent('report_viewed', { reportId: id });
     loadReports();
 };
 
@@ -1727,31 +2012,50 @@ window.toggleCollabInput = () => {
 };
 
 window.admCreateProduct = async () => {
-    const name = $('adm-name').value.trim(), cat = $('adm-cat').value, type = $('adm-type').value.trim(),
-          price = parseFloat($('adm-price').value), stock = parseInt($('adm-stock').value),
-          weight = parseInt($('adm-weight').value), year = parseInt($('adm-year').value) || new Date().getFullYear(),
-          collabType = $('adm-collab-type').value, collabName = $('adm-collab-name').value.trim();
-    if (!name || !type || !price || stock===undefined || !weight) { alert('Заполните обязательные поля'); return; }
+    const name = sanitizeInput($('adm-name').value.trim());
+    const cat = $('adm-cat').value;
+    const type = sanitizeInput($('adm-type').value.trim());
+    const price = parseFloat($('adm-price').value);
+    const stock = parseInt($('adm-stock').value);
+    const weight = parseInt($('adm-weight').value);
+    const year = parseInt($('adm-year').value) || new Date().getFullYear();
+    const collabType = $('adm-collab-type').value;
+    const collabName = sanitizeInput($('adm-collab-name').value.trim());
+    
+    // 🔐 Валидация всех полей
+    if (!name || name.length > 100) { alert('Неверное название'); return; }
+    if (!type || type.length > 50) { alert('Неверный тип'); return; }
+    if (!validatePrice(price)) { alert('Неверная цена'); return; }
+    if (!validateStock(stock)) { alert('Неверное количество'); return; }
+    if (!validateStock(weight)) { alert('Неверная масса'); return; }
+    
     const collab = collabType === 'yes' && collabName ? `Да, ${collabName}` : 'Нет';
     
     const files = $('adm-photos').files;
     let images = [];
     if (files.length > 0) {
-        for (let i = 0; i < files.length; i++) {
-            const fd = new FormData(); fd.append('image', files[i]); fd.append('key', IMGBB_KEY);
+        for (let i = 0; i < Math.min(files.length, 5); i++) { // 🔐 Лимит 5 фото
+            const file = files[i];
+            if (!file.type.startsWith('image/') || file.size > 5*1024*1024) continue;
+            
+            const fd = new FormData(); fd.append('image', file); fd.append('key', IMGBB_KEY);
             const res = await fetch('https://api.imgbb.com/1/upload', { method: 'POST', body: fd });
             const data = await res.json();
-            if (data.success) images.push(data.data.url);
+            if (data.success && data.data?.url?.startsWith('https://')) {
+                images.push(data.data.url);
+            }
         }
     }
     
     const productId = genId();
     await addDoc(collection(db, 'artifacts/byrmalda-prod/public/data/products'), {
-        productId, name, category: cat, type, price, stock, weight, audience: $('adm-aud').value,
-        material: $('adm-mat').value, color: $('adm-color').value, sizes: $('adm-sizes').value || 'S,M,L,XL',
-        collab, year, desc: $('adm-desc').value, images, published: true, deleted: false, fromUser: false,
+        productId, name, category: cat, type, price, stock, weight, audience: sanitizeInput($('adm-aud').value),
+        material: sanitizeInput($('adm-mat').value), color: sanitizeInput($('adm-color').value), sizes: sanitizeInput($('adm-sizes').value || 'S,M,L,XL'),
+        collab, year, desc: sanitizeInput($('adm-desc').value), images, published: true, deleted: false, fromUser: false,
         createdAt: serverTimestamp()
     });
+    
+    await logSecurityEvent('product_created', { productId, name });
     alert(`✅ Товар опубликован! ID: ${productId}`);
     ['adm-name','adm-type','adm-price','adm-stock','adm-weight','adm-mat','adm-color','adm-sizes','adm-desc','adm-collab-name'].forEach(id => $(id).value = '');
     $('adm-photos').value = '';
@@ -1779,16 +2083,26 @@ window.admLoadProduct = async () => {
 window.admSaveProduct = async () => {
     const pid = $('adm-edit-id').value.trim();
     if (!pid) return;
+    
+    // 🔐 Валидация перед сохранением
+    const name = sanitizeInput($('edit-name').value.trim());
+    const price = parseFloat($('edit-price').value);
+    const stock = parseInt($('edit-stock').value);
+    const weight = parseInt($('edit-weight').value);
+    
+    if (!name || !validatePrice(price) || !validateStock(stock) || !validateStock(weight)) {
+        alert('❌ Неверные данные');
+        return;
+    }
+    
     try {
         await updateDoc(doc(db, 'artifacts/byrmalda-prod/public/data/products', pid), {
-            name: $('edit-name').value.trim(),
-            price: parseFloat($('edit-price').value),
-            stock: parseInt($('edit-stock').value),
-            weight: parseInt($('edit-weight').value),
-            material: $('edit-mat').value.trim(),
-            color: $('edit-color').value.trim(),
-            desc: $('edit-desc').value.trim()
+            name, price, stock, weight,
+            material: sanitizeInput($('edit-mat').value.trim()),
+            color: sanitizeInput($('edit-color').value.trim()),
+            desc: sanitizeInput($('edit-desc').value.trim())
         });
+        await logSecurityEvent('product_updated', { productId: pid });
         alert('✅ Изменения сохранены!');
         hide($('adm-edit-form'));
     } catch(e) { console.error(e); alert('❌ Ошибка: '+e.message); }
@@ -1800,6 +2114,7 @@ window.admDeleteProduct = async () => {
     if (!confirm('Удалить этот товар? Он переместится в архив.')) return;
     try {
         await updateDoc(doc(db, 'artifacts/byrmalda-prod/public/data/products', pid), { deleted: true, published: false });
+        await logSecurityEvent('product_deleted', { productId: pid });
         alert('✅ Товар удален и перемещен в архив');
         $('adm-delete-id').value = '';
     } catch(e) { console.error(e); alert('❌ Ошибка: '+e.message); }
@@ -1807,12 +2122,20 @@ window.admDeleteProduct = async () => {
 
 window.admBlockUser = async () => {
     const uid = $('adm-uid').value.trim(); if (!uid) { alert('Введите UID'); return; }
-    try { await updateDoc(doc(db, 'artifacts/byrmalda-prod/users', uid), { isBlocked: true }); alert(`✅ ${uid} заблокирован`); }
+    try { 
+        await updateDoc(doc(db, 'artifacts/byrmalda-prod/users', uid), { isBlocked: true }); 
+        await logSecurityEvent('user_blocked', { targetUid: uid });
+        alert(`✅ ${uid} заблокирован`); 
+    }
     catch(e) { console.error(e); alert('❌ Ошибка'); }
 };
 window.admUnblockUser = async () => {
     const uid = $('adm-uid').value.trim(); if (!uid) { alert('Введите UID'); return; }
-    try { await updateDoc(doc(db, 'artifacts/byrmalda-prod/users', uid), { isBlocked: false }); alert(`✅ ${uid} разблокирован`); }
+    try { 
+        await updateDoc(doc(db, 'artifacts/byrmalda-prod/users', uid), { isBlocked: false }); 
+        await logSecurityEvent('user_unblocked', { targetUid: uid });
+        alert(`✅ ${uid} разблокирован`); 
+    }
     catch(e) { console.error(e); alert('❌ Ошибка'); }
 };
 
@@ -1831,8 +2154,8 @@ window.admFindOrder = async () => {
         const o = snap.data();
         const itemsHtml = o.items?.map(i => `
             <div style="display:flex;gap:10px;margin:8px 0;padding:8px;background:var(--bg-soft);border-radius:4px">
-                <img src="${i.img||'https://via.placeholder.com/50/f5f5f5/111?text=📦'}" style="width:50px;height:50px;object-fit:cover;border-radius:4px">
-                <div><div style="font-weight:500">${i.name}</div><div style="font-size:11px;color:var(--text-dim)">Размер: ${i.size} • Цвет: ${i.color} • ${i.qty} шт</div></div>
+                <img src="${i.img?.startsWith('https://')?i.img:'https://via.placeholder.com/50/f5f5f5/111?text=📦'}" style="width:50px;height:50px;object-fit:cover;border-radius:4px">
+                <div><div style="font-weight:500">${sanitizeInput(i.name)}</div><div style="font-size:11px;color:var(--text-dim)">Размер: ${sanitizeInput(i.size)} • Цвет: ${sanitizeInput(i.color)} • ${i.qty} шт</div></div>
             </div>
         `).join('') || '-';
         
@@ -1867,31 +2190,49 @@ window.admSetOrderStatus = async (oid, newStatus) => {
         await updateDoc(doc(db, 'artifacts/byrmalda-prod/public/data/orders', oid), {
             status: newStatus, updatedAt: serverTimestamp(), adminChangedStatus: true
         });
+        await logSecurityEvent('order_status_changed', { orderId: oid, newStatus });
         alert(`✅ Статус изменён на «${newStatus}»`);
         admFindOrder(); loadOrders();
     } catch(e) { console.error(e); alert('❌ Ошибка: '+e.message); }
 };
 
+// ==================== ПРЕДЛОЖИТЬ ТОВАР ====================
+
 window.openSuggest = () => { if (!user) openModal('login-modal'); else openModal('suggest-modal'); };
 window.submitSuggestion = async () => {
-    const name = $('sug-name').value.trim(), cat = $('sug-cat').value, type = $('sug-type').value.trim(), price = parseFloat($('sug-price').value);
-    if (!name || !type || !price) { alert('Заполните обязательные поля'); return; }
+    const name = sanitizeInput($('sug-name').value.trim());
+    const cat = $('sug-cat').value;
+    const type = sanitizeInput($('sug-type').value.trim());
+    const price = parseFloat($('sug-price').value);
+    
+    // 🔐 Валидация
+    if (!name || !type || !validatePrice(price)) { alert('Заполните обязательные поля корректно'); return; }
+    
     const file = $('sug-img').files[0];
     let imgUrl = '';
     if (file) {
+        if (!file.type.startsWith('image/') || file.size > 5*1024*1024) {
+            alert('Неверный формат или размер файла');
+            return;
+        }
         const fd = new FormData(); fd.append('image', file); fd.append('key', IMGBB_KEY);
         const res = await fetch('https://api.imgbb.com/1/upload', { method: 'POST', body: fd });
         const data = await res.json();
-        if (data.success) imgUrl = data.data.url;
+        if (data.success && data.data?.url?.startsWith('https://')) imgUrl = data.data.url;
     }
+    
     await addDoc(collection(db, 'artifacts/byrmalda-prod/public/data/suggestions'), {
-        uid: user.uid, userName: userData?.name||user.email.split('@')[0], name, category: cat, type, price,
-        img: imgUrl, audience: $('sug-aud').value, sizes: $('sug-sizes').value, material: $('sug-mat').value,
-        desc: $('sug-desc').value, status: 'pending', ts: serverTimestamp()
+        uid: user.uid, userName: sanitizeInput(userData?.name||user.email.split('@')[0]), name, category: cat, type, price,
+        img: imgUrl, audience: sanitizeInput($('sug-aud').value), sizes: sanitizeInput($('sug-sizes').value), material: sanitizeInput($('sug-mat').value),
+        desc: sanitizeInput($('sug-desc').value), status: 'pending', ts: serverTimestamp()
     });
+    await logSecurityEvent('suggestion_submitted', { name });
     alert('✅ Предложение отправлено на модерацию!');
-    closeModal('suggest-modal'); loadPendingSuggestions();
+    closeModal('suggest-modal');
+    loadPendingSuggestions();
 };
+
+// ==================== АВТО-ОБНОВЛЕНИЕ СТАТУСОВ ЗАКАЗОВ ====================
 
 async function autoUpdateOrders() {
     if (user?.email !== ADMIN_EMAIL) return;
@@ -1902,7 +2243,10 @@ async function autoUpdateOrders() {
             const o = d.data(); if (o.adminChangedStatus) return;
             const t = o.createdAt?.toDate?.().getTime();
             if (t && now - t > 4*24*60*60*1000) {
-                await updateDoc(doc(db, 'artifacts/byrmalda-prod/public/data/orders', d.id), { status: 'Передача товара в доставку', updatedAt: serverTimestamp() });
+                await updateDoc(doc(db, 'artifacts/byrmalda-prod/public/data/orders', d.id), {
+                    status: 'Передача товара в доставку', updatedAt: serverTimestamp()
+                });
+                await logSecurityEvent('order_auto_updated', { orderId: d.id, newStatus: 'Передача товара в доставку' });
             }
         });
         const shipping = await getDocs(query(collection(db, 'artifacts/byrmalda-prod/public/data/orders'), where('status','==','Передача товара в доставку')));
@@ -1910,16 +2254,27 @@ async function autoUpdateOrders() {
             const o = d.data(); if (o.adminChangedStatus) return;
             const t = o.updatedAt?.toDate?.().getTime();
             if (t && now - t > 15*60*60*1000) {
-                await updateDoc(doc(db, 'artifacts/byrmalda-prod/public/data/orders', d.id), { status: 'В пути', updatedAt: serverTimestamp() });
+                await updateDoc(doc(db, 'artifacts/byrmalda-prod/public/data/orders', d.id), {
+                    status: 'В пути', updatedAt: serverTimestamp()
+                });
+                await logSecurityEvent('order_auto_updated', { orderId: d.id, newStatus: 'В пути' });
             }
         });
     } catch(e) { console.error('autoUpdate:', e); }
 }
 
+// ==================== ОБРАБОТЧИКИ СОБЫТИЙ ====================
+
 function setupListeners() {
     document.addEventListener('keydown', e => { if (e.key === 'Escape') document.querySelectorAll('.modal.active').forEach(m => m.classList.remove('active')); });
+    
+    // 🔐 Защита от paste в поля пароля (опционально)
+    document.querySelectorAll('input[type="password"]').forEach(input => {
+        input.addEventListener('paste', e => e.preventDefault());
+    });
 }
 
+// 🔐 Экспорт функций в глобальную область
 Object.assign(window, {
     navigate, openModal, closeModal, openLogin, switchReg, doLogin, regStep1, regStep2, regStep3, doLogout,
     openAvatarModal, submitAvatar, filterType, handleSearch, openProd, setGal, galNav, addToCart, updCart, delCart, checkout, confirmCheckout,
@@ -1929,7 +2284,7 @@ Object.assign(window, {
     admMarkReportViewed, openSuggest, submitSuggestion, toggleCollabInput
 });
 
-console.log('🚀 BYRMALDA loaded | Chat logic: FIXED');
+console.log('🚀 BYRMALDA loaded | 🔐 Security: App Check + Input Sanitization + Rate Limiting + Audit Logs');
 </script>
 </body>
 </html>
