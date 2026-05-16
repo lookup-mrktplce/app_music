@@ -126,22 +126,41 @@ border-radius: 50%; animation: spin 0.8s linear infinite;
 @keyframes spin { to { transform: rotate(360deg); } }
 .hero {
 min-height: 75vh; display: flex; align-items: center; justify-content: center;
-text-align: center; position: relative; overflow: hidden;
+gap: 40px; padding: 40px 20px; position: relative; overflow: hidden;
 }
-.hero-quotes { max-width: 700px; padding: 20px; z-index: 2; }
+.hero-carousel {
+width: 420px; height: 560px; position: relative; border-radius: var(--radius);
+overflow: hidden; background: var(--bg-soft); flex-shrink: 0;
+}
+.hero-slide {
+width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0;
+opacity: 0; transition: opacity 0.5s ease;
+}
+.hero-slide.active { opacity: 1; z-index: 1; }
+.carousel-nav {
+position: absolute; top: 50%; width: 100%; display: flex;
+justify-content: space-between; padding: 0 10px; transform: translateY(-50%);
+z-index: 2; pointer-events: none;
+}
+.carousel-btn {
+pointer-events: auto; background: rgba(0,0,0,0.4); border: none;
+width: 40px; height: 40px; border-radius: 50%; color: #fff;
+cursor: pointer; display: flex; align-items: center; justify-content: center;
+transition: background 0.2s;
+}
+.carousel-btn:hover { background: var(--accent); }
+.hero-quotes { max-width: 500px; text-align: center; z-index: 2; }
 .quote {
-font-size: 26px; font-weight: 300; letter-spacing: 1px;
+font-size: 24px; font-weight: 300; letter-spacing: 1px;
 line-height: 1.7; margin-bottom: 24px; font-style: italic;
 }
 .quote-author {
 font-size: 12px; text-transform: uppercase; letter-spacing: 4px;
 color: var(--text-dim);
 }
-.hero-bg {
-position: absolute; inset: 0; opacity: 0.08; z-index: 1;
-background: repeating-linear-gradient(45deg, transparent, transparent 40px, var(--accent) 40px, var(--accent) 42px);
+.showcase {
+padding: 60px 20px; background: var(--bg-soft);
 }
-.showcase { padding: 60px 20px; background: var(--bg-soft); }
 .showcase-title {
 text-align: center; font-size: 32px; font-weight: 300;
 letter-spacing: 8px; text-transform: uppercase; margin-bottom: 40px;
@@ -174,28 +193,14 @@ font-size: 22px; margin-bottom: 4px; display: flex; align-items: center; gap: 8p
 .verified { color: var(--success); font-size: 16px; }
 .profile-meta { font-size: 12px; color: var(--text-dim); margin-top: 4px; }
 .profile-meta div { margin: 2px 0; }
-.delivery-section {
-background: var(--bg-soft); border-radius: var(--radius); padding: 20px; margin: 0 0 24px;
-border: 1px solid var(--border);
+.delivery-box {
+background: var(--bg-soft); border-radius: var(--radius); padding: 16px; 
+margin: 0 0 24px; border: 1px solid var(--border);
+display: flex; justify-content: space-between; align-items: center;
 }
-.delivery-title { font-size: 16px; font-weight: 600; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 1px; }
-.delivery-option {
-display: flex; align-items: center; gap: 12px; margin: 12px 0; padding: 12px;
-background: var(--bg); border-radius: 8px; cursor: pointer;
-border: 2px solid transparent; transition: border-color 0.2s;
-}
-.delivery-option:hover { border-color: var(--accent); }
-.delivery-option.selected { border-color: var(--accent); background: var(--bg-soft); }
-.delivery-option input { width: 18px; height: 18px; cursor: pointer; }
-.delivery-fields {
-margin-top: 16px; padding: 16px; background: var(--bg);
-border-radius: 8px; border: 1px solid var(--border);
-}
-.delivery-warning {
-margin-top: 16px; padding: 12px; background: #fef3c7;
-border-left: 4px solid #f59e0b; font-size: 12px; color: #92400e;
-border-radius: 4px;
-}
+.delivery-info { display: flex; flex-direction: column; gap: 4px; }
+.delivery-provider { font-weight: 600; font-size: 14px; text-transform: uppercase; }
+.delivery-addr { font-size: 12px; color: var(--text-dim); }
 .section-title {
 font-size: 18px; font-weight: 500; margin: 28px 0 18px;
 padding-bottom: 12px; border-bottom: 1px solid var(--border);
@@ -361,17 +366,29 @@ flex-direction: column; gap: 12px;
 max-width: 82%; padding: 11px 16px; border-radius: 16px;
 font-size: 13px; line-height: 1.45;
 }
-.msg.user { align-self: flex-end; background: var(--accent); color: var(--bg); border-bottom-right-radius: 4px; }
-.msg.admin { align-self: flex-start; background: var(--bg); border: 1px solid var(--border); border-bottom-left-radius: 4px; }
-.msg-meta { font-size: 9px; opacity: 0.75; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.3px; }
-.msg-target { font-size: 9px; color: #2563eb; margin-left: 6px; font-weight: 500; }
+.msg.user {
+align-self: flex-end; background: var(--accent); color: var(--bg);
+border-bottom-right-radius: 4px;
+}
+.msg.admin {
+align-self: flex-start; background: var(--bg); border: 1px solid var(--border);
+border-bottom-left-radius: 4px;
+}
+.msg-meta {
+font-size: 9px; opacity: 0.75; margin-top: 4px;
+text-transform: uppercase; letter-spacing: 0.3px;
+}
+.msg-target {
+font-size: 9px; color: #2563eb; margin-left: 6px; font-weight: 500;
+}
 .chat-input-wrap {
 padding: 14px 18px; border-top: 1px solid var(--border);
 display: flex; gap: 10px;
 }
 .chat-input {
 flex: 1; padding: 11px 18px; border: 1px solid var(--border);
-background: var(--bg); color: var(--text); border-radius: 24px; font-size: 13px;
+background: var(--bg); color: var(--text); border-radius: 24px;
+font-size: 13px;
 }
 .chat-send {
 background: var(--accent); color: var(--bg); border: none;
@@ -379,9 +396,12 @@ width: 42px; height: 42px; border-radius: 50%; font-size: 16px;
 cursor: pointer; transition: opacity 0.2s; display: flex; align-items: center; justify-content: center;
 }
 .chat-send:hover { opacity: 0.9; }
-.chat-hint { font-size: 11px; color: var(--text-dim); margin-top: 8px; text-align: center; }
+.chat-hint {
+font-size: 11px; color: var(--text-dim); margin-top: 8px; text-align: center;
+}
 .admin-section {
-background: var(--bg-soft); border-radius: var(--radius); padding: 22px; margin-bottom: 20px;
+background: var(--bg-soft); border-radius: var(--radius);
+padding: 22px; margin-bottom: 20px;
 }
 .admin-section h3 {
 font-size: 16px; margin-bottom: 18px; padding-bottom: 12px;
@@ -389,11 +409,13 @@ border-bottom: 1px solid var(--border); text-transform: uppercase;
 letter-spacing: 1px; font-weight: 600;
 }
 .admin-grid {
-display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;
+display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+gap: 16px;
 }
 .admin-input {
 width: 100%; padding: 11px 13px; border: 1px solid var(--border);
-background: var(--bg); color: var(--text); font-size: 13px; border-radius: 4px;
+background: var(--bg); color: var(--text); font-size: 13px;
+border-radius: 4px;
 }
 .mod-item {
 background: var(--bg); padding: 14px; border-radius: 6px;
@@ -437,6 +459,8 @@ cursor: pointer; font-size: 18px; opacity: 0.6; transition: opacity 0.2s;
 .sidebar.expanded + .main { margin-left: 220px; }
 }
 @media (max-width: 768px) {
+.hero { flex-direction: column; }
+.hero-carousel { width: 100%; height: 400px; }
 .sidebar {
 width: 100%; height: auto; position: relative; flex-direction: row;
 padding: 8px; overflow-x: auto; border-right: none; border-bottom: 1px solid var(--border);
@@ -453,15 +477,35 @@ padding: 8px; overflow-x: auto; border-right: none; border-bottom: 1px solid var
 <div class="app">
 <nav class="sidebar" id="sidebar">
 <div class="logo" onclick="navigate('home')">BYRMALDA</div>
-<button class="nav-btn" onclick="navigate('profile')" id="nav-profile"><span class="icon">👤</span><span class="label">Профиль</span></button>
-<button class="nav-btn" onclick="navigate('search')" id="nav-search"><span class="icon">🔍</span><span class="label">Поиск</span></button>
-<button class="nav-btn" onclick="navigate('catalog')" id="nav-catalog"><span class="icon">📦</span><span class="label">Каталог</span></button>
-<button class="nav-btn" onclick="navigate('cart')" id="nav-cart"><span class="icon">🛒</span><span class="label">Корзина</span><span class="badge" id="cart-badge">0</span></button>
-<button class="nav-btn" onclick="navigate('support')" id="nav-support"><span class="icon">💬</span><span class="label">Поддержка</span><span class="badge" id="support-badge">0</span></button>
-<button class="nav-btn" onclick="navigate('settings')" id="nav-settings"><span class="icon">⚙️</span><span class="label">Настройки</span></button>
-<button class="nav-btn" onclick="navigate('reviews')" id="nav-reviews"><span class="icon">⭐</span><span class="label">Отзывы</span></button>
-<button class="nav-btn hidden" id="nav-admin" onclick="navigate('admin')"><span class="icon">🛡️</span><span class="label">Панель</span></button>
-<button class="nav-btn hidden" id="nav-suggest" onclick="openSuggest()"><span class="icon">✨</span><span class="label">Предложить</span></button>
+<button class="nav-btn" onclick="navigate('profile')" id="nav-profile">
+<span class="icon">👤</span><span class="label">Профиль</span>
+</button>
+<button class="nav-btn" onclick="navigate('search')" id="nav-search">
+<span class="icon">🔍</span><span class="label">Поиск</span>
+</button>
+<button class="nav-btn" onclick="navigate('catalog')" id="nav-catalog">
+<span class="icon">📦</span><span class="label">Каталог</span>
+</button>
+<button class="nav-btn" onclick="navigate('cart')" id="nav-cart">
+<span class="icon">🛒</span><span class="label">Корзина</span>
+<span class="badge" id="cart-badge">0</span>
+</button>
+<button class="nav-btn" onclick="navigate('support')" id="nav-support">
+<span class="icon">💬</span><span class="label">Поддержка</span>
+<span class="badge" id="support-badge">0</span>
+</button>
+<button class="nav-btn" onclick="navigate('settings')" id="nav-settings">
+<span class="icon">⚙️</span><span class="label">Настройки</span>
+</button>
+<button class="nav-btn" onclick="navigate('reviews')" id="nav-reviews">
+<span class="icon">⭐</span><span class="label">Отзывы</span>
+</button>
+<button class="nav-btn hidden" id="nav-admin" onclick="navigate('admin')">
+<span class="icon">🛡️</span><span class="label">Панель</span>
+</button>
+<button class="nav-btn hidden" id="nav-suggest" onclick="openSuggest()">
+<span class="icon">✨</span><span class="label">Предложить</span>
+</button>
 <div class="sidebar-footer">
 <div class="email" id="user-email">Не авторизован</div>
 <button class="btn btn-outline btn-sm" id="auth-btn" onclick="openLogin()">Войти</button>
@@ -470,7 +514,17 @@ padding: 8px; overflow-x: auto; border-right: none; border-bottom: 1px solid var
 <main class="main">
 <section id="home" class="page active">
 <div class="hero">
-<div class="hero-bg"></div>
+<div class="hero-carousel" id="hero-carousel">
+<!-- 🔁 ВСТАВЬТЕ ССЫЛКИ НА ФОТО В МАССИВ heroImages В JS (строки ~850) -->
+<img class="hero-slide active" src="" alt="Show 1">
+<img class="hero-slide" src="" alt="Show 2">
+<img class="hero-slide" src="" alt="Show 3">
+<img class="hero-slide" src="" alt="Show 4">
+<div class="carousel-nav">
+<button class="carousel-btn" onclick="carouselNav(-1)">←</button>
+<button class="carousel-btn" onclick="carouselNav(1)">→</button>
+</div>
+</div>
 <div class="hero-quotes">
 <div class="quote">«Мода — это не просто одежда. Это способ рассказать историю без слов.»</div>
 <div class="quote-author">— BYRMALDA</div>
@@ -491,7 +545,9 @@ padding: 8px; overflow-x: auto; border-right: none; border-bottom: 1px solid var
 </section>
 <section id="profile" class="page">
 <div class="profile-header">
-<div class="avatar-wrap" onclick="openAvatarModal()"><div class="avatar" id="avatar-display">👤</div></div>
+<div class="avatar-wrap" onclick="openAvatarModal()">
+<div class="avatar" id="avatar-display">👤</div>
+</div>
 <div class="profile-info">
 <h2 id="profile-name">Гость</h2>
 <div class="profile-meta">
@@ -501,44 +557,23 @@ padding: 8px; overflow-x: auto; border-right: none; border-bottom: 1px solid var
 </div>
 </div>
 </div>
-<div class="delivery-section" id="delivery-section" style="display:none">
-<div class="delivery-title">📦 Адрес доставки</div>
-<div class="delivery-option" onclick="selectDelivery('cdek')">
-<input type="radio" name="delivery" id="del-cdek" value="cdek">
-<label for="del-cdek" style="cursor:pointer;font-weight:500">🇷🇺 СДЭК (Россия)</label>
+<!-- 🔁 ДОСТАВКА - ИСПРАВЛЕНО -->
+<div class="delivery-box hidden" id="delivery-box">
+<div class="delivery-info">
+<div class="delivery-provider" id="del-provider">Доставка не указана</div>
+<div class="delivery-addr" id="del-addr"></div>
 </div>
-<div class="delivery-fields hidden" id="fields-cdek">
-<div class="form-group"><label class="form-label">Город *</label><input type="text" class="form-input" id="cdek-city"></div>
-<div class="form-group"><label class="form-label">Улица *</label><input type="text" class="form-input" id="cdek-street"></div>
-<div class="form-group"><label class="form-label">Дом *</label><input type="text" class="form-input" id="cdek-house"></div>
-</div>
-<div class="delivery-option" onclick="selectDelivery('ua')">
-<input type="radio" name="delivery" id="del-ua" value="ua">
-<label for="del-ua" style="cursor:pointer;font-weight:500">🇺🇦 UaExpress (Украина)</label>
-</div>
-<div class="delivery-fields hidden" id="fields-ua">
-<div class="form-group"><label class="form-label">Город *</label><input type="text" class="form-input" id="ua-city"></div>
-<div class="form-group"><label class="form-label">Улица *</label><input type="text" class="form-input" id="ua-street"></div>
-<div class="form-group"><label class="form-label">Дом *</label><input type="text" class="form-input" id="ua-house"></div>
-</div>
-<div class="delivery-option" onclick="selectDelivery('usa')">
-<input type="radio" name="delivery" id="del-usa" value="usa">
-<label for="del-usa" style="cursor:pointer;font-weight:500">🇺🇸 USmall (США)</label>
-</div>
-<div class="delivery-fields hidden" id="fields-usa">
-<div class="form-group"><label class="form-label">City *</label><input type="text" class="form-input" id="usa-city"></div>
-<div class="form-group"><label class="form-label">Street *</label><input type="text" class="form-input" id="usa-street"></div>
-<div class="form-group"><label class="form-label">House/Number *</label><input type="text" class="form-input" id="usa-house"></div>
-</div>
-<div class="delivery-warning">⚠️ <strong>Внимание:</strong> Если адрес пункта выдачи указан неверно, заказ будет утилизирован без возврата средств. Пожалуйста, указывайте точные и честные адреса ПВЗ.</div>
-<button class="btn mt-16" onclick="saveDeliveryAddress()">💾 Сохранить адрес</button>
-<div class="success hidden" id="delivery-success" style="margin-top:12px">✅ Адрес сохранён!</div>
+<button class="btn btn-sm" style="width:auto" onclick="openDeliveryModal()">Изменить</button>
 </div>
 <h3 class="section-title">Мои заказы</h3>
-<div class="orders-list" id="orders-list"><div class="text-center" style="padding:32px;color:var(--text-dim)">Загрузка заказов...</div></div>
+<div class="orders-list" id="orders-list">
+<div class="text-center" style="padding:32px;color:var(--text-dim)">Загрузка заказов...</div>
+</div>
 </section>
 <section id="search" class="page">
-<div class="search-wrap"><input type="text" class="search-input" id="search-input" placeholder="Поиск: футболка, free drun, кроссовки..." oninput="handleSearch(event)"></div>
+<div class="search-wrap">
+<input type="text" class="search-input" id="search-input" placeholder="Поиск: футболка, free drun, кроссовки..." oninput="handleSearch(event)">
+</div>
 <div class="results-grid" id="search-results"></div>
 </section>
 <section id="catalog" class="page">
@@ -567,9 +602,18 @@ padding: 8px; overflow-x: auto; border-right: none; border-bottom: 1px solid var
 <div class="stock" id="p-stock"></div>
 <div id="p-deleted-notice" class="deleted-notice hidden">Товар удален</div>
 <div class="options" id="p-options">
-<div class="opt-group" id="opt-size-group"><label>Размер</label><select class="opt-select" id="p-size"></select></div>
-<div class="opt-group" id="opt-color-group"><label>Цвет</label><select class="opt-select" id="p-color"></select></div>
-<div class="opt-group"><label>Количество</label><input type="number" class="opt-select" id="p-qty" value="1" min="1" max="10"></div>
+<div class="opt-group" id="opt-size-group">
+<label>Размер</label>
+<select class="opt-select" id="p-size"></select>
+</div>
+<div class="opt-group" id="opt-color-group">
+<label>Цвет</label>
+<select class="opt-select" id="p-color"></select>
+</div>
+<div class="opt-group">
+<label>Количество</label>
+<input type="number" class="opt-select" id="p-qty" value="1" min="1" max="10">
+</div>
 </div>
 <button class="btn" id="p-action" onclick="addToCart()">Купить</button>
 </div>
@@ -584,7 +628,10 @@ padding: 8px; overflow-x: auto; border-right: none; border-bottom: 1px solid var
 <thead><tr><th>Кол-во</th><th>Товар</th><th>Размер</th><th>Цвет</th><th>Цена</th><th></th></tr></thead>
 <tbody id="cart-items"></tbody>
 </table>
-<div class="cart-total">Итого: <span id="cart-total">$0.00</span><div class="delivery-note">Доставка: ~900 ₽/кг • Рассчитывается при оформлении</div></div>
+<div class="cart-total">
+Итого: <span id="cart-total">$0.00</span>
+<div class="delivery-note">Доставка: ~900 ₽/кг • Рассчитывается при оформлении</div>
+</div>
 <button class="btn" onclick="checkout()">Оформить заказ</button>
 </div>
 </section>
@@ -608,7 +655,9 @@ padding: 8px; overflow-x: auto; border-right: none; border-bottom: 1px solid var
 <button class="setting-btn" onclick="openReviewModal()"><span>⭐ Оставить отзыв</span><span>→</span></button>
 <button class="setting-btn" onclick="showSizeChart('clothing')"><span>📏 Размерная сетка (одежда)</span><span>→</span></button>
 <button class="setting-btn" onclick="showSizeChart('footwear')"><span>👟 Размерная сетка (обувь)</span><span>→</span></button>
-<button class="setting-btn" onclick="confirmLogout()" style="border-color:var(--error);color:var(--error)"><span>🚪 Выйти из аккаунта</span><span>→</span></button>
+<button class="setting-btn" onclick="confirmLogout()" style="border-color:var(--error);color:var(--error)">
+<span>🚪 Выйти из аккаунта</span><span>→</span>
+</button>
 </div>
 </section>
 <section id="reviews" class="page">
@@ -624,17 +673,26 @@ padding: 8px; overflow-x: auto; border-right: none; border-bottom: 1px solid var
 <h3>➕ Создать товар</h3>
 <div class="admin-grid">
 <div class="form-group"><label class="form-label">Название *</label><input class="admin-input" id="adm-name"></div>
-<div class="form-group"><label class="form-label">Категория *</label><select class="admin-input" id="adm-cat"><option value="clothing">Одежда</option><option value="footwear">Обувь</option></select></div>
+<div class="form-group"><label class="form-label">Категория *</label>
+<select class="admin-input" id="adm-cat"><option value="clothing">Одежда</option><option value="footwear">Обувь</option></select>
+</div>
 <div class="form-group"><label class="form-label">Тип *</label><input class="admin-input" id="adm-type" placeholder="футболка, кроссовки..."></div>
 <div class="form-group"><label class="form-label">Цена ($) *</label><input type="number" class="admin-input" id="adm-price" step="0.01"></div>
 <div class="form-group"><label class="form-label">В наличии *</label><input type="number" class="admin-input" id="adm-stock"></div>
 <div class="form-group"><label class="form-label">Масса (г) *</label><input type="number" class="admin-input" id="adm-weight"></div>
-<div class="form-group"><label class="form-label">Для кого</label><select class="admin-input" id="adm-aud"><option value="unisex">Унисекс</option><option value="male">Мужчина</option><option value="female">Женщина</option></select></div>
+<div class="form-group"><label class="form-label">Для кого</label>
+<select class="admin-input" id="adm-aud"><option value="unisex">Унисекс</option><option value="male">Мужчина</option><option value="female">Женщина</option></select>
+</div>
 <div class="form-group"><label class="form-label">Материал</label><input class="admin-input" id="adm-mat"></div>
 <div class="form-group"><label class="form-label">Цвет (через запятую)</label><input class="admin-input" id="adm-color" placeholder="Черный,Белый"></div>
 <div class="form-group"><label class="form-label">Размеры (через запятую)</label><input class="admin-input" id="adm-sizes" placeholder="S,M,L,XL"></div>
 <div class="form-group"><label class="form-label">Год релиза</label><input type="number" class="admin-input" id="adm-year" placeholder="2026"></div>
-<div class="form-group"><label class="form-label">Коллаборация</label><select class="admin-input" id="adm-collab-type" onchange="toggleCollabInput()"><option value="no">Нет</option><option value="yes">Да</option></select></div>
+<div class="form-group"><label class="form-label">Коллаборация</label>
+<select class="admin-input" id="adm-collab-type" onchange="toggleCollabInput()">
+<option value="no">Нет</option>
+<option value="yes">Да</option>
+</select>
+</div>
 <div class="form-group hidden" id="adm-collab-group"><label class="form-label">Название бренда</label><input class="admin-input" id="adm-collab-name"></div>
 </div>
 <div class="form-group"><label class="form-label">Фотографии</label><input type="file" class="admin-input" id="adm-photos" accept="image/*" multiple></div>
@@ -650,7 +708,9 @@ padding: 8px; overflow-x: auto; border-right: none; border-bottom: 1px solid var
 <div id="adm-edit-form" class="hidden">
 <div class="admin-grid">
 <div class="form-group"><label class="form-label">Название *</label><input class="admin-input" id="edit-name"></div>
-<div class="form-group"><label class="form-label">Категория *</label><select class="admin-input" id="edit-cat"><option value="clothing">Одежда</option><option value="footwear">Обувь</option></select></div>
+<div class="form-group"><label class="form-label">Категория *</label>
+<select class="admin-input" id="edit-cat"><option value="clothing">Одежда</option><option value="footwear">Обувь</option></select>
+</div>
 <div class="form-group"><label class="form-label">Тип *</label><input class="admin-input" id="edit-type"></div>
 <div class="form-group"><label class="form-label">Цена ($) *</label><input type="number" class="admin-input" id="edit-price" step="0.01"></div>
 <div class="form-group"><label class="form-label">В наличии *</label><input type="number" class="admin-input" id="edit-stock"></div>
@@ -663,160 +723,695 @@ padding: 8px; overflow-x: auto; border-right: none; border-bottom: 1px solid var
 <div class="form-group"><label class="form-label">Коллаборация</label><select class="admin-input" id="edit-collab-type" onchange="toggleEditCollabInput()"><option value="no">Нет</option><option value="yes">Да</option></select></div>
 <div class="form-group hidden" id="edit-collab-group"><label class="form-label">Название бренда</label><input class="admin-input" id="edit-collab-name"></div>
 </div>
-<div class="form-group"><label class="form-label">Фотографии</label><input type="file" class="admin-input" id="edit-photos" accept="image/*" multiple><div id="edit-current-photos" style="margin-top:8px;font-size:12px;color:var(--text-dim)"></div></div>
+<div class="form-group"><label class="form-label">Фотографии</label><input type="file" class="admin-input" id="edit-photos" accept="image/*" multiple>
+<div id="edit-current-photos" style="margin-top:8px;font-size:12px;color:var(--text-dim)"></div></div>
 <div class="form-group"><label class="form-label">Описание</label><textarea class="form-textarea" id="edit-desc"></textarea></div>
 <div class="btn-group"><button class="btn" onclick="admSaveProduct()">Сохранить</button><button class="btn btn-outline" onclick="hide($('adm-edit-form'))">Отмена</button></div>
 </div>
 </div>
-<div class="admin-section"><h3>🗑️ Удалить товар</h3><div class="flex gap-8"><input type="text" class="admin-input" id="adm-delete-id" placeholder="ID товара" style="flex:1"><button class="btn btn-danger btn-sm" onclick="admDeleteProduct()">Удалить</button></div></div>
-<div class="admin-section"><h3>👥 Пользователи</h3><div class="flex gap-8"><input type="text" class="admin-input" id="adm-uid" placeholder="UID" style="flex:1"><button class="btn btn-danger btn-sm" onclick="admBlockUser()">Заблокировать</button><button class="btn btn-success btn-sm" onclick="admUnblockUser()">Разблокировать</button></div></div>
-<div class="admin-section"><h3>📦 Заказы</h3><div class="flex gap-8"><input type="text" class="admin-input" id="adm-oid" placeholder="ID заказа" style="flex:1"><button class="btn btn-sm" onclick="admFindOrder()">Найти</button></div><div id="adm-order-res" class="mt-16 hidden"></div></div>
-<div class="admin-section"><h3>⭐ Отзывы</h3><div id="adm-reviews-mod"></div></div>
-<div class="admin-section"><h3>🖼️ Аватарки</h3><div id="adm-avatars-mod"></div></div>
+<div class="admin-section">
+<h3>🗑️ Удалить товар</h3>
+<div class="flex gap-8"><input type="text" class="admin-input" id="adm-delete-id" placeholder="ID товара" style="flex:1"><button class="btn btn-danger btn-sm" onclick="admDeleteProduct()">Удалить</button></div>
+</div>
+<div class="admin-section">
+<h3>👥 Пользователи</h3>
+<div class="flex gap-8"><input type="text" class="admin-input" id="adm-uid" placeholder="UID пользователя" style="flex:1"><button class="btn btn-danger btn-sm" onclick="admBlockUser()">Заблок.</button><button class="btn btn-success btn-sm" onclick="admUnblockUser()">Разблок.</button></div>
+</div>
+<div class="admin-section">
+<h3>📦 Заказы</h3>
+<div class="flex gap-8"><input type="text" class="admin-input" id="adm-oid" placeholder="ID или трек" style="flex:1"><button class="btn btn-sm" onclick="admFindOrder()">Найти</button></div>
+<div id="adm-order-res" class="mt-16 hidden"></div>
+</div>
+<div class="admin-section"><h3>⭐ Отзывы на модерации</h3><div id="adm-reviews-mod"></div></div>
+<div class="admin-section"><h3>🖼️ Аватарки на модерации</h3><div id="adm-avatars-mod"></div></div>
 <div class="admin-section"><h3>✨ Предложения</h3><div id="adm-suggestions"></div></div>
 <div class="admin-section"><h3>🚨 Жалобы</h3><div id="adm-reports"></div></div>
 </section>
 </main>
 </div>
-
 <!-- MODALS -->
-<div class="modal" id="login-modal"><div class="modal-content"><span class="modal-close" onclick="closeModal('login-modal')">&times;</span><div class="modal-title">Вход</div><div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" id="log-email"></div><div class="form-group"><label class="form-label">Пароль</label><input type="password" class="form-input" id="log-pass"></div><button class="btn" onclick="doLogin()">Войти</button><div class="error" id="log-err"></div><span class="link" onclick="switchReg()">Нет аккаунта? Зарегистрироваться</span></div></div>
-
-<div class="modal" id="reg-modal"><div class="modal-content"><span class="modal-close" onclick="closeModal('reg-modal')">&times;</span><div class="modal-title" id="reg-title">Регистрация</div><div id="reg-step-1"><div class="form-group"><label class="form-label">Email *</label><input type="email" class="form-input" id="reg-email"></div><button class="btn" onclick="regStep1()">Далее</button></div><div id="reg-step-2" class="hidden"><div class="success">✉️ Письмо отправлено</div><div style="margin:16px 0;font-size:13px;color:var(--text-dim)">Проверьте email и перейдите по ссылке.</div><button class="btn" onclick="regStep2()">Я подтвердил(а) почту</button></div><div id="reg-step-3" class="hidden"><div class="form-group"><label class="form-label">Имя *</label><input type="text" class="form-input" id="reg-name"></div><div class="form-group"><label class="form-label">Пароль *</label><input type="password" class="form-input" id="reg-pass"></div><div class="form-group"><label class="form-label">Повтор пароля *</label><input type="password" class="form-input" id="reg-pass2"></div><button class="btn" onclick="regStep3()">Завершить</button><div class="error" id="reg-err"></div></div><div id="reg-ok" class="hidden text-center"><div style="font-size:42px;margin:16px 0">✅</div><div style="font-size:17px;margin-bottom:20px">Добро пожаловать!</div><button class="btn" onclick="closeModal('reg-modal');navigate('profile')">В профиль</button></div></div></div>
-
-<div class="modal" id="logout-confirm-modal"><div class="modal-content" style="text-align:center"><span class="modal-close" onclick="closeModal('logout-confirm-modal')">&times;</span><div style="font-size:42px;margin:16px 0">🚪</div><div class="modal-title">Выйти?</div><p style="color:var(--text-dim);margin-bottom:24px">Вы уверены?</p><div class="btn-group" style="justify-content:center"><button class="btn btn-danger" onclick="doLogout()">Да</button><button class="btn btn-outline" onclick="closeModal('logout-confirm-modal')">Отмена</button></div></div></div>
-
-<div class="modal" id="avatar-modal"><div class="modal-content"><span class="modal-close" onclick="closeModal('avatar-modal')">&times;</span><div class="modal-title">Аватарка</div><div class="form-group"><label class="form-label">Файл</label><input type="file" class="form-input" id="av-file" accept="image/*"></div><button class="btn" onclick="submitAvatar()">Отправить</button></div></div>
-
-<div class="modal" id="suggest-modal"><div class="modal-content wide"><span class="modal-close" onclick="closeModal('suggest-modal')">&times;</span><div class="modal-title">Предложить товар</div><div class="admin-grid"><div class="form-group"><label class="form-label">Название *</label><input class="admin-input" id="sug-name"></div><div class="form-group"><label class="form-label">Категория *</label><select class="admin-input" id="sug-cat"><option value="clothing">Одежда</option><option value="footwear">Обувь</option></select></div><div class="form-group"><label class="form-label">Тип *</label><input class="admin-input" id="sug-type"></div><div class="form-group"><label class="form-label">Цена *</label><input type="number" class="admin-input" id="sug-price" step="0.01"></div></div><div class="form-group"><label class="form-label">Фото *</label><input type="file" class="admin-input" id="sug-img" accept="image/*"></div><button class="btn" onclick="submitSuggestion()">Отправить</button></div></div>
-
-<div class="modal" id="review-modal"><div class="modal-content"><span class="modal-close" onclick="closeModal('review-modal')">&times;</span><div class="modal-title">Отзыв</div><div class="form-group"><label class="form-label">Оценка</label><div style="font-size:22px;letter-spacing:4px;cursor:pointer" id="rev-stars"><span onclick="setRating(1)">☆</span><span onclick="setRating(2)">☆</span><span onclick="setRating(3)">☆</span><span onclick="setRating(4)">☆</span><span onclick="setRating(5)">☆</span></div></div><div class="form-group"><label class="form-label">Текст *</label><textarea class="form-textarea" id="rev-text"></textarea></div><button class="btn" onclick="submitReview()">Отправить</button><div class="success hidden" id="rev-ok">✅ Отправлено на модерацию</div></div></div>
-
-<div class="modal" id="report-modal"><div class="modal-content"><span class="modal-close" onclick="closeModal('report-modal')">&times;</span><div class="modal-title">Жалоба</div><div class="form-group"><label class="form-label">Описание *</label><textarea class="form-textarea" id="rep-text"></textarea></div><button class="btn" onclick="submitReport()">Отправить</button><div class="success hidden" id="rep-ok">✅ Отправлено</div></div></div>
-
-<div class="modal" id="checkout-modal"><div class="modal-content"><span class="modal-close" onclick="closeModal('checkout-modal')">&times;</span><div class="modal-title">Оплата</div><div style="margin:18px 0;line-height:1.7"><p>Для оплаты напишите:</p><a href="https://t.me/fueum" target="_blank" style="font-size:18px;font-weight:600;color:#0088cc">@fueum</a><p style="font-size:13px;color:var(--text-dim);margin-top:14px">После оплаты заказ появится в профиле.</p></div><button class="btn" onclick="confirmCheckout()">Понятно</button></div></div>
-
-<div class="modal" id="sizechart-modal"><div class="modal-content wide"><span class="modal-close" onclick="closeModal('sizechart-modal')">&times;</span><div class="modal-title" id="sz-title">Размерная сетка</div><div id="sz-content"></div></div></div>
-
+<div class="modal" id="login-modal">
+<div class="modal-content">
+<span class="modal-close" onclick="closeModal('login-modal')">&times;</span>
+<div class="modal-title">Вход</div>
+<div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" id="log-email"></div>
+<div class="form-group"><label class="form-label">Пароль</label><input type="password" class="form-input" id="log-pass"></div>
+<button class="btn" onclick="doLogin()">Войти</button>
+<div class="error" id="log-err"></div>
+<span class="link" onclick="switchReg()">Нет аккаунта? Зарегистрироваться</span>
+</div>
+</div>
+<div class="modal" id="reg-modal">
+<div class="modal-content">
+<span class="modal-close" onclick="closeModal('reg-modal')">&times;</span>
+<div class="modal-title" id="reg-title">Регистрация</div>
+<div id="reg-step-1">
+<div class="form-group"><label class="form-label">Email *</label><input type="email" class="form-input" id="reg-email"></div>
+<div class="form-group"><label class="form-label">Имя *</label><input type="text" class="form-input" id="reg-name"></div>
+<div class="form-group"><label class="form-label">Пароль *</label><input type="password" class="form-input" id="reg-pass"></div>
+<div class="form-group"><label class="form-label">Повтор пароля *</label><input type="password" class="form-input" id="reg-pass2"></div>
+<button class="btn" onclick="regStep1()">Далее</button>
+<div class="error" id="reg-err"></div>
+</div>
+<div id="reg-step-2" class="hidden text-center">
+<div style="font-size:42px;margin:16px 0">✉️</div>
+<div style="font-size:16px;margin-bottom:16px">Подтверждение отправлено</div>
+<div style="font-size:13px;color:var(--text-dim);margin-bottom:24px">
+Перейдите по ссылке в письме, затем нажмите кнопку ниже.<br>
+<small>Проверьте папку "Спам"</small>
+</div>
+<button class="btn" onclick="regStep2()">Я подтвердил(а) почту</button>
+</div>
+<div id="reg-ok" class="hidden text-center">
+<div style="font-size:42px;margin:16px 0">✅</div>
+<div style="font-size:17px;margin-bottom:20px">Добро пожаловать в BYRMALDA!</div>
+<button class="btn" onclick="closeModal('reg-modal');navigate('profile')">В профиль</button>
+</div>
+</div>
+</div>
+<div class="modal" id="logout-confirm-modal">
+<div class="modal-content" style="text-align:center">
+<span class="modal-close" onclick="closeModal('logout-confirm-modal')">&times;</span>
+<div style="font-size:42px;margin:16px 0">🚪</div>
+<div class="modal-title">Выйти из аккаунта?</div>
+<p style="color:var(--text-dim);margin-bottom:24px">Все несохранённые изменения будут потеряны.</p>
+<div class="btn-group" style="justify-content:center">
+<button class="btn btn-danger" onclick="doLogout()">Да, выйти</button>
+<button class="btn btn-outline" onclick="closeModal('logout-confirm-modal')">Отмена</button>
+</div>
+</div>
+</div>
+<div class="modal" id="avatar-modal">
+<div class="modal-content">
+<span class="modal-close" onclick="closeModal('avatar-modal')">&times;</span>
+<div class="modal-title">Новая аватарка</div>
+<div class="form-group"><label class="form-label">Выберите изображение</label><input type="file" class="form-input" id="av-file" accept="image/*"></div>
+<div style="font-size:12px;color:var(--text-dim);margin:12px 0">Аватарка отправится на модерацию.</div>
+<button class="btn" onclick="submitAvatar()">Отправить</button>
+</div>
+</div>
+<div class="modal" id="suggest-modal">
+<div class="modal-content wide">
+<span class="modal-close" onclick="closeModal('suggest-modal')">&times;</span>
+<div class="modal-title">Предложить товар</div>
+<div class="admin-grid">
+<div class="form-group"><label class="form-label">Название *</label><input class="admin-input" id="sug-name"></div>
+<div class="form-group"><label class="form-label">Категория *</label><select class="admin-input" id="sug-cat"><option value="clothing">Одежда</option><option value="footwear">Обувь</option></select></div>
+<div class="form-group"><label class="form-label">Тип *</label><input class="admin-input" id="sug-type"></div>
+<div class="form-group"><label class="form-label">Цена ($) *</label><input type="number" class="admin-input" id="sug-price" step="0.01"></div>
+</div>
+<div class="form-group"><label class="form-label">Фото *</label><input type="file" class="admin-input" id="sug-img" accept="image/*"></div>
+<div class="admin-grid">
+<div class="form-group"><label class="form-label">Для кого</label><select class="admin-input" id="sug-aud"><option value="unisex">Унисекс</option><option value="male">Мужчина</option><option value="female">Женщина</option></select></div>
+<div class="form-group"><label class="form-label">Размеры</label><input class="admin-input" id="sug-sizes"></div>
+</div>
+<div class="form-group"><label class="form-label">Материал</label><input class="admin-input" id="sug-mat"></div>
+<div class="form-group"><label class="form-label">Описание</label><textarea class="form-textarea" id="sug-desc"></textarea></div>
+<button class="btn" onclick="submitSuggestion()">Отправить на модерацию</button>
+</div>
+</div>
+<div class="modal" id="review-modal">
+<div class="modal-content">
+<span class="modal-close" onclick="closeModal('review-modal')">&times;</span>
+<div class="modal-title">Оставить отзыв</div>
+<div class="form-group">
+<label class="form-label">Оценка</label>
+<div style="font-size:22px;letter-spacing:4px;cursor:pointer" id="rev-stars">
+<span onclick="setRating(1)">☆</span><span onclick="setRating(2)">☆</span><span onclick="setRating(3)">☆</span><span onclick="setRating(4)">☆</span><span onclick="setRating(5)">☆</span>
+</div>
+</div>
+<div class="form-group"><label class="form-label">Текст *</label><textarea class="form-textarea" id="rev-text"></textarea></div>
+<button class="btn" onclick="submitReview()">Отправить</button>
+<div class="error" id="rev-err"></div>
+</div>
+</div>
+<div class="modal" id="report-modal">
+<div class="modal-content">
+<span class="modal-close" onclick="closeModal('report-modal')">&times;</span>
+<div class="modal-title">Пожаловаться</div>
+<div class="form-group"><label class="form-label">Описание проблемы *</label><textarea class="form-textarea" id="rep-text"></textarea></div>
+<button class="btn" onclick="submitReport()">Отправить</button>
+</div>
+</div>
+<div class="modal" id="checkout-modal">
+<div class="modal-content">
+<span class="modal-close" onclick="closeModal('checkout-modal')">&times;</span>
+<div class="modal-title">Оформление</div>
+<div style="margin:18px 0;line-height:1.7">
+<p>Для оплаты напишите админу в телеграм:</p>
+<a href="https://t.me/fueum" target="_blank" style="font-size:18px;font-weight:600;color:#0088cc;text-decoration:none">@fueum</a>
+<p style="font-size:13px;color:var(--text-dim);margin-top:14px">После оплаты заказ появится в профиле.</p>
+</div>
+<button class="btn" onclick="confirmCheckout()">Понятно</button>
+</div>
+</div>
+<div class="modal" id="sizechart-modal">
+<div class="modal-content wide">
+<span class="modal-close" onclick="closeModal('sizechart-modal')">&times;</span>
+<div class="modal-title" id="sz-title">Размерная сетка</div>
+<div id="sz-content"></div>
+</div>
+</div>
+<!-- 🔁 Модальное окно выбора доставки -->
+<div class="modal" id="delivery-modal">
+<div class="modal-content">
+<span class="modal-close" onclick="closeModal('delivery-modal')">&times;</span>
+<div class="modal-title">Выбор доставки</div>
+<div class="form-group">
+<label class="form-label">Служба доставки</label>
+<div class="delivery-option" onclick="selectDelivery('cdek')" style="margin:8px 0;padding:12px;background:var(--bg);border:2px solid transparent;border-radius:8px;cursor:pointer">
+<input type="radio" name="del-opt" id="d-cdek" value="cdek">
+<label for="d-cdek" style="cursor:pointer;margin-left:8px;font-weight:500">🇷🇺 СДЭК (Россия)</label>
+</div>
+<div class="delivery-option" onclick="selectDelivery('ua')" style="margin:8px 0;padding:12px;background:var(--bg);border:2px solid transparent;border-radius:8px;cursor:pointer">
+<input type="radio" name="del-opt" id="d-ua" value="ua">
+<label for="d-ua" style="cursor:pointer;margin-left:8px;font-weight:500">🇺🇦 UaExpress (Украина)</label>
+</div>
+<div class="delivery-option" onclick="selectDelivery('usa')" style="margin:8px 0;padding:12px;background:var(--bg);border:2px solid transparent;border-radius:8px;cursor:pointer">
+<input type="radio" name="del-opt" id="d-usa" value="usa">
+<label for="d-usa" style="cursor:pointer;margin-left:8px;font-weight:500">🇺🇸 USmall (США)</label>
+</div>
+</div>
+<div id="del-fields" class="hidden" style="margin-top:16px;padding:16px;background:var(--bg);border:1px solid var(--border);border-radius:8px">
+<div class="form-group"><label class="form-label">Город *</label><input type="text" class="form-input" id="del-city"></div>
+<div class="form-group"><label class="form-label">Улица *</label><input type="text" class="form-input" id="del-street"></div>
+<div class="form-group"><label class="form-label">Дом / Номер ПВЗ *</label><input type="text" class="form-input" id="del-house"></div>
+<button class="btn" onclick="saveDelivery()">💾 Сохранить и закрыть</button>
+<div class="delivery-warning" style="margin-top:12px">⚠️ Указывайте точный адрес. При ошибке заказ утилизируется без возврата.</div>
+</div>
+</div>
+</div>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification, onAuthStateChanged, signOut, updateProfile, applyActionCode } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 import { getFirestore, collection, doc, setDoc, getDoc, getDocs, query, where, orderBy, limit, updateDoc, deleteDoc, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-storage.js";
 import { initializeAppCheck, ReCaptchaV3Provider, getToken } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app-check.js";
 
-const firebaseConfig = {apiKey:"AIzaSyD0YkXZgk8gh01Y7XH3ZRVU5lCjGJ_IRCw",authDomain:"frwerwerwr.firebaseapp.com",projectId:"frwerwerwr",storageBucket:"frwerwerwr.firebasestorage.app",messagingSenderId:"969880048160",appId:"1:969880048160:web:9001a95f7ea28e98912245",measurementId:"G-HCQEFD2SJF"};
+const firebaseConfig = {
+apiKey: "AIzaSyD0YkXZgk8gh01Y7XH3ZRVU5lCjGJ_IRCw",
+authDomain: "frwerwerwr.firebaseapp.com",
+projectId: "frwerwerwr",
+storageBucket: "frwerwerwr.firebasestorage.app",
+messagingSenderId: "969880048160",
+appId: "1:969880048160:web:9001a95f7ea28e98912245",
+measurementId: "G-HCQEFD2SJF"
+};
 const app = initializeApp(firebaseConfig);
-try { const appCheck = initializeAppCheck(app, { provider: new ReCaptchaV3Provider("6LchEOwsAAAAAPqAkyDyf2wFoucWytU6ThkQKoGB"), isTokenAutoRefreshEnabled: true }); getToken(appCheck, true).catch(e=>console.warn('App Check:',e.message)); } catch(e){ console.warn('App Check init:',e.message); }
-const auth = getAuth(app), db = getFirestore(app), IMGBB_KEY = "eeef3479094c5cf6bf42607927565065", ADMIN_EMAIL = "sobakastalina123@gmail.com", RATES = {USD_TO_RUB:90,USD_TO_UAH:37};
-let user=null, userData=null, cart=JSON.parse(localStorage.getItem('byrmalda_cart'))||[], curProd=null, galIdx=0, chatUnread=0, lang='ru', theme=localStorage.getItem('theme')||'light', revStars=0, hasSubmittedReview=false;
-const $=id=>document.getElementById(id), show=el=>el.classList.remove('hidden'), hide=el=>el.classList.add('hidden'), fmtDate=ts=>ts?.toDate?.()?.toLocaleDateString('ru-RU')||'...', genId=()=>Math.random().toString(36).substring(2,10).toUpperCase();
+const appCheck = initializeAppCheck(app, { provider: new ReCaptchaV3Provider("6LchEOwsAAAAAPqAkyDyf2wFoucWytU6ThkQKoGB"), isTokenAutoRefreshEnabled: true });
+getToken(appCheck, true).then(() => console.log('🔐 App Check активирован')).catch(err => console.error('🔐 App Check ошибка:', err.message));
 
-window.addEventListener('DOMContentLoaded',async()=>{
-const urlParams=new URLSearchParams(window.location.search), oobCode=urlParams.get('oobCode'), mode=urlParams.get('mode');
-if(oobCode&&mode==='verifyEmail'){try{await applyActionCode(auth,oobCode);window.history.replaceState({},document.title,window.location.pathname);alert('✅ Email подтверждён!');if(auth.currentUser){await auth.currentUser.reload();if(auth.currentUser.emailVerified){await loadUser();updateAuthUI();}}}catch(e){alert('❌ Ошибка: '+e.message);}}
-applyTheme();
-onAuthStateChanged(auth,async u=>{if(u){user=u;await loadUser();updateAuthUI();if(u.email===ADMIN_EMAIL){$('nav-admin').classList.remove('hidden');$('nav-suggest').classList.add('hidden');loadAdminPanels();}else{$('nav-admin').classList.add('hidden');$('nav-suggest').classList.remove('hidden');}loadOrders();loadChat();checkReviewSubmission();renderDeliveryAddress();}else{user=userData=null;resetAuthUI();hide($('delivery-section'));}});
-loadCartCount();genCatalog();setupListeners();
+const auth = getAuth(app), db = getFirestore(app), storage = getStorage(app);
+const IMGBB_KEY = "eeef3479094c5cf6bf42607927565065";
+const ADMIN_EMAIL = "sobakastalina123@gmail.com";
+const RATES = { USD_TO_RUB: 90, USD_TO_UAH: 37 };
+let user = null, userData = null, curProd = null, galIdx = 0, chatUnread = 0, lang = 'ru', theme = localStorage.getItem('theme') || 'light', revStars = 0, carouselIdx = 0, carouselTimer = null;
+
+// 🔁 ВСТАВЬТЕ ССЫЛКИ НА ФОТО ЗДЕСЬ:
+const heroImages = [
+  "https://raw.githubusercontent.com/lookup-mrktplce/xcdzxc/main/IMG_20260515_101118.png",
+  "https://raw.githubusercontent.com/lookup-mrktplce/xcdzxc/main/IMG_20260515_103613.png",
+  "https://raw.githubusercontent.com/lookup-mrktplce/xcdzxc/main/file_00000000756c71f49ea43663444da286.png",
+  "https://via.placeholder.com/420x560/111/fff?text=Slide+4"
+];
+
+const $ = id => document.getElementById(id);
+const show = el => el.classList.remove('hidden');
+const hide = el => el.classList.add('hidden');
+const fmtDate = ts => ts?.toDate?.()?.toLocaleDateString('ru-RU') || '...';
+const genId = () => Math.random().toString(36).substring(2, 10).toUpperCase();
+
+// Carousel Logic
+function initCarousel() {
+const slides = document.querySelectorAll('.hero-slide');
+slides.forEach((s,i) => s.src = heroImages[i % heroImages.length]);
+carouselIdx = 0; updateCarousel();
+carouselTimer = setInterval(() => carouselNav(1), 8000);
+}
+window.carouselNav = d => {
+const len = heroImages.length;
+carouselIdx = (carouselIdx + d + len) % len;
+updateCarousel();
+clearInterval(carouselTimer);
+carouselTimer = setInterval(() => carouselNav(1), 8000);
+};
+function updateCarousel() {
+document.querySelectorAll('.hero-slide').forEach((s,i) => s.classList.toggle('active', i===carouselIdx));
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+const url = new URL(window.location.href);
+const oob = url.searchParams.get('oobCode'), mode = url.searchParams.get('mode');
+if (oob && mode === 'verifyEmail') {
+applyActionCode(auth, oob).then(() => {
+url.searchParams.delete('oobCode'); url.searchParams.delete('mode');
+window.history.replaceState({}, '', url);
+alert('✅ Email подтверждён!');
+}).catch(e => alert('❌ Ошибка подтверждения: ' + e.message));
+}
+applyTheme(); initCarousel();
+onAuthStateChanged(auth, async u => {
+if (u) {
+user = u; await loadUser(); updateAuthUI();
+if (u.email === ADMIN_EMAIL) { show($('nav-admin')); hide($('nav-suggest')); loadAdminPanels(); }
+else { hide($('nav-admin')); show($('nav-suggest')); }
+loadOrders(); loadChat(); checkReviewStatus(); renderDelivery();
+} else {
+user = userData = null; resetAuthUI(); hide($('delivery-box'));
+}
+});
+loadCartCount(); genCatalog(); setupListeners(); setInterval(autoUpdateOrders, 300000);
 });
 
-async function loadUser(){if(!user)return;try{const snap=await getDoc(doc(db,'artifacts/byrmalda-prod/users',user.uid));userData=snap.exists()?snap.data():await createUserDoc();renderProfile();}catch(e){if(e.code==='permission-denied'){await createUserDoc();userData={uid:user.uid,email:user.email,name:user.displayName||user.email.split('@')[0],deliveryCountry:null,deliveryAddress:{cdek:null,ua:null,usa:null}};renderProfile();}}}
-async function createUserDoc(){const data={uid:user.uid,email:user.email,name:user.displayName||user.email.split('@')[0],avatar:null,avatarPending:null,registrationDate:serverTimestamp(),isBlocked:false,hasVerifiedProduct:false,language:'ru',theme:'light',hasSubmittedReview:false,deliveryCountry:null,deliveryAddress:{cdek:null,ua:null,usa:null}};await setDoc(doc(db,'artifacts/byrmalda-prod/users',user.uid),data,{merge:true});return data;}
-function renderProfile(){if(!userData)return;$('profile-name').textContent=userData.name||'Пользователь';$('profile-id').textContent=user.uid.substring(0,10)+'...';$('profile-email').textContent=user.email;$('profile-date').textContent=fmtDate(userData.registrationDate);if(userData.avatar)$('avatar-display').innerHTML=`<img src="${userData.avatar}" style="width:100%;height:100%;object-fit:cover">`;if(userData.hasVerifiedProduct)$('profile-name').innerHTML=`<span class="verified">✓</span> ${userData.name}`;if(user)show($('delivery-section'));}
-function updateAuthUI(){$('auth-btn').textContent='Выйти';$('auth-btn').onclick=()=>openModal('logout-confirm-modal');$('user-email').textContent=user.email;}
-function resetAuthUI(){$('auth-btn').textContent='Войти';$('auth-btn').onclick=()=>openModal('login-modal');$('user-email').textContent='Не авторизован';$('profile-name').textContent='Гость';$('profile-id').textContent='-';$('profile-email').textContent='-';$('profile-date').textContent='-';$('avatar-display').innerHTML='👤';}
+async function loadUser() {
+if (!user) return;
+try {
+const snap = await getDoc(doc(db, 'artifacts/byrmalda-prod/users', user.uid));
+userData = snap.exists() ? snap.data() : await createUserDoc();
+renderProfile(); syncCartFromDB();
+} catch(e) {
+console.error('loadUser:',e);
+if (e.code === 'permission-denied') { await createUserDoc(); loadUser(); }
+}
+}
+async function createUserDoc() {
+const d = {
+uid: user.uid, email: user.email, name: user.displayName || user.email.split('@')[0],
+avatar: null, avatarPending: null, registrationDate: serverTimestamp(),
+isBlocked: false, hasVerifiedProduct: false, language: 'ru', theme: 'light',
+reviewStatus: 'none', deliveryCountry: null, deliveryAddress: { cdek: null, ua: null, usa: null },
+cart: []
+};
+await setDoc(doc(db, 'artifacts/byrmalda-prod/users', user.uid), d, { merge: true });
+return d;
+}
+function renderProfile() {
+if (!userData) return;
+$('profile-name').textContent = userData.name || 'Пользователь';
+$('profile-id').textContent = user.uid.substring(0,10)+'...';
+$('profile-email').textContent = user.email;
+$('profile-date').textContent = fmtDate(userData.registrationDate);
+if (userData.avatar) $('avatar-display').innerHTML = `<img src="${userData.avatar}" style="width:100%;height:100%;object-fit:cover">`;
+if (userData.hasVerifiedProduct) $('profile-name').innerHTML = `<span class="verified">✓</span> ${userData.name}`;
+}
+function updateAuthUI() { $('auth-btn').textContent = 'Выйти'; $('auth-btn').onclick = () => openModal('logout-confirm-modal'); $('user-email').textContent = user.email; }
+function resetAuthUI() { $('auth-btn').textContent = 'Войти'; $('auth-btn').onclick = () => openModal('login-modal'); $('user-email').textContent = 'Не авторизован'; $('profile-name').textContent = 'Гость'; $('profile-id').textContent = '-'; $('profile-email').textContent = '-'; $('profile-date').textContent = '-'; $('avatar-display').innerHTML = '👤'; }
 
-window.openLogin=()=>openModal('login-modal');window.switchReg=()=>{closeModal('login-modal');openModal('reg-modal');showStep(1);};
-window.doLogin=async()=>{const email=$('log-email').value.trim(),pass=$('log-pass').value;$('log-err').textContent='';if(!email||!pass){$('log-err').textContent='Заполните поля';return;}try{const cred=await signInWithEmailAndPassword(auth,email,pass);const u=cred.user;if(!u.emailVerified){try{await sendEmailVerification(u,{url:window.location.href,handleCodeInApp:true});}catch(e){console.log('sendEmailVerification:',e);}await signOut(auth);$('log-err').innerHTML=`✉️ Подтвердите почту.<br>Ссылка отправлена на <b>${email}</b>`;return;}const ud=await getDoc(doc(db,'artifacts/byrmalda-prod/users',u.uid));if(ud.exists()&&ud.data().isBlocked){await signOut(auth);showBlock();return;}closeModal('login-modal');}catch(e){console.error(e.code);$('log-err').textContent=e.code==='auth/user-not-found'||e.code==='auth/wrong-password'?'Аккаунт не найден или неверный пароль':'Ошибка: '+e.message;}};
+window.openLogin = () => openModal('login-modal');
+window.switchReg = () => { closeModal('login-modal'); openModal('reg-modal'); showStep(1); };
+window.doLogin = async () => {
+const email = $('log-email').value.trim(), pass = $('log-pass').value; $('log-err').textContent = '';
+if (!email || !pass) { $('log-err').textContent = 'Заполните поля'; return; }
+try {
+const cred = await signInWithEmailAndPassword(auth, email, pass);
+if (!cred.user.emailVerified) {
+await sendEmailVerification(cred.user, { url: window.location.href, handleCodeInApp: true });
+await signOut(auth);
+$('log-err').innerHTML = `✉️ Подтвердите почту.<br>Новая ссылка отправлена.`; return;
+}
+const ud = await getDoc(doc(db, 'artifacts/byrmalda-prod/users', cred.user.uid));
+if (ud.exists() && ud.data().isBlocked) { await signOut(auth); showBlock(); return; }
+closeModal('login-modal');
+} catch(e) { $('log-err').textContent = 'Неверный email или пароль'; }
+};
+window.regStep1 = async () => {
+const email = $('reg-email').value.trim(), name = $('reg-name').value.trim(), p1 = $('reg-pass').value, p2 = $('reg-pass2').value;
+$('reg-err').textContent = '';
+if (!email || !name || !p1 || !p2) { $('reg-err').textContent = 'Заполните все поля'; return; }
+if (p1 !== p2) { $('reg-err').textContent = 'Пароли не совпадают'; return; }
+try { await createUserWithEmailAndPassword(auth, email, p1); showStep(2); }
+catch(e) { $('reg-err').textContent = e.code === 'auth/email-already-in-use' ? 'Email уже зарегистрирован. Войдите.' : 'Ошибка: '+e.message; }
+};
+window.regStep2 = async () => {
+try {
+await auth.currentUser.reload();
+if (auth.currentUser.emailVerified) {
+await updateProfile(auth.currentUser, { displayName: $('reg-name').value });
+await createUserDoc(); $('reg-step-2').classList.add('hidden'); $('reg-ok').classList.remove('hidden');
+} else { $('reg-err').textContent = 'Почта ещё не подтверждена. Проверьте письмо.'; }
+} catch(e) { $('reg-err').textContent = 'Ошибка: '+e.message; }
+};
+function showStep(n) { [1,2].forEach(i => $(`reg-step-${i}`).classList.add('hidden')); $('reg-ok').classList.add('hidden'); $(`reg-step-${n}`).classList.remove('hidden'); }
 
-window.regStep1=async()=>{const email=$('reg-email').value.trim();if(!email){alert('Введите email');return;}sessionStorage.setItem('pending_email',email);showStep(2);};
-window.regStep2=async()=>{const email=sessionStorage.getItem('pending_email');if(!email){alert('Сессия истекла');return;}const currentUser=auth.currentUser;if(currentUser&&currentUser.email===email){await currentUser.reload();if(currentUser.emailVerified){showStep(3);return;}}try{if(currentUser&&currentUser.email===email)await sendEmailVerification(currentUser,{url:window.location.href,handleCodeInApp:true});alert('✉️ Ссылка отправлена на '+email);}catch(e){console.error(e);}showStep(3);};
-window.regStep3=async()=>{const email=sessionStorage.getItem('pending_email'),name=$('reg-name').value.trim(),p1=$('reg-pass').value,p2=$('reg-pass2').value;$('reg-err').textContent='';if(!name||!p1||!p2){$('reg-err').textContent='Заполните все поля';return;}if(p1!==p2){$('reg-err').textContent='Пароли не совпадают';return;}if(p1.length<6){$('reg-err').textContent='Пароль минимум 6 символов';return;}try{const cred=await createUserWithEmailAndPassword(auth,email,p1);await sendEmailVerification(cred.user,{url:window.location.href,handleCodeInApp:true});await setDoc(doc(db,'artifacts/byrmalda-prod/users',cred.user.uid),{uid:cred.user.uid,email,name,avatar:null,avatarPending:null,registrationDate:serverTimestamp(),isBlocked:false,hasVerifiedProduct:false,language:'ru',theme:'light',hasSubmittedReview:false,deliveryCountry:null,deliveryAddress:{cdek:null,ua:null,usa:null}},{merge:true});await updateProfile(cred.user,{displayName:name});$('reg-step-3').classList.add('hidden');$('reg-ok').classList.remove('hidden');}catch(e){console.error(e.code);if(e.code==='auth/email-already-in-use')$('reg-err').textContent='Email уже занят';else if(e.code==='auth/invalid-email')$('reg-err').textContent='Неверный email';else if(e.code==='auth/weak-password')$('reg-err').textContent='Слабый пароль';else $('reg-err').textContent='Ошибка: '+e.message;}};
-function showStep(n){[1,2,3].forEach(i=>$(`reg-step-${i}`).classList.add('hidden'));$('reg-ok').classList.add('hidden');$(`reg-step-${n}`).classList.remove('hidden');$('reg-title').textContent=['Регистрация','Подтверждение','Завершение'][n-1];}
+window.confirmLogout = () => { if (!user) openModal('login-modal'); else openModal('logout-confirm-modal'); };
+window.doLogout = async () => { closeModal('logout-confirm-modal'); await signOut(auth); userData = null; loadCartCount(); navigate('home'); };
+function showBlock() {
+const m = document.createElement('div'); m.className = 'modal active';
+m.innerHTML = `<div class="modal-content text-center"><h3 style="margin-bottom:12px">🚫 Аккаунт заблокирован</h3><p style="color:var(--text-dim);margin-bottom:20px">Разблокировка: <a href="https://t.me/fueum" target="_blank" style="color:#0088cc;font-weight:600">@fueum</a></p><button class="btn" onclick="this.closest('.modal').remove()">Понятно</button></div>`;
+document.body.appendChild(m); m.onclick = e => { if (e.target === m) m.remove(); };
+}
 
-window.confirmLogout=()=>{if(!user){openModal('login-modal');return;}openModal('logout-confirm-modal');};
-window.doLogout=async()=>{closeModal('logout-confirm-modal');await signOut(auth);cart=[];localStorage.removeItem('byrmalda_cart');loadCartCount();navigate('home');};
-function showBlock(){const m=document.createElement('div');m.className='modal active';m.innerHTML=`<div class="modal-content" style="max-width:480px;text-align:center"><div style="font-size:42px;margin:16px 0">🚫</div><h3>Аккаунт заблокирован</h3><p style="color:var(--text-dim);margin-bottom:20px">Для разблокировки: <a href="https://t.me/fueum" target="_blank" style="color:#0088cc">@fueum</a></p><button class="btn" onclick="this.closest('.modal').remove();navigate('home')">Понятно</button></div>`;document.body.appendChild(m);m.onclick=e=>{if(e.target===m)m.remove();};}
+window.navigate = page => {
+document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+$(page).classList.add('active');
+document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+const nb = $(`nav-${page}`); if (nb) nb.classList.add('active');
+if (page==='cart') renderCart(); if (page==='catalog') genCatalog();
+if (page==='search') $('search-input').value='';
+if (page==='profile' && user) { loadOrders(); renderDelivery(); }
+if (page==='reviews') loadPublicReviews();
+if (page==='admin' && user?.email===ADMIN_EMAIL) loadAdminPanels();
+if (window.innerWidth <= 1024) $('sidebar').classList.remove('expanded');
+if (page==='support') { chatUnread=0; updateSupportBadge(); loadChat(); }
+};
+window.openModal = id => $(id).classList.add('active'); window.closeModal = id => $(id).classList.remove('active');
+document.querySelectorAll('.modal').forEach(m => m.onclick = e => { if (e.target===m) m.classList.remove('active'); });
 
-window.navigate=page=>{document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));$(page).classList.add('active');document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));const nb=$(`nav-${page}`);if(nb)nb.classList.add('active');if(page==='cart')renderCart();if(page==='catalog')genCatalog();if(page==='search')$('search-input').value='';if(page==='profile'&&user){loadOrders();renderDeliveryAddress();}if(page==='reviews')loadPublicReviews();if(page==='admin'&&user?.email===ADMIN_EMAIL)loadAdminPanels();if(window.innerWidth<=1024)$('sidebar').classList.remove('expanded');if(page==='support'){chatUnread=0;updateSupportBadge();loadChat();}};
-window.openModal=id=>$(id).classList.add('active');window.closeModal=id=>$(id).classList.remove('active');document.querySelectorAll('.modal').forEach(m=>m.onclick=e=>{if(e.target===m)m.classList.remove('active');});
+// 🛒 КОРЗИНА (Синхронизация с DB)
+window.addToCart = async () => {
+if (!user) { openModal('login-modal'); return; }
+if (!userData) return;
+let size = 'M', color = 'Белый';
+const sizeEl = $('p-size'), colorEl = $('p-color');
+if (sizeEl && sizeEl.tagName==='SELECT') size = sizeEl.value; else if (sizeEl?.closest('.opt-group')?.querySelector('.opt-static')) size = sizeEl.closest('.opt-group').querySelector('.opt-static').textContent;
+if (colorEl && colorEl.tagName==='SELECT') color = colorEl.value; else if (colorEl?.closest('.opt-group')?.querySelector('.opt-static')) color = colorEl.closest('.opt-group').querySelector('.opt-static').textContent;
+const item = {
+id: `${curProd.id}-${Date.now()}`, pid: curProd.id, name: curProd.name,
+img: curProd.images?.[0]||'', size, color,
+qty: parseInt($('p-qty')?.value)||1, price: curProd.price, weight: curProd.weight||200,
+isPreorder: false, at: new Date().toISOString()
+};
+if (!userData.cart) userData.cart = [];
+userData.cart.push(item);
+await updateDoc(doc(db, 'artifacts/byrmalda-prod/users', user.uid), { cart: userData.cart });
+loadCartCount(); alert(`✅ Добавлено в корзину!`); navigate('cart');
+};
+function loadCartCount() { const n = (userData?.cart||[]).reduce((s,i)=>s+i.qty,0); $('cart-badge').textContent = n; $('nav-cart').classList.toggle('has-badge', n>0); }
+function syncCartFromDB() { loadCartCount(); if (userData?.cart) renderCart(); }
+window.renderCart = () => {
+const items = userData?.cart || [];
+const empty = $('cart-empty'), full = $('cart-full'), body = $('cart-items');
+if (!items.length) { show(empty); hide(full); return; }
+hide(empty); show(full);
+let sub=0, kg=0;
+body.innerHTML = items.map(it => {
+const tot = it.price * it.qty; sub+=tot; kg+=(it.weight*it.qty)/1000;
+return `<tr><td><input type="number" class="qty-input" value="${it.qty}" min="1" onchange="updCart('${it.id}','qty',this.value)"></td><td class="flex items-center gap-8"><img class="cart-img" src="${it.img||'https://via.placeholder.com/60/f5f5f5/111?text=📦'}"><div><div style="font-weight:500">${it.name}</div></div></td><td>${it.size}</td><td>${it.color}</td><td>$${it.price}</td><td><button class="btn-cancel" onclick="delCart('${it.id}')">×</button></td></tr>`;
+}).join('');
+const delRUB = Math.round(kg*900), delUSD = (delRUB/RATES.USD_TO_RUB).toFixed(2);
+$('cart-total').textContent = `$${(sub+parseFloat(delUSD)).toFixed(2)}`;
+$('.delivery-note').textContent = `Доставка: ${delRUB.toLocaleString('ru-RU')} ₽ (~$${delUSD})`;
+};
+window.updCart = async (id,f,v) => {
+const it = userData.cart.find(i=>i.id===id); if(!it)return;
+if(f==='qty') it.qty=Math.max(1,parseInt(v)||1);
+await updateDoc(doc(db,'artifacts/byrmalda-prod/users',user.uid),{cart:userData.cart});
+renderCart(); loadCartCount();
+};
+window.delCart = async id => {
+userData.cart = userData.cart.filter(i=>i.id!==id);
+await updateDoc(doc(db,'artifacts/byrmalda-prod/users',user.uid),{cart:userData.cart});
+renderCart(); loadCartCount();
+};
 
-window.openAvatarModal=()=>{if(!user)openModal('login-modal');else openModal('avatar-modal');};
-window.submitAvatar=async()=>{const file=$('av-file').files[0];if(!file){alert('Выберите файл');return;}if(file.size>5*1024*1024){alert('Макс. 5МБ');return;}try{const fd=new FormData();fd.append('image',file);fd.append('key',IMGBB_KEY);const res=await fetch('https://api.imgbb.com/1/upload',{method:'POST',body:fd});const data=await res.json();if(!data.success)throw new Error('ImgBB error');await updateDoc(doc(db,'artifacts/byrmalda-prod/users',user.uid),{avatarPending:data.data.url,avatarStatus:'pending',avatarSubmittedAt:serverTimestamp()});alert('✅ Аватарка отправлена!');closeModal('avatar-modal');}catch(e){alert('❌ Ошибка: '+e.message);}};
+// 🔍 КАТАЛОГ & ПОИСК
+function genCatalog() {
+const cats = [{id:'tshirts',n:'Футболки',ic:'👕',t:'футболка'},{id:'hoodies',n:'Толстовки',ic:'🧥',t:'толстовка'},{id:'sneakers',n:'Кроссовки',ic:'👟',t:'кроссовки'},{id:'acc',n:'Аксессуары',ic:'🎒',t:'аксессуар'},{id:'pants',n:'Штаны',ic:'👖',t:'штаны'},{id:'shorts',n:'Шорты',ic:'🩳',t:'шорты'},{id:'jackets',n:'Куртки',ic:'🧥',t:'куртка'},{id:'archive',n:'Архив',ic:'📁',t:'archive'}];
+$('catalog-grid').innerHTML = cats.map(c => `<div class="cat-card" onclick="filterType('${c.t}')"><div class="card-img">${c.ic}</div><div class="card-body"><div class="card-title">${c.n}</div></div></div>`).join('');
+}
+window.filterType = async type => { navigate('search'); $('search-input').value=type; await searchProds(type); };
+window.handleSearch = async e => { const q=e.target.value.trim().toLowerCase(); if(q.length>=2) await searchProds(q); else $('search-results').innerHTML=''; };
+async function searchProds(q) {
+const c=$('search-results'); c.innerHTML='<div class="text-center" style="padding:32px"><div class="loading"></div></div>';
+try {
+let snap;
+if(q==='archive') snap = await getDocs(query(collection(db,'artifacts/byrmalda-prod/public/data/products'), where('deleted','==',true)));
+else snap = await getDocs(query(collection(db,'artifacts/byrmalda-prod/public/data/products'), where('published','==',true), where('deleted','==',false)));
+const res=[]; snap.forEach(d=>{ const p=d.data(); if(`${p.name} ${p.type} ${p.category} ${p.desc}`.toLowerCase().includes(q)) res.push({...p,id:d.id}); });
+if(!res.length) { c.innerHTML='<div class="text-center" style="padding:32px;color:var(--text-dim)">Ничего не найдено</div>'; return; }
+c.innerHTML = res.map(p => prodCard(p)).join('');
+} catch(e) { c.innerHTML='<div class="text-center" style="padding:32px;color:var(--error)">Ошибка</div>'; }
+}
+function prodCard(p) {
+const stock=p.stock>0;
+return `<div class="prod-card" onclick="openProd('${p.id}')"><div class="card-img">${p.images?.[0]?`<img src="${p.images[0]}" style="width:100%;height:100%;object-fit:cover">`:'📦'}</div><div class="card-body"><div class="card-title">${p.name}</div><div class="card-price ${stock?'':'card-nostock'}">${stock?`$${p.price}`:'Нет в наличии'}</div></div></div>`;
+}
 
-function genCatalog(){const cats=[{id:'tshirts',n:'Футболки',ic:'👕',t:'футболка'},{id:'hoodies',n:'Толстовки',ic:'🧥',t:'толстовка'},{id:'sneakers',n:'Кроссовки',ic:'👟',t:'кроссовки'},{id:'acc',n:'Аксессуары',ic:'🎒',t:'аксессуар'},{id:'pants',n:'Штаны',ic:'👖',t:'штаны'},{id:'shorts',n:'Шорты',ic:'🩳',t:'шорты'},{id:'jackets',n:'Куртки',ic:'🧥',t:'куртка'},{id:'archive',n:'Архив',ic:'📁',t:'archive'}];$('catalog-grid').innerHTML=cats.map(c=>`<div class="cat-card" onclick="filterType('${c.t}')"><div class="card-img">${c.ic}</div><div class="card-body"><div class="card-title">${c.n}</div></div></div>`).join('');}
-window.filterType=async type=>{navigate('search');$('search-input').value=type;await searchProds(type);};
-window.handleSearch=async e=>{const q=e.target.value.trim().toLowerCase();if(q.length>=2)await searchProds(q);else if(!q)$('search-results').innerHTML='';};
-async function searchProds(q){const c=$('search-results');c.innerHTML='<div class="text-center" style="padding:32px"><div class="loading"></div></div>';try{let coll=collection(db,'artifacts/byrmalda-prod/public/data/products');if(q==='archive'){const snap=await getDocs(query(coll,where('deleted','==',true)));const res=[];snap.forEach(d=>res.push({...d.data(),id:d.id}));if(!res.length){c.innerHTML='<div class="text-center" style="padding:32px;color:var(--text-dim)">Архив пуст</div>';return;}c.innerHTML=res.map(p=>prodCard(p)).join('');}else{const snap=await getDocs(query(coll,where('published','==',true),where('deleted','==',false)));const res=[];snap.forEach(d=>{const p=d.data();if(`${p.name} ${p.type} ${p.category} ${p.desc}`.toLowerCase().includes(q))res.push({...p,id:d.id});});if(!res.length){c.innerHTML='<div class="text-center" style="padding:32px;color:var(--text-dim)">Ничего не найдено</div>';return;}c.innerHTML=res.map(p=>prodCard(p)).join('');}}catch(e){console.error(e);c.innerHTML='<div class="text-center" style="padding:32px;color:var(--error)">Ошибка</div>';}}
-function prodCard(p){const stock=p.stock>0;return `<div class="prod-card" onclick="openProd('${p.id}')"><div class="card-img" style="background:var(--bg)">${p.images?.[0]?`<img src="${p.images[0]}" style="width:100%;height:100%;object-fit:cover">`:'📦'}</div><div class="card-body"><div class="card-title">${p.name}</div><div class="card-price ${stock?'':'card-nostock'}">${stock?`$${p.price}`:'Нет в наличии'}</div></div></div>`;}
+// 📦 КАРТОЧКА ТОВАРА
+window.openProd = async id => {
+try {
+const snap = await getDoc(doc(db, 'artifacts/byrmalda-prod/public/data/products', id));
+if (!snap.exists()) return alert('Товар не найден');
+curProd = { ...snap.data(), id };
+$('p-id').textContent = `ID: ${curProd.productId || id}`; $('p-name').textContent = curProd.name;
+const colors=(curProd.color||'Белый').split(',').map(c=>c.trim()).filter(c=>c);
+const sizes=(curProd.sizes||'S,M,L,XL').split(',').map(s=>s.trim()).filter(s=>s);
+const colorGroup=$('opt-color-group');
+if(colors.length===1) colorGroup.innerHTML=`<label class="form-label">Цвет</label><div class="opt-static">${colors[0]}</div>`;
+else { colorGroup.innerHTML=`<label class="form-label">Цвет</label><select class="opt-select" id="p-color"></select>`; $('p-color').innerHTML=colors.map(c=>`<option>${c}</option>`).join(''); }
+const sizeGroup=$('opt-size-group');
+if(sizes.length===1) sizeGroup.innerHTML=`<label class="form-label">Размер</label><div class="opt-static">${sizes[0]}</div>`;
+else { sizeGroup.innerHTML=`<label class="form-label">Размер</label><select class="opt-select" id="p-size"></select>`; $('p-size').innerHTML=sizes.map(s=>`<option>${s}</option>`).join(''); }
+$('p-specs').innerHTML=`<div class="spec-row"><span class="spec-l">Для кого</span><span class="spec-v">${curProd.audience||'Унисекс'}</span></div><div class="spec-row"><span class="spec-l">Тип</span><span class="spec-v">${curProd.type}</span></div><div class="spec-row"><span class="spec-l">Материал</span><span class="spec-v">${curProd.material||'-'}</span></div><div class="spec-row"><span class="spec-l">Коллаборация</span><span class="spec-v">${curProd.collab||'Нет'}</span></div><div class="spec-row"><span class="spec-l">Масса</span><span class="spec-v">${curProd.weight||'-'} г</span></div><div class="spec-row"><span class="spec-l">Год релиза</span><span class="spec-v">${curProd.year||'-'}</span></div><div class="spec-row"><span class="spec-l">В наличии</span><span class="spec-v">${curProd.stock} шт</span></div>`;
+$('p-desc').textContent = curProd.desc || '';
+$('p-price-usd').textContent = `$${curProd.price}`; $('p-price-conv').textContent = `≈ ${Math.round(curProd.price*RATES.USD_TO_RUB).toLocaleString('ru-RU')} ₽ / ≈ ${Math.round(curProd.price*RATES.USD_TO_UAH).toLocaleString('ru-RU')} ₴`;
+const stockEl=$('p-stock'), btn=$('p-action'), opts=$('p-options'), delNotice=$('p-deleted-notice');
+if (curProd.deleted) { delNotice.classList.remove('hidden'); btn.textContent='Удален'; btn.disabled=true; hide(opts); }
+else if (curProd.stock>0) { delNotice.classList.add('hidden'); stockEl.innerHTML='<span class="in-stock">✓ В наличии</span>'; btn.textContent='Купить'; btn.disabled=false; btn.onclick=()=>addToCart(); show(opts); }
+else { delNotice.classList.add('hidden'); stockEl.innerHTML='<span class="out-stock">✗ Предзаказ</span>'; btn.textContent='Предзаказ'; btn.disabled=false; btn.onclick=()=>{alert('Предзаказ добавлен в корзину'); addToCart();}; hide(opts); }
+galIdx=0; updateGal(); navigate('product');
+} catch(e) { alert('Ошибка загрузки'); }
+};
+function updateGal() { if(!curProd)return; const imgs=curProd.images&&curProd.images.length?curProd.images:['https://via.placeholder.com/600/f5f5f5/111?text=BYRMALDA']; $('p-main-img').src=imgs[galIdx]; $('p-thumbs').innerHTML=imgs.map((src,i)=>`<img src="${src}" class="thumb ${i===galIdx?'active':''}" onclick="setGal(${i})">`).join(''); }
+window.setGal=i=>{galIdx=i;updateGal();}; window.galNav=d=>{if(!curProd)return;const len=curProd.images?.length||1;galIdx=(galIdx+d+len)%len;updateGal();};
 
-window.openProd=async id=>{try{const snap=await getDoc(doc(db,'artifacts/byrmalda-prod/public/data/products',id));if(!snap.exists())return alert('Товар не найден');curProd={...snap.data(),id};$('p-id').textContent=`ID: ${curProd.productId||id}`;$('p-name').textContent=curProd.name;const colors=(curProd.color||'Белый').split(',').map(c=>c.trim()).filter(c=>c),sizes=(curProd.sizes||'S,M,L,XL').split(',').map(s=>s.trim()).filter(s=>s);const colorGroup=$('opt-color-group');if(colors.length===1){colorGroup.innerHTML=`<label class="form-label">Цвет</label><div class="opt-static">${colors[0]}</div>`;}else{colorGroup.innerHTML=`<label class="form-label">Цвет</label><select class="opt-select" id="p-color"></select>`;$('p-color').innerHTML=colors.map(c=>`<option>${c}</option>`).join('');}const sizeGroup=$('opt-size-group');if(sizes.length===1){sizeGroup.innerHTML=`<label class="form-label">Размер</label><div class="opt-static">${sizes[0]}</div>`;}else{sizeGroup.innerHTML=`<label class="form-label">Размер</label><select class="opt-select" id="p-size"></select>`;$('p-size').innerHTML=sizes.map(s=>`<option>${s}</option>`).join('');}$('p-specs').innerHTML=`<div class="spec-row"><span class="spec-l">Для кого</span><span class="spec-v">${curProd.audience||'Унисекс'}</span></div><div class="spec-row"><span class="spec-l">Тип</span><span class="spec-v">${curProd.type}</span></div><div class="spec-row"><span class="spec-l">Материал</span><span class="spec-v">${curProd.material||'-'}</span></div><div class="spec-row"><span class="spec-l">Цвет</span><span class="spec-v">${curProd.color||'-'}</span></div><div class="spec-row"><span class="spec-l">Коллаборация</span><span class="spec-v">${curProd.collab||'Нет'}</span></div><div class="spec-row"><span class="spec-l">Масса</span><span class="spec-v">${curProd.weight||'-'} г</span></div><div class="spec-row"><span class="spec-l">Год релиза</span><span class="spec-v">${curProd.year||'-'}</span></div><div class="spec-row"><span class="spec-l">В наличии</span><span class="spec-v">${curProd.stock} шт</span></div>`;$('p-desc').textContent=curProd.desc||'';$('p-price-usd').textContent=`$${curProd.price}`;$('p-price-conv').textContent=`≈ ${Math.round(curProd.price*RATES.USD_TO_RUB).toLocaleString('ru-RU')} ₽ / ≈ ${Math.round(curProd.price*RATES.USD_TO_UAH).toLocaleString('ru-RU')} ₴`;const stockEl=$('p-stock'),btn=$('p-action'),opts=$('p-options'),delNotice=$('p-deleted-notice');if(curProd.deleted){delNotice.classList.remove('hidden');btn.textContent='Удален';btn.disabled=true;hide(opts);}else if(curProd.stock>0){delNotice.classList.add('hidden');stockEl.innerHTML='<span class="in-stock">✓ В наличии</span>';btn.textContent='Купить';btn.disabled=false;btn.onclick=()=>addToCart(false);show(opts);}else{delNotice.classList.add('hidden');stockEl.innerHTML='<span class="out-stock">✗ Нет в наличии (Предзаказ)</span>';btn.textContent='Предзаказ';btn.disabled=false;btn.onclick=()=>addToCart(true);hide(opts);}galIdx=0;updateGal();navigate('product');}catch(e){console.error(e);alert('Ошибка загрузки товара');}};
-function updateGal(){if(!curProd)return;const imgs=curProd.images&&curProd.images.length?curProd.images:['https://via.placeholder.com/600/f5f5f5/111?text=BYRMALDA'];$('p-main-img').src=imgs[galIdx];$('p-thumbs').innerHTML=imgs.map((src,i)=>`<img src="${src}" class="thumb ${i===galIdx?'active':''}" onclick="setGal(${i})">`).join('');}
-window.setGal=i=>{galIdx=i;updateGal();};window.galNav=d=>{if(!curProd)return;const len=curProd.images?.length||1;galIdx=(galIdx+d+len)%len;updateGal();};
+// 🚀 ОФОРМЛЕНИЕ ЗАКАЗА (Проверка остатков)
+window.checkout = async () => {
+if(!user){openModal('login-modal');return;} if(!userData?.cart.length){alert('Корзина пуста');return;}
+if(!userData?.deliveryCountry || !userData?.deliveryAddress?.[userData.deliveryCountry]){ alert('Укажите адрес доставки в профиле'); navigate('profile'); return; }
+// Проверка остатков
+for(const item of userData.cart) {
+const pSnap = await getDoc(doc(db, 'artifacts/byrmalda-prod/public/data/products', item.pid));
+if(!pSnap.exists()) continue;
+const p = pSnap.data();
+if(item.qty > p.stock) {
+alert(`❌ Количество выбранных позиций не соответствует количеству товара на странице. Максимум: ${p.stock} шт.`); return;
+}
+}
+openModal('checkout-modal');
+};
+window.confirmCheckout = async () => {
+closeModal('checkout-modal');
+const oid='ORD-'+genId(), total=parseFloat($('cart-total').textContent.replace('$',''));
+const order={id:oid,userId:user.uid,items:[...userData.cart],total,status:'Ожидает оплату',tracking:'TRK-'+genId(),adminChangedStatus:false,createdAt:serverTimestamp(),updatedAt:serverTimestamp(),deliveryAddress:userData.deliveryAddress[userData.deliveryCountry],deliveryCountry:userData.deliveryCountry};
+await setDoc(doc(db,'artifacts/byrmalda-prod/public/data/orders',oid),order);
+// Списание остатков
+for(const it of order.items) {
+const pSnap=await getDoc(doc(db,'artifacts/byrmalda-prod/public/data/products',it.pid));
+if(pSnap.exists()){
+const d=pSnap.data(); await updateDoc(doc(db,'artifacts/byrmalda-prod/public/data/products',it.pid),{stock:Math.max(0,d.stock-it.qty)});
+}
+}
+userData.cart=[];
+await updateDoc(doc(db,'artifacts/byrmalda-prod/users',user.uid),{cart:[]});
+loadCartCount(); loadOrders();
+alert(`✅ Заказ #${oid} создан! Статус: Ожидает оплату. Напишите @fueum для оплаты.`);
+navigate('profile');
+};
 
-window.addToCart=(isPreorder=false)=>{if(!user){openModal('login-modal');return;}let size='M',color='Белый';const sizeEl=$('p-size'),colorEl=$('p-color');if(sizeEl&&sizeEl.tagName==='SELECT')size=sizeEl.value;else if(sizeEl?.closest('.opt-group')?.querySelector('.opt-static'))size=sizeEl.closest('.opt-group').querySelector('.opt-static').textContent;if(colorEl&&colorEl.tagName==='SELECT')color=colorEl.value;else if(colorEl?.closest('.opt-group')?.querySelector('.opt-static'))color=colorEl.closest('.opt-group').querySelector('.opt-static').textContent;const item={id:`${curProd.id}-${Date.now()}`,pid:curProd.id,name:curProd.name,img:curProd.images?.[0]||'',size,color,qty:parseInt($('p-qty')?.value)||1,price:curProd.price,weight:curProd.weight||200,isPreorder:isPreorder,at:new Date().toISOString()};cart.push(item);localStorage.setItem('byrmalda_cart',JSON.stringify(cart));loadCartCount();alert(`✅ ${isPreorder?'Предзаказ':'Заказ'} добавлен!`);navigate('cart');};
-function loadCartCount(){const n=cart.reduce((s,i)=>s+i.qty,0);$('cart-badge').textContent=n;$('nav-cart').classList.toggle('has-badge',n>0);}
-function renderCart(){const empty=$('cart-empty'),full=$('cart-full'),body=$('cart-items');if(!cart.length){show(empty);hide(full);return;}hide(empty);show(full);let sub=0,kg=0;body.innerHTML=cart.map(it=>{const tot=it.price*it.qty;sub+=tot;kg+=(it.weight*it.qty)/1000;return `<tr><td><input type="number" class="qty-input" value="${it.qty}" min="1" onchange="updCart('${it.id}','qty',this.value)"></td><td class="flex items-center gap-8"><img class="cart-img" src="${it.img||'https://via.placeholder.com/60/f5f5f5/111?text=📦'}"><div><div style="font-weight:500">${it.name}</div>${it.isPreorder?'<span style="font-size:11px;color:#1976d2;background:#e3f2fd;padding:2px 8px;border-radius:10px">Предзаказ</span>':'<span style="font-size:11px;color:#16a34a;background:#dcfce7;padding:2px 8px;border-radius:10px">Заказ</span>'}</div></td><td>${it.size}</td><td>${it.color}</td><td>$${it.price}</td><td><button class="btn-cancel" onclick="delCart('${it.id}')">×</button></td></tr>`;}).join('');const delRUB=Math.round(kg*900),delUSD=(delRUB/RATES.USD_TO_RUB).toFixed(2);const total=sub+parseFloat(delUSD);$('cart-total').textContent=`$${total.toFixed(2)}`;$('.delivery-note').textContent=`Доставка: ${delRUB.toLocaleString('ru-RU')} ₽ (~$${delUSD})`;}
-window.updCart=(id,f,v)=>{const it=cart.find(i=>i.id===id);if(!it)return;if(f==='qty')it.qty=Math.max(1,parseInt(v)||1);localStorage.setItem('byrmalda_cart',JSON.stringify(cart));renderCart();loadCartCount();};
-window.delCart=id=>{cart=cart.filter(i=>i.id!==id);localStorage.setItem('byrmalda_cart',JSON.stringify(cart));renderCart();loadCartCount();};
+// 📋 ЗАКАЗЫ
+async function loadOrders() {
+if(!user)return;
+const c=$('orders-list'); c.innerHTML='<div class="text-center" style="padding:24px"><div class="loading"></div></div>';
+try {
+const snap=await getDocs(query(collection(db,'artifacts/byrmalda-prod/public/data/orders'),where('userId','==',user.uid),orderBy('createdAt','desc'),limit(50)));
+if(snap.empty){c.innerHTML='<div class="text-center" style="padding:32px;color:var(--text-dim)">Заказов нет</div>';return;}
+c.innerHTML=snap.docs.map(d=>{
+const o=d.data(); const st=o.status||'Ожидает оплату';
+const cls={'Ожидает оплату':'st-awaiting','Создан':'st-created','Передача товара в доставку':'st-shipping','В пути':'st-transit','Доставлен':'st-delivered','Отменён':'st-cancelled'}[st]||'st-awaiting';
+const canCancel=st==='Ожидает оплату'||st==='Создан';
+const first=o.items?.[0]||{};
+return `<div class="order-card" onclick="openProd('${first.pid}')"><div class="order-img">${first.img?`<img src="${first.img}" style="width:100%;height:100%;object-fit:cover">`:'📦'}</div><div class="order-info"><div class="order-name">${first.name||'Товар'}</div><span class="order-status ${cls}">${st}</span><div class="order-meta"><div>Заказ: #${o.id}</div><div>Трекинг: ${o.tracking||'-'}</div><div>Сумма: $${o.total?.toFixed(2)||'0.00'}</div><div>Дата: ${fmtDate(o.createdAt)}</div></div></div><div class="order-actions"><button class="btn-cancel" ${!canCancel?'disabled':''} onclick="event.stopPropagation();cancelOrder('${o.id}','${st}')">×</button></div></div>`;
+}).join('');
+} catch(e) { c.innerHTML='<div class="text-center" style="padding:24px;color:var(--error)">Ошибка</div>'; }
+}
+window.cancelOrder = async (oid, st) => {
+if(st!=='Ожидает оплату'&&st!=='Создан'){alert('❌ Нельзя отменить');return;} if(!confirm('Отменить заказ?'))return;
+await updateDoc(doc(db,'artifacts/byrmalda-prod/public/data/orders',oid),{status:'Отменён',updatedAt:serverTimestamp()}); loadOrders();
+};
 
-window.checkout=()=>{if(!user){openModal('login-modal');return;}if(!cart.length){alert('Корзина пуста');return;}if(!userData?.deliveryCountry||!userData?.deliveryAddress?.[userData.deliveryCountry]){alert('❌ Укажите адрес доставки в профиле');navigate('profile');return;}openModal('checkout-modal');};
-window.confirmCheckout=async()=>{closeModal('checkout-modal');const oid='ORD-'+genId(),total=parseFloat($('cart-total').textContent.replace('$',''));const order={id:oid,userId:user.uid,items:cart.map(it=>({...it})),total,status:'Ожидает оплату',tracking:'TRK-'+genId(),adminChangedStatus:false,createdAt:serverTimestamp(),updatedAt:serverTimestamp(),deliveryAddress:userData.deliveryAddress[userData.deliveryCountry],deliveryCountry:userData.deliveryCountry};await setDoc(doc(db,'artifacts/byrmalda-prod/public/data/orders',oid),order);for(const it of cart){if(!it.isPreorder){const pd=await getDoc(doc(db,'artifacts/byrmalda-prod/public/data/products',it.pid));if(pd.exists()){const d=pd.data();await updateDoc(doc(db,'artifacts/byrmalda-prod/public/data/products',it.pid),{stock:Math.max(0,(d.stock||0)-it.qty)});}}}cart=[];localStorage.removeItem('byrmalda_cart');loadCartCount();loadOrders();alert(`✅ Заказ #${oid} создан!\nСтатус: «Ожидает оплату»\nНапишите @fueum для оплаты.`);navigate('profile');};
+// 💬 ЧАТ
+async function loadChat() {
+if(!user)return; const c=$('chat-msgs'); c.innerHTML='<div class="text-center" style="padding:24px"><div class="loading"></div></div>';
+try {
+const snap=await getDocs(query(collection(db,'artifacts/byrmalda-prod/public/data/support'),orderBy('ts','asc'),limit(200)));
+c.innerHTML=''; let vis=0;
+snap.forEach(d=>{const m=d.data(); let show=false; if(user.email===ADMIN_EMAIL) show=true; else if(m.uid===user.uid || (m.isAdmin && (!m.replyTo || m.replyTo===user.uid))) show=true; if(show){addMsgToUI(m); vis++;}});
+if(!vis) c.innerHTML='<div class="text-center" style="padding:32px;color:var(--text-dim)">Нет сообщений</div>';
+c.scrollTop=c.scrollHeight;
+} catch(e) { c.innerHTML='<div class="text-center" style="padding:24px;color:var(--error)">Ошибка</div>'; }
+}
+function addMsgToUI(m) {
+const isU=m.uid===user?.uid, el=document.createElement('div');
+el.className=`msg ${m.isAdmin?'admin':isU?'user':'admin'}`;
+let meta=m.isAdmin?'Администратор':(m.name||'Пользователь');
+if(m.isAdmin && m.replyTo) meta+=`<span class="msg-target">→ ${m.replyTo.substring(0,8)}...</span>`;
+el.innerHTML=`${m.text}<div class="msg-meta">${meta} • ${m.ts?.toDate?.()?.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})||''}</div>`;
+$('chat-msgs').appendChild(el); $('chat-msgs').scrollTop=$('chat-msgs').scrollHeight;
+if(!$('support').classList.contains('active') && !isU) { chatUnread++; updateSupportBadge(); }
+}
+window.sendMsg = async () => {
+const txt=$('chat-input').value.trim(); if(!txt||!user)return;
+const msg={uid:user.uid,name:userData?.name||user.email.split('@')[0],text:txt,ts:serverTimestamp(),isAdmin:user.email===ADMIN_EMAIL,replyTo:null};
+await addDoc(collection(db,'artifacts/byrmalda-prod/public/data/support'),msg); $('chat-input').value=''; addMsgToUI({...msg,ts:new Date()});
+};
+function updateSupportBadge() { $('support-badge').textContent=chatUnread; $('nav-support').classList.toggle('has-badge',chatUnread>0); }
 
-async function loadOrders(){if(!user)return;const c=$('orders-list');c.innerHTML='<div class="text-center" style="padding:24px"><div class="loading"></div></div>';try{const snap=await getDocs(query(collection(db,'artifacts/byrmalda-prod/public/data/orders'),where('userId','==',user.uid),orderBy('createdAt','desc'),limit(50)));if(snap.empty){c.innerHTML='<div class="text-center" style="padding:32px;color:var(--text-dim)">Заказов пока нет</div>';return;}c.innerHTML=snap.docs.map(d=>{const o=d.data(),st=o.status||'Ожидает оплату',cls={'Ожидает оплату':'st-awaiting','Создан':'st-created','Передача товара в доставку':'st-shipping','В пути':'st-transit','Доставлен':'st-delivered','Отменён':'st-cancelled'}[st]||'st-awaiting',canCancel=st==='Создан',firstItem=o.items?.[0]||{};return `<div class="order-card" onclick="openProd('${firstItem.pid}')"><div class="order-img">${firstItem.img?`<img src="${firstItem.img}" style="width:100%;height:100%;object-fit:cover">`:'📦'}</div><div class="order-info"><div class="order-name">${firstItem.name||'Товар'}</div><span class="order-status ${cls}">${st}</span><div class="order-meta"><div>Заказ: #${o.id}</div><div>Трекинг: ${o.tracking||'-'}</div><div>Сумма: $${o.total?.toFixed(2)||'0.00'}</div><div>Дата: ${fmtDate(o.createdAt)}</div></div></div><div class="order-actions"><button class="btn-cancel" ${!canCancel?'disabled':''} title="${canCancel?'Отменить':'Нельзя'}" onclick="event.stopPropagation();cancelOrder('${o.id}','${st}')">×</button></div></div>`;}).join('');}catch(e){console.error(e);c.innerHTML='<div class="text-center" style="padding:24px;color:var(--error)">Ошибка</div>';}}
-window.cancelOrder=async(oid,st)=>{if(st!=='Создан'){alert('❌ Нельзя отменить');return;}if(!confirm('Отменить?'))return;try{await updateDoc(doc(db,'artifacts/byrmalda-prod/public/data/orders',oid),{status:'Отменён',updatedAt:serverTimestamp()});alert('✅ Отменён');loadOrders();}catch(e){alert('❌ Ошибка');}};
-
-async function loadChat(){if(!user)return;const c=$('chat-msgs');c.innerHTML='<div class="text-center" style="padding:24px"><div class="loading"></div></div>';try{const isAdmin=user.email===ADMIN_EMAIL,currentUserUid=user.uid,q=query(collection(db,'artifacts/byrmalda-prod/public/data/support'),orderBy('ts','asc'),limit(200)),snap=await getDocs(q);c.innerHTML='';let visibleCount=0;snap.forEach(d=>{const m=d.data(),shouldShow=isAdmin?true:(m.uid===currentUserUid||(m.isAdmin&&m.replyTo===currentUserUid)||(m.isAdmin&&!m.replyTo));if(shouldShow){addMsgToUI(m);visibleCount++;}});if(visibleCount===0&&!isAdmin)c.innerHTML='<div class="text-center" style="padding:32px;color:var(--text-dim)">Нет сообщений</div>';else if(visibleCount===0&&isAdmin)c.innerHTML='<div class="text-center" style="padding:32px;color:var(--text-dim)">Пока нет сообщений</div>';c.scrollTop=c.scrollHeight;}catch(e){console.error('loadChat:',e);c.innerHTML='<div class="text-center" style="padding:24px;color:var(--error)">Ошибка</div>';}}
-function addMsgToUI(m){const isUser=m.uid===user?.uid,isAdmin=m.isAdmin,el=document.createElement('div');if(isAdmin)el.className='msg admin';else if(isUser)el.className='msg user';else el.className='msg admin';let meta=isAdmin?'Администратор'+(m.replyTo?`<span class="msg-target">→ @${m.replyTo.substring(0,8)}...</span>`:''):(m.name||'Пользователь');const time=m.ts?.toDate?.()?.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})||'';el.innerHTML=`${m.text}<div class="msg-meta">${meta} • ${time}</div>`;$('chat-msgs').appendChild(el);$('chat-msgs').scrollTop=$('chat-msgs').scrollHeight;if(!$('support').classList.contains('active')&&!isUser){chatUnread++;updateSupportBadge();}}
-window.sendMsg=async()=>{const txt=$('chat-input').value.trim();if(!txt||!user)return;const isAdmin=user.email===ADMIN_EMAIL;let replyTo=null,displayText=txt;if(isAdmin){const match=txt.match(/^@([A-Za-z0-9_-]+)\s+(.+)/);if(match){replyTo=match[1];displayText=match[2];}}const msg={uid:user.uid,name:userData?.name||user.email.split('@')[0],text:displayText,rawText:txt,replyTo:replyTo,ts:serverTimestamp(),isAdmin:isAdmin};try{await addDoc(collection(db,'artifacts/byrmalda-prod/public/data/support'),msg);$('chat-input').value='';addMsgToUI({...msg,ts:new Date()});if(isAdmin&&replyTo)alert(`✅ Ответ отправлен @${replyTo.substring(0,8)}...`);}catch(e){console.error('sendMsg:',e);alert('❌ Ошибка: '+e.message);}};
-function updateSupportBadge(){$('support-badge').textContent=chatUnread;$('nav-support').classList.toggle('has-badge',chatUnread>0);}
-
+// ⚙️ НАСТРОЙКИ & ОТЗЫВЫ
 window.toggleTheme=()=>{theme=theme==='light'?'dark':'light';localStorage.setItem('theme',theme);applyTheme();};
 function applyTheme(){document.documentElement.setAttribute('data-theme',theme);$('theme-ind').textContent=theme==='dark'?'🌙':'☀️';}
-window.toggleLang=()=>{lang=lang==='ru'?'en':'ru';$('cur-lang').textContent=lang.toUpperCase();alert(lang==='en'?'🇬 English':'🇷🇺 Русский');};
-async function checkReviewSubmission(){if(!user)return;try{const snap=await getDocs(query(collection(db,'artifacts/byrmalda-prod/public/data/reviews'),where('uid','==',user.uid)));hasSubmittedReview=!snap.empty;}catch(e){console.error(e);}}
-window.openReviewModal=()=>{if(!user){openModal('login-modal');return;}if(hasSubmittedReview){alert('❌ Вы уже оставляли отзыв');return;}openModal('review-modal');revStars=0;updStars();};
-window.setRating=n=>{revStars=n;updStars();};
-function updStars(){for(let i=0;i<5;i++)$('rev-stars').children[i].textContent=i<revStars?'★':'☆';}
-window.submitReview=async()=>{if(!revStars){alert('Выберите оценку');return;}const txt=$('rev-text').value.trim();if(!txt){alert('Напишите отзыв');return;}await addDoc(collection(db,'artifacts/byrmalda-prod/public/data/reviews'),{uid:user.uid,name:userData?.name||'Пользователь',rating:revStars,text:txt,status:'pending',ts:serverTimestamp()});hasSubmittedReview=true;$('rev-ok').classList.remove('hidden');setTimeout(()=>{closeModal('review-modal');$('rev-ok').classList.add('hidden');$('rev-text').value='';},1500);};
+window.toggleLang=()=>{lang=lang==='ru'?'en':'ru';$('cur-lang').textContent=lang.toUpperCase();};
+async function checkReviewStatus(){if(!user)return;userData.reviewStatus='none';}
+window.openReviewModal=()=>{
+if(!user){openModal('login-modal');return;}
+if(userData?.reviewStatus!=='none'){ $('rev-err').textContent='❌ Вы уже оставляли отзыв. Повторная отправка невозможна.'; setTimeout(()=>$('rev-err').textContent='',3000); return; }
+$('rev-err').textContent=''; openModal('review-modal'); revStars=0; updStars();
+};
+window.setRating=n=>{revStars=n;updStars();}; function updStars(){for(let i=0;i<5;i++)$('rev-stars').children[i].textContent=i<revStars?'★':'☆';}
+window.submitReview=async()=>{
+if(!revStars){$('rev-err').textContent='Выберите оценку';return;}
+const txt=$('rev-text').value.trim(); if(!txt){$('rev-err').textContent='Напишите отзыв';return;}
+await addDoc(collection(db,'artifacts/byrmalda-prod/public/data/reviews'),{uid:user.uid,name:userData?.name||'Пользователь',rating:revStars,text:txt,status:'pending',ts:serverTimestamp()});
+userData.reviewStatus='pending'; await updateDoc(doc(db,'artifacts/byrmalda-prod/users',user.uid),{reviewStatus:'pending'});
+alert('✅ Отзыв отправлен на модерацию'); closeModal('review-modal'); $('rev-text').value=''; revStars=0;
+};
 window.openReport=()=>{openModal('report-modal');};
-window.submitReport=async()=>{const txt=$('rep-text').value.trim();if(!txt){alert('Опишите проблему');return;}await addDoc(collection(db,'artifacts/byrmalda-prod/public/data/reports'),{uid:user.uid,name:userData?.name||'Пользователь',text:txt,ts:serverTimestamp(),status:'new'});$('rep-ok').classList.remove('hidden');setTimeout(()=>{closeModal('report-modal');$('rep-ok').classList.add('hidden');$('rep-text').value='';},1500);};
-window.showSizeChart=type=>{const m=$('sizechart-modal'),t=$('sz-title'),c=$('sz-content');if(type==='clothing'){t.textContent='Размерная сетка одежды';c.innerHTML=`<table style="width:100%;border-collapse:collapse;font-size:13px"><tr style="border-bottom:1px solid var(--border)"><th style="padding:10px;text-align:left">RU</th><th>Грудь</th><th>Талия</th><th>Бёдра</th></tr><tr style="border-bottom:1px solid var(--border)"><td style="padding:8px">XS</td><td>81-86</td><td>66-71</td><td>86-91</td></tr><tr style="border-bottom:1px solid var(--border)"><td>S</td><td>86-91</td><td>71-76</td><td>91-96</td></tr><tr style="border-bottom:1px solid var(--border)"><td>M</td><td>91-96</td><td>76-81</td><td>96-101</td></tr><tr style="border-bottom:1px solid var(--border)"><td>L</td><td>96-101</td><td>81-86</td><td>101-106</td></tr><tr><td>XL</td><td>101-106</td><td>86-91</td><td>106-111</td></tr></table>`;}else{t.textContent='Размерная сетка обуви';c.innerHTML=`<table style="width:100%;border-collapse:collapse;font-size:13px"><tr style="border-bottom:1px solid var(--border)"><th style="padding:10px;text-align:left">RU</th><th>EU</th><th>US</th><th>Стопа (см)</th></tr><tr style="border-bottom:1px solid var(--border)"><td style="padding:8px">36</td><td>36</td><td>5.5</td><td>23</td></tr><tr style="border-bottom:1px solid var(--border)"><td>37</td><td>37</td><td>6.5</td><td>23.5</td></tr><tr style="border-bottom:1px solid var(--border)"><td>38</td><td>38</td><td>7.5</td><td>24.5</td></tr><tr style="border-bottom:1px solid var(--border)"><td>39</td><td>39</td><td>8.5</td><td>25</td></tr><tr style="border-bottom:1px solid var(--border)"><td>40</td><td>40</td><td>9.5</td><td>26</td></tr><tr><td>41</td><td>41</td><td>10.5</td><td>26.5</td></tr></table>`;}openModal('sizechart-modal');};
+window.submitReport=async()=>{const t=$('rep-text').value.trim();if(!t)return;await addDoc(collection(db,'artifacts/byrmalda-prod/public/data/reports'),{uid:user.uid,name:userData?.name||'Пользователь',text:t,ts:serverTimestamp(),status:'new'});alert('✅ Жалоба отправлена');closeModal('report-modal');$('rep-text').value='';};
+window.showSizeChart=type=>{
+const c=$('sz-content');
+if(type==='clothing'){$('sz-title').textContent='Размерная сетка одежды';c.innerHTML=`<table style="width:100%;border-collapse:collapse;font-size:13px"><tr style="border-bottom:1px solid var(--border)"><th style="padding:10px;text-align:left">RU</th><th>Грудь</th><th>Талия</th><th>Бёдра</th></tr><tr style="border-bottom:1px solid var(--border)"><td style="padding:8px">XS</td><td>81-86</td><td>66-71</td><td>86-91</td></tr><tr style="border-bottom:1px solid var(--border)"><td>S</td><td>86-91</td><td>71-76</td><td>91-96</td></tr><tr style="border-bottom:1px solid var(--border)"><td>M</td><td>91-96</td><td>76-81</td><td>96-101</td></tr><tr style="border-bottom:1px solid var(--border)"><td>L</td><td>96-101</td><td>81-86</td><td>101-106</td></tr><tr><td>XL</td><td>101-106</td><td>86-91</td><td>106-111</td></tr></table>`;}
+else{$('sz-title').textContent='Размерная сетка обуви';c.innerHTML=`<table style="width:100%;border-collapse:collapse;font-size:13px"><tr style="border-bottom:1px solid var(--border)"><th style="padding:10px;text-align:left">RU</th><th>EU</th><th>US</th><th>Стопа (см)</th></tr><tr style="border-bottom:1px solid var(--border)"><td style="padding:8px">36</td><td>36</td><td>5.5</td><td>23</td></tr><tr style="border-bottom:1px solid var(--border)"><td>37</td><td>37</td><td>6.5</td><td>23.5</td></tr><tr style="border-bottom:1px solid var(--border)"><td>38</td><td>38</td><td>7.5</td><td>24.5</td></tr><tr style="border-bottom:1px solid var(--border)"><td>39</td><td>39</td><td>8.5</td><td>25</td></tr><tr style="border-bottom:1px solid var(--border)"><td>40</td><td>40</td><td>9.5</td><td>26</td></tr><tr><td>41</td><td>41</td><td>10.5</td><td>26.5</td></tr></table>`;}
+openModal('sizechart-modal');
+};
 
+// 🚚 ДОСТАВКА
+window.renderDelivery=()=>{
+if(!user)return; show($('delivery-box'));
+if(userData?.deliveryCountry){
+$('del-provider').textContent = userData.deliveryCountry==='cdek'?'🇷🇺 СДЭК':userData.deliveryCountry==='ua'?'🇺🇦 UaExpress':'🇺🇸 USmall';
+const addr=userData.deliveryAddress[userData.deliveryCountry];
+$('del-addr').textContent = addr?`${addr.city}, ${addr.street}, ${addr.house}`:'Адрес не указан';
+}else{$('del-provider').textContent='Доставка не указана';$('del-addr').textContent='Нажмите "Изменить"';}
+};
+window.openDeliveryModal=()=>{openModal('delivery-modal');document.querySelectorAll('input[name="del-opt"]').forEach(r=>r.checked=false);hide($('del-fields'));};
+window.selectDelivery=country=>{
+document.querySelectorAll('.delivery-option').forEach(o=>o.style.borderColor='transparent');
+$(`d-${country}`).checked=true; $(`d-${country}`).closest('.delivery-option').style.borderColor='var(--accent)';
+show($('del-fields'));
+};
+window.saveDelivery=async()=>{
+const country=document.querySelector('input[name="del-opt"]:checked')?.value; if(!country){alert('Выберите службу');return;}
+const city=$('del-city').value.trim(),street=$('del-street').value.trim(),house=$('del-house').value.trim();
+if(!city||!street||!house){alert('Заполните все поля');return;}
+await updateDoc(doc(db,'artifacts/byrmalda-prod/users',user.uid),{deliveryCountry:country,deliveryAddress:{cdek:country==='cdek'?{city,street,house}:null,ua:country==='ua'?{city,street,house}:null,usa:country==='usa'?{city,street,house}:null}});
+userData.deliveryCountry=country; userData.deliveryAddress={cdek:country==='cdek'?{city,street,house}:userData.deliveryAddress.cdek,ua:country==='ua'?{city,street,house}:userData.deliveryAddress.ua,usa:country==='usa'?{city,street,house}:userData.deliveryAddress.usa};
+renderDelivery(); closeModal('delivery-modal');
+};
+
+// 🛡️ АДМИН ПАНЕЛЬ
 async function loadAdminPanels(){loadPendingReviews();loadPendingAvatars();loadPendingSuggestions();loadReports();}
-async function loadPendingReviews(){const c=$('adm-reviews-mod');c.innerHTML='<div class="text-center" style="padding:16px"><div class="loading"></div></div>';try{if(user?.email!==ADMIN_EMAIL){c.innerHTML='<div style="color:var(--text-dim)">Только для админа</div>';return;}const snap=await getDocs(query(collection(db,'artifacts/byrmalda-prod/public/data/reviews'),where('status','==','pending')));if(snap.empty){c.innerHTML='<div style="color:var(--text-dim)">Нет заявок</div>';return;}c.innerHTML=snap.docs.map(d=>{const r=d.data();return `<div class="mod-item"><div class="flex justify-between"><strong>${r.name}</strong><span>${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</span></div><div style="font-size:13px;color:var(--text-dim);margin:6px 0">${r.text}</div><div class="actions"><button class="btn btn-success btn-sm" onclick="admApproveReview('${d.id}')">Одобрить</button><button class="btn btn-danger btn-sm" onclick="admRejectReview('${d.id}')">Отклонить</button></div></div>`;}).join('');}catch(e){console.error(e);c.innerHTML='<div style="color:var(--error)">Ошибка</div>';}}
-window.admApproveReview=async id=>{await updateDoc(doc(db,'artifacts/byrmalda-prod/public/data/reviews',id),{status:'approved'});loadPendingReviews();loadPublicReviews();};
-window.admRejectReview=async id=>{await deleteDoc(doc(db,'artifacts/byrmalda-prod/public/data/reviews',id));loadPendingReviews();};
-async function loadPublicReviews(){const c=$('reviews-list');c.innerHTML='<div class="text-center" style="padding:24px"><div class="loading"></div></div>';try{const snap=await getDocs(query(collection(db,'artifacts/byrmalda-prod/public/data/reviews'),where('status','==','approved'),orderBy('ts','desc'),limit(50)));if(snap.empty){c.innerHTML='<div style="color:var(--text-dim)">Отзывов пока нет</div>';return;}const isAdmin=user?.email===ADMIN_EMAIL;c.innerHTML=snap.docs.map(d=>{const r=d.data();return `<div class="review-card">${isAdmin?`<span class="review-delete" onclick="admDeleteReview('${d.id}')">🗑️</span>`:''}<div class="review-head"><strong>${r.name}</strong><span>${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</span></div><div class="review-text">${r.text}</div></div>`;}).join('');}catch(e){console.error(e);c.innerHTML='<div style="color:var(--error)">Ошибка</div>';}}
-window.admDeleteReview=async id=>{if(!confirm('Удалить?'))return;await deleteDoc(doc(db,'artifacts/byrmalda-prod/public/data/reviews',id));loadPublicReviews();};
-async function loadPendingAvatars(){const c=$('adm-avatars-mod');c.innerHTML='<div class="text-center" style="padding:16px"><div class="loading"></div></div>';try{if(user?.email!==ADMIN_EMAIL){c.innerHTML='<div style="color:var(--text-dim)">Только для админа</div>';return;}const users=await getDocs(query(collection(db,'artifacts/byrmalda-prod/users'),where('avatarStatus','==','pending')));if(users.empty){c.innerHTML='<div style="color:var(--text-dim)">Нет заявок</div>';return;}c.innerHTML=users.docs.map(d=>{const u=d.data();return `<div class="mod-item flex items-center gap-12"><img src="${u.avatarPending}" style="width:56px;height:56px;border-radius:50%;object-fit:cover"><div style="flex:1"><div style="font-weight:500">${u.name}</div></div><div class="actions"><button class="btn btn-success btn-sm" onclick="admApproveAvatar('${u.uid}','${u.avatarPending}')">Одобрить</button><button class="btn btn-danger btn-sm" onclick="admRejectAvatar('${u.uid}')">Отклонить</button></div></div>`;}).join('');}catch(e){console.error(e);c.innerHTML='<div style="color:var(--error)">Ошибка</div>';}}
-window.admApproveAvatar=async(uid,url)=>{await updateDoc(doc(db,'artifacts/byrmalda-prod/users',uid),{avatar:url,avatarPending:null,avatarStatus:'approved'});loadPendingAvatars();};
-window.admRejectAvatar=async uid=>{await updateDoc(doc(db,'artifacts/byrmalda-prod/users',uid),{avatarPending:null,avatarStatus:'rejected'});loadPendingAvatars();};
-async function loadPendingSuggestions(){const c=$('adm-suggestions');c.innerHTML='<div class="text-center" style="padding:16px"><div class="loading"></div></div>';try{if(user?.email!==ADMIN_EMAIL){c.innerHTML='<div style="color:var(--text-dim)">Только для админа</div>';return;}const snap=await getDocs(query(collection(db,'artifacts/byrmalda-prod/public/data/suggestions'),where('status','==','pending')));if(snap.empty){c.innerHTML='<div style="color:var(--text-dim)">Нет предложений</div>';return;}c.innerHTML=snap.docs.map(d=>{const s=d.data();return `<div class="mod-item"><div style="font-weight:500;margin-bottom:6px">${s.name}</div><div class="actions"><button class="btn btn-success btn-sm" onclick="admApproveSuggestion('${d.id}')">Одобрить</button><button class="btn btn-danger btn-sm" onclick="admRejectSuggestion('${d.id}')">Отклонить</button></div></div>`;}).join('');}catch(e){console.error(e);c.innerHTML='<div style="color:var(--error)">Ошибка</div>';}}
-window.admApproveSuggestion=async id=>{const snap=await getDoc(doc(db,'artifacts/byrmalda-prod/public/data/suggestions',id));if(!snap.exists())return;const s=snap.data();await addDoc(collection(db,'artifacts/byrmalda-prod/public/data/products'),{productId:genId(),name:s.name,category:s.category,type:s.type,price:s.price,stock:10,weight:s.weight||200,audience:s.audience||'unisex',material:s.material||'',color:s.color||'',sizes:s.sizes||'S,M,L',collab:s.collab||'Нет',year:new Date().getFullYear(),desc:s.desc||'',images:s.img?[s.img]:[],published:true,deleted:false,fromUser:true,suggestedBy:s.uid,createdAt:serverTimestamp()});await updateDoc(doc(db,'artifacts/byrmalda-prod/public/data/suggestions',id),{status:'approved'});loadPendingSuggestions();alert('✅ Товар опубликован!');};
-window.admRejectSuggestion=async id=>{await deleteDoc(doc(db,'artifacts/byrmalda-prod/public/data/suggestions',id));loadPendingSuggestions();};
-async function loadReports(){const c=$('adm-reports');c.innerHTML='<div class="text-center" style="padding:16px"><div class="loading"></div></div>';try{if(user?.email!==ADMIN_EMAIL){c.innerHTML='<div style="color:var(--text-dim)">Только для админа</div>';return;}const snap=await getDocs(query(collection(db,'artifacts/byrmalda-prod/public/data/reports'),where('status','==','new'),orderBy('ts','desc')));if(snap.empty){c.innerHTML='<div style="color:var(--text-dim)">Нет жалоб</div>';return;}c.innerHTML=snap.docs.map(d=>{const r=d.data();return `<div class="mod-item"><div style="font-weight:500">${r.name}</div><div style="font-size:13px;color:var(--text-dim);margin:6px 0">${r.text}</div><div class="actions"><button class="btn btn-sm" onclick="admMarkReportViewed('${d.id}')">Просмотрено</button></div></div>`;}).join('');}catch(e){console.error(e);c.innerHTML='<div style="color:var(--error)">Ошибка</div>';}}
-window.admMarkReportViewed=async id=>{await updateDoc(doc(db,'artifacts/byrmalda-prod/public/data/reports',id),{status:'viewed'});loadReports();};
-
 window.toggleCollabInput=()=>{if($('adm-collab-type').value==='yes')show($('adm-collab-group'));else hide($('adm-collab-group'));};
 window.toggleEditCollabInput=()=>{if($('edit-collab-type').value==='yes')show($('edit-collab-group'));else hide($('edit-collab-group'));};
-window.admCreateProduct=async()=>{const name=$('adm-name').value.trim(),cat=$('adm-cat').value,type=$('adm-type').value.trim(),price=parseFloat($('adm-price').value),stock=parseInt($('adm-stock').value),weight=parseInt($('adm-weight').value);if(!name||!type||isNaN(price)||isNaN(stock)||isNaN(weight))return alert('Заполните обязательные поля');const collab=$('adm-collab-type').value==='yes'?`Да, ${$('adm-collab-name').value.trim()}`:'Нет';const imgs=[];if($('adm-photos').files)for(const f of $('adm-photos').files){const fd=new FormData();fd.append('image',f);fd.append('key',IMGBB_KEY);const r=await fetch('https://api.imgbb.com/1/upload',{method:'POST',body:fd});const d=await r.json();if(d.success)imgs.push(d.data.url);}await addDoc(collection(db,'artifacts/byrmalda-prod/public/data/products'),{productId:genId(),name,category:cat,type,price,stock,weight,audience:$('adm-aud').value,material:$('adm-mat').value.trim(),color:$('adm-color').value.trim(),sizes:$('adm-sizes').value.trim(),collab,year:parseInt($('adm-year').value)||new Date().getFullYear(),desc:$('adm-desc').value.trim(),images:imgs,published:true,deleted:false,createdAt:serverTimestamp()});alert('✅ Товар создан!');$('adm-name').value='';$('adm-type').value='';$('adm-price').value='';$('adm-stock').value='';$('adm-weight').value='';$('adm-desc').value='';};
-window.admLoadProduct=async()=>{const pid=$('adm-edit-id').value.trim();if(!pid)return alert('Введите ID');try{let snap=await getDoc(doc(db,'artifacts/byrmalda-prod/public/data/products',pid));if(!snap.exists()){const q=query(collection(db,'artifacts/byrmalda-prod/public/data/products'),where('productId','==',pid));const r=await getDocs(q);if(!r.empty)snap=r.docs[0];}if(!snap.exists())return alert('❌ Товар не найден');const p=snap.data();$('adm-edit-form').dataset.docId=snap.id;$('edit-name').value=p.name||'';$('edit-cat').value=p.category||'clothing';$('edit-type').value=p.type||'';$('edit-price').value=p.price||'';$('edit-stock').value=p.stock||'';$('edit-weight').value=p.weight||'';$('edit-aud').value=p.audience||'unisex';$('edit-mat').value=p.material||'';$('edit-color').value=p.color||'';$('edit-sizes').value=p.sizes||'S,M,L,XL';$('edit-year').value=p.year||'';$('edit-desc').value=p.desc||'';if(p.collab&&p.collab!=='Нет'){$('edit-collab-type').value='yes';$('edit-collab-name').value=p.collab.replace('Да, ','');show($('edit-collab-group'));}else{$('edit-collab-type').value='no';hide($('edit-collab-group'));}$('edit-current-photos').innerHTML=p.images?.length?`📷 ${p.images.length} шт.`:'📷 Нет фото';show($('adm-edit-form'));alert('✅ Загружено');}catch(e){alert('Ошибка: '+e.message);}};
-window.admSaveProduct=async()=>{const docId=$('adm-edit-form').dataset.docId;if(!docId)return alert('Ошибка ID');try{const updateData={name:$('edit-name').value.trim(),category:$('edit-cat').value,type:$('edit-type').value.trim(),price:parseFloat($('edit-price').value)||0,stock:parseInt($('edit-stock').value)||0,weight:parseInt($('edit-weight').value)||0,audience:$('edit-aud').value,material:$('edit-mat').value.trim(),color:$('edit-color').value.trim(),sizes:$('edit-sizes').value.trim(),year:parseInt($('edit-year').value)||new Date().getFullYear(),collab:$('edit-collab-type').value==='yes'?`Да, ${$('edit-collab-name').value.trim()}`:'Нет',desc:$('edit-desc').value.trim(),updatedAt:serverTimestamp()};await updateDoc(doc(db,'artifacts/byrmalda-prod/public/data/products',docId),updateData);alert('✅ Сохранено!');hide($('adm-edit-form'));}catch(e){alert('Ошибка: '+e.message);}};
-window.admDeleteProduct=async()=>{const pid=$('adm-delete-id').value.trim();if(!pid)return alert('Введите ID');if(!confirm('Удалить?'))return;await updateDoc(doc(db,'artifacts/byrmalda-prod/public/data/products',pid),{deleted:true,published:false});alert('✅ Удален');$('adm-delete-id').value='';};
-window.admBlockUser=async()=>{const uid=$('adm-uid').value.trim();if(!uid)return alert('Введите UID');await updateDoc(doc(db,'artifacts/byrmalda-prod/users',uid),{isBlocked:true});alert('✅ Заблокирован');};
-window.admUnblockUser=async()=>{const uid=$('adm-uid').value.trim();if(!uid)return alert('Введите UID');await updateDoc(doc(db,'artifacts/byrmalda-prod/users',uid),{isBlocked:false});alert('✅ Разблокирован');};
-window.admFindOrder=async()=>{const oid=$('adm-oid').value.trim();if(!oid)return alert('Введите ID');const res=$('adm-order-res');res.classList.remove('hidden');res.innerHTML='<div class="loading"></div>';try{let snap=await getDoc(doc(db,'artifacts/byrmalda-prod/public/data/orders',oid));if(!snap.exists()){const q=query(collection(db,'artifacts/byrmalda-prod/public/data/orders'),where('tracking','==',oid));const r=await getDocs(q);if(!r.empty)snap=r.docs[0];}if(!snap.exists())return res.innerHTML='<div style="color:var(--error)">Не найден</div>';const o=snap.data();res.innerHTML=`<div style="background:var(--bg);padding:16px;border-radius:6px"><div><strong>Заказ:</strong> #${o.id}</div><div><strong>Статус:</strong> ${o.status}</div><div><strong>Товары:</strong> ${o.items?.map(i=>`${i.name} (${i.qty})`).join(', ')||'-'}</div><div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-sm" onclick="admSetOrderStatus('${o.id}','Создан')">Создан</button><button class="btn btn-sm" onclick="admSetOrderStatus('${o.id}','В пути')">В пути</button><button class="btn btn-danger btn-sm" onclick="admSetOrderStatus('${o.id}','Отменён')">Отмена</button></div></div>`;}catch(e){res.innerHTML='<div style="color:var(--error)">Ошибка</div>';}};
-window.admSetOrderStatus=async(oid,st)=>{await updateDoc(doc(db,'artifacts/byrmalda-prod/public/data/orders',oid),{status:st,updatedAt:serverTimestamp(),adminChangedStatus:true});alert('✅ Обновлён');admFindOrder();loadOrders();};
+window.admCreateProduct=async()=>{
+const name=$('adm-name').value.trim(),cat=$('adm-cat').value,type=$('adm-type').value.trim(),price=parseFloat($('adm-price').value),stock=parseInt($('adm-stock').value),weight=parseInt($('adm-weight').value),aud=$('adm-aud').value,mat=$('adm-mat').value.trim(),color=$('adm-color').value.trim(),sizes=$('adm-sizes').value.trim()||'S,M,L,XL',year=parseInt($('adm-year').value)||2026,collabType=$('adm-collab-type').value,collabName=$('adm-collab-name').value.trim(),desc=$('adm-desc').value.trim();
+if(!name||!type||isNaN(price)||isNaN(stock)||isNaN(weight)){alert('Заполните обязательные поля');return;}
+const collab=collabType==='yes'&&collabName?`Да, ${collabName}`:'Нет';
+const files=$('adm-photos').files; let imgs=[];
+if(files.length>0){for(let f of files){const fd=new FormData();fd.append('image',f);fd.append('key',IMGBB_KEY);const res=await fetch('https://api.imgbb.com/1/upload',{method:'POST',body:fd});const d=await res.json();if(d.success)imgs.push(d.data.url);}}
+const prod={productId:genId(),name,category:cat,type,price,stock,weight,audience:aud,material:mat,color,sizes,collab,year,desc,images:imgs,published:true,deleted:false,createdAt:serverTimestamp()};
+await addDoc(collection(db,'artifacts/byrmalda-prod/public/data/products'),prod); alert('✅ Опубликовано'); navigate('catalog');
+};
+window.admLoadProduct=async()=>{
+const pid=$('adm-edit-id').value.trim(); if(!pid)return;
+try{
+let snap=await getDoc(doc(db,'artifacts/byrmalda-prod/public/data/products',pid));
+if(!snap.exists()){const q=query(collection(db,'artifacts/byrmalda-prod/public/data/products'),where('productId','==',pid),limit(1));const r=await getDocs(q);if(!r.empty)snap=r.docs[0];}
+if(!snap.exists()){alert('Товар не найден');return;}
+const p=snap.data();
+$('edit-name').value=p.name; $('edit-cat').value=p.category; $('edit-type').value=p.type; $('edit-price').value=p.price; $('edit-stock').value=p.stock; $('edit-weight').value=p.weight; $('edit-aud').value=p.audience; $('edit-mat').value=p.material; $('edit-color').value=p.color; $('edit-sizes').value=p.sizes; $('edit-year').value=p.year; $('edit-desc').value=p.desc;
+if(p.collab&&p.collab!=='Нет'){$('edit-collab-type').value='yes';$('edit-collab-name').value=p.collab.replace('Да, ','');show($('edit-collab-group'));}else{$('edit-collab-type').value='no';hide($('edit-collab-group'));}
+$('edit-current-photos').innerHTML=p.images?.map(i=>`<img src="${i}" style="width:40px;height:40px;object-fit:cover;border-radius:4px;margin:2px">`).join('')||'Нет фото';
+$('adm-edit-form').dataset.docId=snap.id; show($('adm-edit-form'));
+}catch(e){alert('Ошибка загрузки: '+e.message);}
+};
+window.admSaveProduct=async()=>{
+const docId=$('adm-edit-form').dataset.docId; if(!docId)return;
+const collabType=$('edit-collab-type').value,collabName=$('edit-collab-name').value.trim(),collab=collabType==='yes'&&collabName?`Да, ${collabName}`:'Нет';
+const u={name:$('edit-name').value.trim(),category:$('edit-cat').value,type:$('edit-type').value.trim(),price:parseFloat($('edit-price').value),stock:parseInt($('edit-stock').value),weight:parseInt($('edit-weight').value),audience:$('edit-aud').value,material:$('edit-mat').value.trim(),color:$('edit-color').value.trim(),sizes:$('edit-sizes').value.trim(),year:parseInt($('edit-year').value)||2026,collab,desc:$('edit-desc').value.trim(),updatedAt:serverTimestamp()};
+const files=$('edit-photos').files;
+if(files.length>0){const cur=JSON.parse($('adm-edit-form').dataset.curImgs||'[]');for(let f of files){const fd=new FormData();fd.append('image',f);fd.append('key',IMGBB_KEY);const res=await fetch('https://api.imgbb.com/1/upload',{method:'POST',body:fd});const d=await res.json();if(d.success)cur.push(d.data.url);} u.images=cur;}
+await updateDoc(doc(db,'artifacts/byrmalda-prod/public/data/products',docId),u); alert('✅ Сохранено'); hide($('adm-edit-form'));
+};
+window.admDeleteProduct=async()=>{const pid=$('adm-delete-id').value.trim();if(!pid)return;if(!confirm('Удалить?'))return;await updateDoc(doc(db,'artifacts/byrmalda-prod/public/data/products',pid),{deleted:true,published:false});alert('✅ Удален');$('adm-delete-id').value='';};
+window.admBlockUser=async()=>{const uid=$('adm-uid').value.trim();if(!uid)return;await updateDoc(doc(db,'artifacts/byrmalda-prod/users',uid),{isBlocked:true});alert('✅ Заблокирован');};
+window.admUnblockUser=async()=>{const uid=$('adm-uid').value.trim();if(!uid)return;await updateDoc(doc(db,'artifacts/byrmalda-prod/users',uid),{isBlocked:false});alert('✅ Разблокирован');};
+window.admFindOrder=async()=>{
+const oid=$('adm-oid').value.trim();if(!oid)return;
+let snap=await getDoc(doc(db,'artifacts/byrmalda-prod/public/data/orders',oid));
+if(!snap.exists()){const q=query(collection(db,'artifacts/byrmalda-prod/public/data/orders'),where('tracking','==',oid),limit(1));const r=await getDocs(q);if(!r.empty)snap=r.docs[0];}
+if(!snap.exists()){$('adm-order-res').innerHTML='<div style="color:var(--error)">Заказ не найден</div>';return;}
+const o=snap.data(), items=o.items?.map(i=>`<div style="display:flex;gap:10px;margin:8px 0;padding:8px;background:var(--bg-soft);border-radius:4px"><img src="${i.img||'https://via.placeholder.com/50/f5f5f5/111?text=📦'}" style="width:50px;height:50px;object-fit:cover;border-radius:4px"><div><div style="font-weight:500">${i.name}</div><div style="font-size:11px;color:var(--text-dim)">${i.qty} шт • ${i.size} • ${i.color}</div></div></div>`).join('')||'-';
+$('adm-order-res').innerHTML=`<div style="background:var(--bg);padding:16px;border-radius:6px"><div style="margin-bottom:8px"><strong>Заказ:</strong> #${o.id} | <strong>Трекинг:</strong> ${o.tracking}</div><div style="margin-bottom:12px"><strong>Статус:</strong> <span style="padding:4px 10px;border-radius:20px;font-size:12px;background:#cffafe">${o.status}</span></div><div style="margin:12px 0"><strong>Товары:</strong></div>${items}<div style="margin-top:12px"><strong>Действия:</strong><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><button class="btn btn-sm" style="width:auto" onclick="admSetOrderStatus('${o.id}','Создан')">Создан</button><button class="btn btn-sm" style="width:auto" onclick="admSetOrderStatus('${o.id}','Передача товара в доставку')">В доставку</button><button class="btn btn-sm" style="width:auto" onclick="admSetOrderStatus('${o.id}','В пути')">В пути</button><button class="btn btn-danger btn-sm" style="width:auto" onclick="admSetOrderStatus('${o.id}','Отменён')">Отмена</button></div></div></div>`;
+show($('adm-order-res'));
+};
+window.admSetOrderStatus=async(oid,s)=>{await updateDoc(doc(db,'artifacts/byrmalda-prod/public/data/orders',oid),{status:s,updatedAt:serverTimestamp(),adminChangedStatus:true});alert(`✅ Статус: ${s}`);admFindOrder();};
+
+async function loadPendingReviews(){
+const c=$('adm-reviews-mod');c.innerHTML='<div class="text-center"><div class="loading"></div></div>';
+if(user?.email!==ADMIN_EMAIL){c.innerHTML='Доступ только для администратора';return;}
+const snap=await getDocs(query(collection(db,'artifacts/byrmalda-prod/public/data/reviews'),where('status','==','pending')));
+c.innerHTML=snap.docs.map(d=>{const r=d.data();return `<div class="mod-item"><div class="flex justify-between"><strong>${r.name}</strong><span>${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</span></div><div style="font-size:13px;color:var(--text-dim);margin:6px 0">${r.text}</div><div class="actions"><button class="btn btn-success btn-sm" onclick="admApproveReview('${d.id}')">Одобрить</button><button class="btn btn-danger btn-sm" onclick="admRejectReview('${d.id}')">Отклонить</button></div></div>`;}).join('')||'Нет заявок';
+}
+window.admApproveReview=async id=>{await updateDoc(doc(db,'artifacts/byrmalda-prod/public/data/reviews',id),{status:'approved'});loadPendingReviews();loadPublicReviews();};
+window.admRejectReview=async id=>{await deleteDoc(doc(db,'artifacts/byrmalda-prod/public/data/reviews',id));loadPendingReviews();};
+async function loadPublicReviews(){
+const c=$('reviews-list');c.innerHTML='<div class="text-center"><div class="loading"></div></div>';
+const snap=await getDocs(query(collection(db,'artifacts/byrmalda-prod/public/data/reviews'),where('status','==','approved'),orderBy('ts','desc'),limit(50)));
+const isAdmin=user?.email===ADMIN_EMAIL;
+c.innerHTML=snap.docs.map(d=>{const r=d.data();return `<div class="review-card">${isAdmin?`<span class="review-delete" onclick="admDeleteReview('${d.id}')">🗑️</span>`:''}<div class="review-head"><strong>${r.name}</strong><span>${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</span></div><div class="review-text">${r.text}</div></div>`;}).join('')||'Отзывов нет';
+}
+window.admDeleteReview=async id=>{if(!confirm('Удалить?'))return;await deleteDoc(doc(db,'artifacts/byrmalda-prod/public/data/reviews',id));loadPublicReviews();};
+
+async function loadPendingAvatars(){
+const c=$('adm-avatars-mod');c.innerHTML='<div class="text-center"><div class="loading"></div></div>';
+if(user?.email!==ADMIN_EMAIL){c.innerHTML='Доступ только для администратора';return;}
+const snap=await getDocs(query(collection(db,'artifacts/byrmalda-prod/users'),where('avatarStatus','==','pending')));
+c.innerHTML=snap.docs.map(d=>{const u=d.data();return `<div class="mod-item flex items-center gap-12"><img src="${u.avatarPending}" style="width:56px;height:56px;border-radius:50%;object-fit:cover"><div style="flex:1"><div style="font-weight:500">${u.name}</div><div style="font-size:11px;color:var(--text-dim)">${u.uid}</div></div><div class="actions"><button class="btn btn-success btn-sm" onclick="admApproveAvatar('${u.uid}','${u.avatarPending}')">Одобрить</button><button class="btn btn-danger btn-sm" onclick="admRejectAvatar('${u.uid}')">Отклонить</button></div></div>`;}).join('')||'Нет заявок';
+}
+window.admApproveAvatar=async(uid,url)=>{await updateDoc(doc(db,'artifacts/byrmalda-prod/users',uid),{avatar:url,avatarPending:null,avatarStatus:'approved'});loadPendingAvatars();};
+window.admRejectAvatar=async uid=>{await updateDoc(doc(db,'artifacts/byrmalda-prod/users',uid),{avatarPending:null,avatarStatus:'rejected'});loadPendingAvatars();};
+window.submitAvatar=async()=>{const file=$('av-file').files[0];if(!file){alert('Выберите файл');return;}const fd=new FormData();fd.append('image',file);fd.append('key',IMGBB_KEY);const res=await fetch('https://api.imgbb.com/1/upload',{method:'POST',body:fd});const d=await res.json();if(!d.success)throw new Error('ImgBB error');await updateDoc(doc(db,'artifacts/byrmalda-prod/users',user.uid),{avatarPending:d.data.url,avatarStatus:'pending',avatarSubmittedAt:serverTimestamp()});alert('✅ Отправлено');closeModal('avatar-modal');loadPendingAvatars();};
+
+async function loadPendingSuggestions(){
+const c=$('adm-suggestions');c.innerHTML='<div class="text-center"><div class="loading"></div></div>';
+if(user?.email!==ADMIN_EMAIL){c.innerHTML='Доступ только для администратора';return;}
+const snap=await getDocs(query(collection(db,'artifacts/byrmalda-prod/public/data/suggestions'),where('status','==','pending')));
+c.innerHTML=snap.docs.map(d=>{const s=d.data();return `<div class="mod-item"><div style="font-weight:500;margin-bottom:6px">${s.name}</div><div style="font-size:13px;color:var(--text-dim)">${s.type} • $${s.price} • ${s.category}</div><div class="actions"><button class="btn btn-success btn-sm" onclick="admApproveSuggestion('${d.id}')">Одобрить</button><button class="btn btn-danger btn-sm" onclick="admRejectSuggestion('${d.id}')">Отклонить</button></div></div>`;}).join('')||'Нет предложений';
+}
+window.admApproveSuggestion=async id=>{
+const snap=await getDoc(doc(db,'artifacts/byrmalda-prod/public/data/suggestions',id));if(!snap.exists())return;const s=snap.data();
+await addDoc(collection(db,'artifacts/byrmalda-prod/public/data/products'),{productId:genId(),name:s.name,category:s.category,type:s.type,price:s.price,stock:10,weight:s.weight||200,audience:s.audience||'unisex',material:s.material||'',color:s.color||'',sizes:s.sizes||'S,M,L',collab:s.collab||'Нет',year:new Date().getFullYear(),desc:s.desc||'',images:s.img?[s.img]:[],published:true,deleted:false,createdAt:serverTimestamp()});
+await updateDoc(doc(db,'artifacts/byrmalda-prod/public/data/suggestions',id),{status:'approved'});loadPendingSuggestions();alert('✅ Опубликовано');
+};
+window.admRejectSuggestion=async id=>{await deleteDoc(doc(db,'artifacts/byrmalda-prod/public/data/suggestions',id));loadPendingSuggestions();};
 window.openSuggest=()=>{if(!user)openModal('login-modal');else openModal('suggest-modal');};
-window.submitSuggestion=async()=>{const name=$('sug-name').value.trim(),cat=$('sug-cat').value,type=$('sug-type').value.trim(),price=parseFloat($('sug-price').value);if(!name||!type||isNaN(price))return alert('Заполните поля');const file=$('sug-img').files[0];let imgUrl='';if(file){const fd=new FormData();fd.append('image',file);fd.append('key',IMGBB_KEY);const r=await fetch('https://api.imgbb.com/1/upload',{method:'POST',body:fd});const d=await r.json();if(d.success)imgUrl=d.data.url;}await addDoc(collection(db,'artifacts/byrmalda-prod/public/data/suggestions'),{uid:user.uid,userName:userData?.name||user.email.split('@')[0],name,category:cat,type,price,img:imgUrl,audience:$('sug-aud').value,sizes:$('sug-sizes').value,material:$('sug-mat').value,desc:$('sug-desc').value,status:'pending',ts:serverTimestamp()});alert('✅ Отправлено!');closeModal('suggest-modal');};
+window.submitSuggestion=async()=>{const n=$('sug-name').value.trim(),c=$('sug-cat').value,t=$('sug-type').value.trim(),p=parseFloat($('sug-price').value);if(!n||!t||isNaN(p)){alert('Заполните поля');return;}let url='';const f=$('sug-img').files[0];if(f){const fd=new FormData();fd.append('image',f);fd.append('key',IMGBB_KEY);const res=await fetch('https://api.imgbb.com/1/upload',{method:'POST',body:fd});const d=await res.json();if(d.success)url=d.data.url;}await addDoc(collection(db,'artifacts/byrmalda-prod/public/data/suggestions'),{uid:user.uid,userName:userData?.name||user.email.split('@')[0],name:n,category:c,type:t,price:p,img:url,audience:$('sug-aud').value,sizes:$('sug-sizes').value,material:$('sug-mat').value,desc:$('sug-desc').value,status:'pending',ts:serverTimestamp()});alert('✅ Отправлено');closeModal('suggest-modal');loadPendingSuggestions();};
 
-window.selectDelivery=country=>{document.querySelectorAll('.delivery-option').forEach(el=>el.classList.remove('selected'));document.querySelectorAll('.delivery-fields').forEach(el=>hide(el));$(`del-${country}`).checked=true;$(`del-${country}`).closest('.delivery-option').classList.add('selected');show($(`fields-${country}`));if(userData?.deliveryAddress?.[country]){const addr=userData.deliveryAddress[country];if(country==='cdek'){$('cdek-city').value=addr.city||'';$('cdek-street').value=addr.street||'';$('cdek-house').value=addr.house||'';}else if(country==='ua'){$('ua-city').value=addr.city||'';$('ua-street').value=addr.street||'';$('ua-house').value=addr.house||'';}else{$('usa-city').value=addr.city||'';$('usa-street').value=addr.street||'';$('usa-house').value=addr.house||'';}}};
-window.renderDeliveryAddress=()=>{if(!user||!userData)return;show($('delivery-section'));const country=userData.deliveryCountry;if(country&&userData.deliveryAddress?.[country])selectDelivery(country);};
-window.saveDeliveryAddress=async()=>{if(!user){alert('❌ Войдите');return;}const country=document.querySelector('input[name="delivery"]:checked')?.value;if(!country){alert('Выберите службу');return;}let city,street,house;if(country==='cdek'){city=$('cdek-city').value.trim();street=$('cdek-street').value.trim();house=$('cdek-house').value.trim();}else if(country==='ua'){city=$('ua-city').value.trim();street=$('ua-street').value.trim();house=$('ua-house').value.trim();}else{city=$('usa-city').value.trim();street=$('usa-street').value.trim();house=$('usa-house').value.trim();}if(!city||!street||!house){alert('Заполните все поля');return;}try{await updateDoc(doc(db,'artifacts/byrmalda-prod/users',user.uid),{deliveryCountry:country,deliveryAddress:{cdek:country==='cdek'?{city,street,house}:(userData?.deliveryAddress?.cdek||null),ua:country==='ua'?{city,street,house}:(userData?.deliveryAddress?.ua||null),usa:country==='usa'?{city,street,house}:(userData?.deliveryAddress?.usa||null)},updatedAt:serverTimestamp()});userData.deliveryCountry=country;if(!userData.deliveryAddress)userData.deliveryAddress={};userData.deliveryAddress[country]={city,street,house};$('delivery-success').classList.remove('hidden');setTimeout(()=>$('delivery-success').classList.add('hidden'),3000);renderProfile();}catch(e){console.error('saveDeliveryAddress:',e);alert('❌ Ошибка: '+e.message);}};
+async function loadReports(){
+const c=$('adm-reports');c.innerHTML='<div class="text-center"><div class="loading"></div></div>';
+if(user?.email!==ADMIN_EMAIL){c.innerHTML='Доступ только для администратора';return;}
+const snap=await getDocs(query(collection(db,'artifacts/byrmalda-prod/public/data/reports'),where('status','==','new'),orderBy('ts','desc')));
+c.innerHTML=snap.docs.map(d=>{const r=d.data();return `<div class="mod-item"><div style="font-weight:500">${r.name} <span style="font-size:11px;color:var(--text-dim)">${r.uid}</span></div><div style="font-size:13px;color:var(--text-dim);margin:6px 0">${r.text}</div><div class="actions"><button class="btn btn-sm" onclick="admMarkReportViewed('${d.id}')">Просмотрено</button></div></div>`;}).join('')||'Нет жалоб';
+}
+window.admMarkReportViewed=async id=>{await updateDoc(doc(db,'artifacts/byrmalda-prod/public/data/reports',id),{status:'viewed'});loadReports();};
 
+async function autoUpdateOrders(){
+if(user?.email!==ADMIN_EMAIL)return;try{const now=Date.now();const created=await getDocs(query(collection(db,'artifacts/byrmalda-prod/public/data/orders'),where('status','==','Создан')));created.forEach(async d=>{const o=d.data();if(o.adminChangedStatus)return;const t=o.createdAt?.toDate?.().getTime();if(t&&now-t>4*24*60*60*1000)await updateDoc(doc(db,'artifacts/byrmalda-prod/public/data/orders',d.id),{status:'Передача товара в доставку',updatedAt:serverTimestamp()});});const shipping=await getDocs(query(collection(db,'artifacts/byrmalda-prod/public/data/orders'),where('status','==','Передача товара в доставку')));shipping.forEach(async d=>{const o=d.data();if(o.adminChangedStatus)return;const t=o.updatedAt?.toDate?.().getTime();if(t&&now-t>15*60*60*1000)await updateDoc(doc(db,'artifacts/byrmalda-prod/public/data/orders',d.id),{status:'В пути',updatedAt:serverTimestamp()});});}catch(e){}
+}
 function setupListeners(){document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.modal.active').forEach(m=>m.classList.remove('active'));});}
-Object.assign(window,{navigate,openModal,closeModal,openLogin,switchReg,doLogin,regStep1,regStep2,regStep3,doLogout,confirmLogout,openAvatarModal,submitAvatar,filterType,handleSearch,openProd,setGal,galNav,addToCart,updCart,delCart,checkout,confirmCheckout,cancelOrder,sendMsg,toggleTheme,toggleLang,openReviewModal,setRating,submitReview,openReport,submitReport,showSizeChart,admCreateProduct,admLoadProduct,admSaveProduct,admDeleteProduct,admBlockUser,admUnblockUser,admFindOrder,admSetOrderStatus,admApproveReview,admRejectReview,admDeleteReview,admApproveAvatar,admRejectAvatar,admApproveSuggestion,admRejectSuggestion,admMarkReportViewed,openSuggest,submitSuggestion,toggleCollabInput,toggleEditCollabInput,selectDelivery,saveDeliveryAddress,renderDeliveryAddress});
-console.log('🚀 BYRMALDA loaded | 🔐 App Check + ✅ Delivery + Logout + Full Code');
+
+Object.assign(window, {navigate, openModal, closeModal, openLogin, switchReg, doLogin, regStep1, regStep2, openAvatarModal, submitAvatar, filterType, handleSearch, openProd, setGal, galNav, addToCart, updCart, delCart, checkout, confirmCheckout, cancelOrder, sendMsg, toggleTheme, toggleLang, openReviewModal, setRating, submitReview, openReport, submitReport, showSizeChart, admCreateProduct, admLoadProduct, admSaveProduct, admDeleteProduct, admBlockUser, admUnblockUser, admFindOrder, admSetOrderStatus, admApproveReview, admRejectReview, admDeleteReview, admApproveAvatar, admRejectAvatar, admApproveSuggestion, admRejectSuggestion, openSuggest, submitSuggestion, toggleCollabInput, toggleEditCollabInput, openDeliveryModal, selectDelivery, saveDelivery, carouselNav, confirmLogout, doLogout});
+console.log('🚀 BYRMALDA loaded. Все системы работают.');
 </script>
 </body>
 </html>
