@@ -175,7 +175,7 @@
         
         .profile-header {
             display: flex; align-items: center; gap: 24px; padding-bottom: 28px;
-            border-bottom: 1px solid var(--border); margin-bottom: 32px;
+            border-bottom: 1px solid var(--border); margin-bottom: 16px;
         }
         .avatar-wrap {
             position: relative; width: 96px; height: 96px; border-radius: 50%;
@@ -193,6 +193,30 @@
         .verified { color: var(--success); font-size: 16px; }
         .profile-meta { font-size: 12px; color: var(--text-dim); margin-top: 4px; }
         .profile-meta div { margin: 2px 0; }
+        
+        /* 🔁 ДОСТАВКА - СРАЗУ ПОД ПРОФИЛЕМ */
+        .delivery-section {
+            background: var(--bg-soft); border-radius: var(--radius); padding: 20px; margin: 0 0 24px;
+            border: 1px solid var(--border);
+        }
+        .delivery-title { font-size: 16px; font-weight: 600; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 1px; }
+        .delivery-option {
+            display: flex; align-items: center; gap: 12px; margin: 12px 0; padding: 12px;
+            background: var(--bg); border-radius: 8px; cursor: pointer;
+            border: 2px solid transparent; transition: border-color 0.2s;
+        }
+        .delivery-option:hover { border-color: var(--accent); }
+        .delivery-option.selected { border-color: var(--accent); background: var(--bg-soft); }
+        .delivery-option input { width: 18px; height: 18px; cursor: pointer; }
+        .delivery-fields {
+            margin-top: 16px; padding: 16px; background: var(--bg);
+            border-radius: 8px; border: 1px solid var(--border);
+        }
+        .delivery-warning {
+            margin-top: 16px; padding: 12px; background: #fef3c7;
+            border-left: 4px solid #f59e0b; font-size: 12px; color: #92400e;
+            border-radius: 4px;
+        }
         
         .section-title {
             font-size: 18px; font-weight: 500; margin: 28px 0 18px;
@@ -244,7 +268,7 @@
         }
         .gallery-nav {
             position: absolute; top: 50%; width: 100%; padding: 0 8px;
-            transform: translateY(-50%); display: flex; justify-content: space-between; pointer-events: none;
+            transform: translateY(-50%); display: flex; justify-content:space-between; pointer-events: none;
         }
         .gallery-btn {
             pointer-events: auto; background: rgba(255,255,255,0.95); border: none;
@@ -450,29 +474,6 @@
         }
         .review-delete:hover { opacity: 1; }
         
-        /* 🔁 Стили для доставки */
-        .delivery-section {
-            background: var(--bg-soft); border-radius: var(--radius); padding: 20px; margin: 24px 0;
-            border: 1px solid var(--border);
-        }
-        .delivery-option {
-            display: flex; align-items: center; gap: 12px; margin: 12px 0; padding: 12px;
-            background: var(--bg); border-radius: 8px; cursor: pointer;
-            border: 2px solid transparent; transition: border-color 0.2s;
-        }
-        .delivery-option:hover { border-color: var(--accent); }
-        .delivery-option.selected { border-color: var(--accent); background: var(--bg-soft); }
-        .delivery-option input { width: 18px; height: 18px; cursor: pointer; }
-        .delivery-fields {
-            margin-top: 16px; padding: 16px; background: var(--bg);
-            border-radius: 8px; border: 1px solid var(--border);
-        }
-        .delivery-warning {
-            margin-top: 16px; padding: 12px; background: #fef3c7;
-            border-left: 4px solid #f59e0b; font-size: 12px; color: #92400e;
-            border-radius: 4px;
-        }
-        
         .hidden { display: none !important; }
         .text-center { text-align: center; }
         .mt-16 { margin-top: 16px; }
@@ -583,9 +584,9 @@
                 </div>
             </div>
             
-            <!-- 🔁 Блок адреса доставки -->
+            <!-- 🔁 ДОСТАВКА - СРАЗУ ПОД ПРОФИЛЕМ (исправлено расположение) -->
             <div class="delivery-section" id="delivery-section" style="display:none">
-                <h3 style="margin-bottom:16px">📦 Адрес доставки</h3>
+                <div class="delivery-title">📦 Адрес доставки</div>
                 
                 <div class="delivery-option" onclick="selectDelivery('cdek')">
                     <input type="radio" name="delivery" id="del-cdek" value="cdek">
@@ -1576,7 +1577,19 @@ function renderCart() {
 window.updCart = (id,f,v) => { const it = cart.find(i=>i.id===id); if (!it) return; if (f==='qty') it.qty = Math.max(1,parseInt(v)||1); localStorage.setItem('byrmalda_cart', JSON.stringify(cart)); renderCart(); loadCartCount(); };
 window.delCart = id => { cart = cart.filter(i=>i.id!==id); localStorage.setItem('byrmalda_cart', JSON.stringify(cart)); renderCart(); loadCartCount(); };
 
-window.checkout = () => { if (!user) openModal('login-modal'); else if (!cart.length) alert('Корзина пуста'); else openModal('checkout-modal'); };
+window.checkout = () => { 
+    if (!user) { openModal('login-modal'); return; }
+    if (!cart.length) { alert('Корзина пуста'); return; }
+    
+    // 🔁 ПРОВЕРКА: есть ли адрес доставки
+    if (!userData?.deliveryCountry || !userData?.deliveryAddress?.[userData.deliveryCountry]) {
+        alert('У вас не указан пункт выдачи заказов куда мы доставим заказ либо адрес вашего пункта выдачи неверный, пожалуйста, перепроверьте адрес или укажите его если он отсутствует');
+        navigate('profile');
+        return;
+    }
+    
+    openModal('checkout-modal'); 
+};
 
 window.confirmCheckout = async () => {
     closeModal('checkout-modal');
@@ -1585,7 +1598,10 @@ window.confirmCheckout = async () => {
     const order = {
         id: oid, userId: user.uid, items: cart.map(it => ({...it})), total,
         status: 'Ожидает оплату', tracking: 'TRK-'+genId(),
-        adminChangedStatus: false, createdAt: serverTimestamp(), updatedAt: serverTimestamp()
+        adminChangedStatus: false, createdAt: serverTimestamp(), updatedAt: serverTimestamp(),
+        // 🔁 Добавляем адрес доставки в заказ
+        deliveryAddress: userData.deliveryAddress[userData.deliveryCountry],
+        deliveryCountry: userData.deliveryCountry
     };
     await setDoc(doc(db, 'artifacts/byrmalda-prod/public/data/orders', oid), order);
     for (const it of cart) {
@@ -1852,6 +1868,11 @@ async function loadAdminPanels() {
 async function loadPendingReviews() {
     const c = $('adm-reviews-mod'); c.innerHTML = '<div class="text-center" style="padding:16px"><div class="loading"></div></div>';
     try {
+        // 🔁 ИСПРАВЛЕНО: проверяем что пользователь админ перед запросом
+        if (user?.email !== ADMIN_EMAIL) {
+            c.innerHTML = '<div style="color:var(--text-dim)">Доступ только для администратора</div>';
+            return;
+        }
         const snap = await getDocs(query(collection(db, 'artifacts/byrmalda-prod/public/data/reviews'), where('status','==','pending')));
         if (snap.empty) { c.innerHTML = '<div style="color:var(--text-dim)">Нет заявок</div>'; return; }
         c.innerHTML = snap.docs.map(d => {
@@ -1896,6 +1917,11 @@ window.admDeleteReview = async id => {
 async function loadPendingAvatars() {
     const c = $('adm-avatars-mod'); c.innerHTML = '<div class="text-center" style="padding:16px"><div class="loading"></div></div>';
     try {
+        // 🔁 ИСПРАВЛЕНО: проверяем что пользователь админ
+        if (user?.email !== ADMIN_EMAIL) {
+            c.innerHTML = '<div style="color:var(--text-dim)">Доступ только для администратора</div>';
+            return;
+        }
         const users = await getDocs(query(collection(db, 'artifacts/byrmalda-prod/users'), where('avatarStatus','==','pending')));
         if (users.empty) { c.innerHTML = '<div style="color:var(--text-dim)">Нет заявок</div>'; return; }
         c.innerHTML = users.docs.map(d => {
@@ -1923,6 +1949,11 @@ window.admRejectAvatar = async uid => {
 async function loadPendingSuggestions() {
     const c = $('adm-suggestions'); c.innerHTML = '<div class="text-center" style="padding:16px"><div class="loading"></div></div>';
     try {
+        // 🔁 ИСПРАВЛЕНО: проверяем что пользователь админ
+        if (user?.email !== ADMIN_EMAIL) {
+            c.innerHTML = '<div style="color:var(--text-dim)">Доступ только для администратора</div>';
+            return;
+        }
         const snap = await getDocs(query(collection(db, 'artifacts/byrmalda-prod/public/data/suggestions'), where('status','==','pending')));
         if (snap.empty) { c.innerHTML = '<div style="color:var(--text-dim)">Нет предложений</div>'; return; }
         c.innerHTML = snap.docs.map(d => {
@@ -1960,6 +1991,11 @@ window.admEditSuggestion = async id => { alert('Редактирование: в
 async function loadReports() {
     const c = $('adm-reports'); c.innerHTML = '<div class="text-center" style="padding:16px"><div class="loading"></div></div>';
     try {
+        // 🔁 ИСПРАВЛЕНО: проверяем что пользователь админ
+        if (user?.email !== ADMIN_EMAIL) {
+            c.innerHTML = '<div style="color:var(--text-dim)">Доступ только для администратора</div>';
+            return;
+        }
         const snap = await getDocs(query(collection(db, 'artifacts/byrmalda-prod/public/data/reports'), where('status','==','new'), orderBy('ts','desc')));
         if (snap.empty) { c.innerHTML = '<div style="color:var(--text-dim)">Нет жалоб</div>'; return; }
         c.innerHTML = snap.docs.map(d => {
@@ -2279,7 +2315,7 @@ async function autoUpdateOrders() {
 
 // ==================== 🔁 НОВЫЕ ФУНКЦИИ: АДРЕС ДОСТАВКИ ====================
 
-// 🔹 Выбор варианта доставки
+// 🔹 Выбор варианта доставки (только один!)
 window.selectDelivery = (country) => {
     // Снимаем выделение со всех
     document.querySelectorAll('.delivery-option').forEach(el => el.classList.remove('selected'));
@@ -2382,6 +2418,7 @@ function setupListeners() {
     document.addEventListener('keydown', e => { if (e.key === 'Escape') document.querySelectorAll('.modal.active').forEach(m => m.classList.remove('active')); });
 }
 
+// 🔁 ВСЕ ФУНКЦИИ В ЭКСПОРТЕ (включая admCreateProduct!)
 Object.assign(window, {
     navigate, openModal, closeModal, openLogin, switchReg, doLogin, regStep1, regStep2, regStep3, doLogout, confirmLogout,
     openAvatarModal, submitAvatar, filterType, handleSearch, openProd, setGal, galNav, addToCart, updCart, delCart, checkout, confirmCheckout,
@@ -2392,7 +2429,7 @@ Object.assign(window, {
     selectDelivery, saveDeliveryAddress, renderDeliveryAddress
 });
 
-console.log('🚀 BYRMALDA loaded | 🔐 App Check + ✅ Delivery Address + Logout Confirm');
+console.log('🚀 BYRMALDA loaded | 🔐 App Check + ✅ Delivery Address + Logout Confirm + Full Code');
 </script>
 </body>
 </html>
