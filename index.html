@@ -56,18 +56,19 @@
         .loading { display:inline-block; width:18px; height:18px; border:2px solid rgba(0,0,0,.2); border-top-color:var(--accent); border-radius:50%; animation:spin .8s linear infinite }
         @keyframes spin { to{transform:rotate(360deg)} }
         
-        /* 🔁 КАРУСЕЛЬ */
+        /* 🔁 КАРУСЕЛЬ — фото справа */
         .hero { min-height:75vh; display:flex; align-items:center; justify-content:center; text-align:center; position:relative; overflow:hidden }
-        .hero-carousel { position:absolute; inset:0; z-index:1 }
-        .carousel-img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:0; transition:opacity 1s ease }
-        .carousel-img.active { opacity:0.15 }
-        .carousel-nav { position:absolute; top:50%; width:100%; display:flex; justify-content:space-between; padding:0 20px; transform:translateY(-50%); z-index:2 }
-        .carousel-btn { background:rgba(255,255,255,.9); border:none; width:50px; height:50px; border-radius:50%; font-size:24px; cursor:pointer; transition:all .2s }
-        .carousel-btn:hover { background:var(--accent); color:var(--bg) }
-        .hero-quotes { max-width:700px; padding:20px; z-index:3; position:relative }
+        .hero-content { display:flex; align-items:center; justify-content:center; gap:40px; flex-wrap:wrap; z-index:2; position:relative; max-width:1200px; margin:0 auto }
+        .hero-quotes { flex:1; min-width:300px; max-width:600px }
+        .hero-images { flex:1; min-width:300px; max-width:500px; display:flex; flex-direction:column; gap:12px; align-items:flex-end }
+        .hero-img { width:100%; max-width:280px; aspect-ratio:3/4; object-fit:cover; border-radius:var(--radius); box-shadow:var(--shadow); opacity:0; transition:opacity .5s ease; display:none }
+        .hero-img.active { opacity:1; display:block }
+        .carousel-nav { display:flex; gap:8px; margin-top:8px }
+        .carousel-btn { background:var(--accent); color:var(--bg); border:none; width:36px; height:36px; border-radius:50%; font-size:16px; cursor:pointer; transition:all .2s }
+        .carousel-btn:hover { opacity:.9 }
+        
         .quote { font-size:26px; font-weight:300; letter-spacing:1px; line-height:1.7; margin-bottom:24px; font-style:italic }
         .quote-author { font-size:12px; text-transform:uppercase; letter-spacing:4px; color:var(--text-dim) }
-        
         .showcase { padding:60px 20px; background:var(--bg-soft) }
         .showcase-title { text-align:center; font-size:32px; font-weight:300; letter-spacing:8px; text-transform:uppercase; margin-bottom:40px }
         .showcase-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:20px; max-width:1200px; margin:0 auto }
@@ -220,23 +221,25 @@
     <main class="main">
         <section id="home" class="page active">
             <div class="hero">
-                <!-- 🔁 КАРУСЕЛЬ -->
-                <div class="hero-carousel" id="hero-carousel">
-                    <img src="https://raw.githubusercontent.com/lookup-mrktplce/xcdzxc/main/IMG_20260515_101118.png" class="carousel-img active" alt="1">
-                    <img src="https://raw.githubusercontent.com/lookup-mrktplce/xcdzxc/main/IMG_20260515_103613.png" class="carousel-img" alt="2">
-                    <img src="https://raw.githubusercontent.com/lookup-mrktplce/xcdzxc/main/file_00000000756c71f49ea43663444da286.png" class="carousel-img" alt="3">
-                </div>
-                <div class="carousel-nav">
-                    <button class="carousel-btn" onclick="changeCarousel(-1)">←</button>
-                    <button class="carousel-btn" onclick="changeCarousel(1)">→</button>
-                </div>
-                <div class="hero-quotes">
-                    <div class="quote">«Мода — это не просто одежда. Это способ рассказать историю без слов.»</div>
-                    <div class="quote-author">— BYRMALDA</div>
-                    <div class="quote" style="margin-top:32px">«Каждая деталь имеет значение. Каждый шов — это обещание.»</div>
-                    <div class="quote-author">— BYRMALDA</div>
-                    <div class="quote" style="margin-top:32px">«Не следуй трендам. Создавай свои правила.»</div>
-                    <div class="quote-author">— BYRMALDA</div>
+                <div class="hero-content">
+                    <div class="hero-quotes">
+                        <div class="quote">«Мода — это не просто одежда. Это способ рассказать историю без слов.»</div>
+                        <div class="quote-author">— BYRMALDA</div>
+                        <div class="quote" style="margin-top:32px">«Каждая деталь имеет значение. Каждый шов — это обещание.»</div>
+                        <div class="quote-author">— BYRMALDA</div>
+                        <div class="quote" style="margin-top:32px">«Не следуй трендам. Создавай свои правила.»</div>
+                        <div class="quote-author">— BYRMALDA</div>
+                    </div>
+                    <div class="hero-images">
+                        <!-- 🔁 ВСТАВЬ ССЫЛКИ НА ФОТО НИЖЕ -->
+                        <img src="https://raw.githubusercontent.com/lookup-mrktplce/xcdzxc/main/IMG_20260515_101118.png" class="hero-img active" alt="1">
+                        <img src="https://raw.githubusercontent.com/lookup-mrktplce/xcdzxc/main/IMG_20260515_103613.png" class="hero-img" alt="2">
+                        <img src="https://raw.githubusercontent.com/lookup-mrktplce/xcdzxc/main/file_00000000756c71f49ea43663444da286.png" class="hero-img" alt="3">
+                        <div class="carousel-nav">
+                            <button class="carousel-btn" onclick="changeHeroImg(-1)">←</button>
+                            <button class="carousel-btn" onclick="changeHeroImg(1)">→</button>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="showcase"><h2 class="showcase-title">New Byrmalda Collection SS26</h2><div class="showcase-grid">
@@ -260,7 +263,7 @@
                 </div>
             </div>
             
-            <!-- 🔁 ИСПРАВЛЕННАЯ ДОСТАВКА -->
+            <!-- 🔁 ИСПРАВЛЕННАЯ ДОСТАВКА С КНОПКОЙ "ВЫБРАТЬ" -->
             <div class="delivery-section" id="delivery-section" style="display:none">
                 <div class="delivery-title">📦 Адрес доставки</div>
                 <div class="delivery-current" id="delivery-current">
@@ -355,17 +358,17 @@ const app = initializeApp(firebaseConfig);
 const appCheck = initializeAppCheck(app, { provider: new ReCaptchaV3Provider("6LchEOwsAAAAAPqAkyDyf2wFoucWytU6ThkQKoGB"), isTokenAutoRefreshEnabled: true });
 getToken(appCheck, true).then(() => console.log('🔐 App Check OK')).catch(e => console.error('App Check:', e.message));
 const auth = getAuth(app), db = getFirestore(app), IMGBB_KEY = "eeef3479094c5cf6bf42607927565065", ADMIN_EMAIL = "sobakastalina123@gmail.com", RATES = { USD_TO_RUB: 90, USD_TO_UAH: 37 };
-let user = null, userData = null, cart = [], curProd = null, galIdx = 0, chatUnread = 0, lang = 'ru', theme = localStorage.getItem('theme') || 'light', revStars = 0, hasSubmittedReview = false, carouselIdx = 0, carouselInterval;
+let user = null, userData = null, cart = [], curProd = null, galIdx = 0, chatUnread = 0, lang = 'ru', theme = localStorage.getItem('theme') || 'light', revStars = 0, hasSubmittedReview = false, heroImgIdx = 0, heroInterval;
 const $ = id => document.getElementById(id), show = el => el.classList.remove('hidden'), hide = el => el.classList.add('hidden'), fmtDate = ts => ts?.toDate?.()?.toLocaleDateString('ru-RU') || '...', genId = () => Math.random().toString(36).substring(2, 10).toUpperCase();
 
-// 🔁 КАРУСЕЛЬ
-function initCarousel() { carouselInterval = setInterval(() => changeCarousel(1), 8000); }
-window.changeCarousel = (dir) => { const imgs = document.querySelectorAll('.carousel-img'); imgs[carouselIdx].classList.remove('active'); carouselIdx = (carouselIdx + dir + imgs.length) % imgs.length; imgs[carouselIdx].classList.add('active'); };
+// 🔁 КАРУСЕЛЬ — фото справа
+function initHeroCarousel() { heroInterval = setInterval(() => changeHeroImg(1), 8000); }
+window.changeHeroImg = (dir) => { const imgs = document.querySelectorAll('.hero-img'); imgs[heroImgIdx].classList.remove('active'); heroImgIdx = (heroImgIdx + dir + imgs.length) % imgs.length; imgs[heroImgIdx].classList.add('active'); };
 
 window.addEventListener('DOMContentLoaded', async () => {
     const urlParams = new URLSearchParams(window.location.search), oobCode = urlParams.get('oobCode'), mode = urlParams.get('mode');
     if (oobCode && mode === 'verifyEmail') { try { await applyActionCode(auth, oobCode); window.history.replaceState({}, document.title, window.location.pathname); alert('✅ Email подтверждён! Теперь войдите в аккаунт.'); } catch(e) { console.error(e); alert('❌ Ошибка: '+e.message); } }
-    initCarousel();
+    initHeroCarousel();
     onAuthStateChanged(auth, async u => {
         if (u) { user = u; await loadUser(); await loadCartFromFirestore(); updateAuthUI(); if (u.email === ADMIN_EMAIL) { $('nav-admin').classList.remove('hidden'); $('nav-suggest').classList.add('hidden'); loadAdminPanels(); } else { $('nav-admin').classList.add('hidden'); $('nav-suggest').classList.remove('hidden'); } loadOrders(); loadChat(); checkReviewSubmission(); renderDeliveryAddress(); }
         else { user = userData = null; resetAuthUI(); hide($('delivery-section')); }
@@ -386,8 +389,10 @@ function resetAuthUI() { $('auth-btn').textContent = 'Войти'; $('auth-btn')
 
 window.openLogin = () => openModal('login-modal'); window.switchReg = () => { closeModal('login-modal'); openModal('reg-modal'); showStep(1); };
 
+// 🔁 ИСПРАВЛЕННЫЙ ВХОД
 window.doLogin = async () => { const email = $('log-email').value.trim(), pass = $('log-pass').value; $('log-err').textContent = ''; if (!email || !pass) { $('log-err').textContent = 'Заполните поля'; return; } try { const cred = await signInWithEmailAndPassword(auth, email, pass); const u = cred.user; if (!u.emailVerified) { await signOut(auth); $('log-err').innerHTML = `✉️ Подтвердите почту.<br>Ссылка отправлена на <b>${email}</b><br><small>Проверьте папку "Спам"</small>`; try { await sendEmailVerification(u, { url: window.location.href, handleCodeInApp: true }); } catch(e) { console.log(e); } return; } const ud = await getDoc(doc(db, 'artifacts/byrmalda-prod/users', u.uid)); if (ud.exists() && ud.data().isBlocked) { await signOut(auth); showBlock(); return; } closeModal('login-modal'); } catch(e) { console.error(e.code); if (e.code === 'auth/invalid-login-credentials') { $('log-err').innerHTML = '❌ Неверный email или пароль.<br><small>Проверьте данные или зарегистрируйтесь</small>'; } else if (e.code === 'auth/user-not-found') { $('log-err').textContent = 'Аккаунт не найден'; } else if (e.code === 'auth/wrong-password') { $('log-err').textContent = 'Неверный пароль'; } else { $('log-err').textContent = 'Ошибка: '+e.message; } } };
 
+// 🔁 ИСПРАВЛЕННАЯ РЕГИСТРАЦИЯ
 window.regStep1 = async () => { const email = $('reg-email').value.trim(); if (!email) { alert('Введите email'); return; } try { const methods = await auth.fetchSignInMethodsForEmail(email); if (methods.length > 0) { $('reg-err').textContent = 'Email уже зарегистрирован'; return; } } catch(e) { console.log(e); } sessionStorage.setItem('pending_email', email); showStep(2); try { const tempCred = await createUserWithEmailAndPassword(auth, email, Math.random().toString(36).substring(2)); await sendEmailVerification(tempCred.user, { url: window.location.href, handleCodeInApp: true }); await signOut(auth); } catch(e) { console.log('temp reg:', e); } };
 
 window.regStep2 = async () => { const email = sessionStorage.getItem('pending_email'); if (!email) { alert('Сессия истекла'); return; } try { const tempCred = await signInWithEmailAndPassword(auth, email, 'temp'); await tempCred.user.reload(); if (tempCred.user.emailVerified) { await signOut(auth); showStep(3); } else { await signOut(auth); alert('✉️ Email ещё не подтверждён. Проверьте почту и спам, затем нажмите "Я перешёл по ссылке" ещё раз.'); } } catch(e) { console.log(e); alert('✉️ Email ещё не подтверждён. Проверьте почту и спам.'); } };
@@ -415,6 +420,7 @@ window.openProd = async id => { try { const snap = await getDoc(doc(db, 'artifac
 function updateGal() { if (!curProd) return; const imgs = curProd.images && curProd.images.length ? curProd.images : ['https://via.placeholder.com/600/f5f5f5/111?text=BYRMALDA']; $('p-main-img').src = imgs[galIdx]; $('p-thumbs').innerHTML = imgs.map((src,i) => `<img src="${src}" class="thumb ${i===galIdx?'active':''}" onclick="setGal(${i})">`).join(''); }
 window.setGal = i => { galIdx = i; updateGal(); }; window.galNav = d => { if (!curProd) return; const len = curProd.images?.length||1; galIdx = (galIdx + d + len) % len; updateGal(); };
 
+// 🔁 ИСПРАВЛЕННОЕ ДОБАВЛЕНИЕ В КОРЗИНУ С ПРОВЕРКОЙ КОЛИЧЕСТВА
 window.addToCart = async (isPreorder=false) => { if (!user) { openModal('login-modal'); return; } let size = 'M', color = 'Белый'; const sizeEl = $('p-size'), colorEl = $('p-color'); if (sizeEl && sizeEl.tagName === 'SELECT') size = sizeEl.value; else if (sizeEl?.closest('.opt-group')?.querySelector('.opt-static')) size = sizeEl.closest('.opt-group').querySelector('.opt-static').textContent; if (colorEl && colorEl.tagName === 'SELECT') color = colorEl.value; else if (colorEl?.closest('.opt-group')?.querySelector('.opt-static')) color = colorEl.closest('.opt-group').querySelector('.opt-static').textContent; const qty = parseInt($('p-qty')?.value)||1; if (!isPreorder && qty > curProd.stock) { alert(`Количество выбранных позиций не соответствует количеству товара на странице, максимум штук данного товара: ${curProd.stock}`); return; } const item = { id: `${curProd.id}-${Date.now()}`, pid: curProd.id, name: curProd.name, img: curProd.images?.[0] || '', size, color, qty, price: curProd.price, weight: curProd.weight||200, isPreorder: isPreorder, at: new Date().toISOString() }; cart.push(item); await saveCartToFirestore(); loadCartCount(); alert(`✅ ${isPreorder?'Предзаказ':'Заказ'} добавлен!`); navigate('cart'); };
 
 function loadCartCount() { const n = cart.reduce((s,i)=>s+i.qty,0); $('cart-badge').textContent = n; $('nav-cart').classList.toggle('has-badge',n>0); }
@@ -437,6 +443,8 @@ function updateSupportBadge() { $('support-badge').textContent = chatUnread; $('
 window.toggleTheme = () => { theme = theme==='light'?'dark':'light'; localStorage.setItem('theme',theme); applyTheme(); };
 function applyTheme() { document.documentElement.setAttribute('data-theme',theme); $('theme-ind').textContent = theme==='dark'?'🌙':'☀️'; }
 window.toggleLang = () => { lang = lang==='ru'?'en':'ru'; $('cur-lang').textContent = lang.toUpperCase(); alert(lang==='en'?'🇬 English':'🇷🇺 Русский'); };
+
+// 🔁 ПРОВЕРКА: ТОЛЬКО ОДИН ОТЗЫВ
 async function checkReviewSubmission() { if (!user) return; try { const snap = await getDocs(query(collection(db, 'artifacts/byrmalda-prod/public/data/reviews'), where('uid','==',user.uid))); hasSubmittedReview = !snap.empty; } catch(e) { console.error(e); } }
 window.openReviewModal = () => { if (!user) { openModal('login-modal'); return; } if (hasSubmittedReview) { alert('❌ Вы уже оставляли отзыв. Повторная отправка невозможна.'); return; } openModal('review-modal'); revStars = 0; updStars(); };
 window.setRating = n => { revStars = n; updStars(); };
@@ -480,7 +488,7 @@ window.openSuggest = () => { if (!user) openModal('login-modal'); else openModal
 window.submitSuggestion = async () => { const name = $('sug-name').value.trim(), cat = $('sug-cat').value, type = $('sug-type').value.trim(), price = parseFloat($('sug-price').value); if (!name || !type || !price) { alert('Заполните поля'); return; } const file = $('sug-img').files[0]; let imgUrl = ''; if (file) { const fd = new FormData(); fd.append('image', file); fd.append('key', IMGBB_KEY); const res = await fetch('https://api.imgbb.com/1/upload', { method: 'POST', body: fd }), data = await res.json(); if (data.success) imgUrl = data.data.url; } await addDoc(collection(db, 'artifacts/byrmalda-prod/public/data/suggestions'), { uid: user.uid, userName: userData?.name||user.email.split('@')[0], name, category: cat, type, price, img: imgUrl, audience: $('sug-aud').value, sizes: $('sug-sizes').value, material: $('sug-mat').value, desc: $('sug-desc').value, status: 'pending', ts: serverTimestamp() }); alert('✅ Отправлено!'); closeModal('suggest-modal'); loadPendingSuggestions(); };
 async function autoUpdateOrders() { if (user?.email !== ADMIN_EMAIL) return; try { const now = Date.now(), created = await getDocs(query(collection(db, 'artifacts/byrmalda-prod/public/data/orders'), where('status','==','Создан'))); created.forEach(async d => { const o = d.data(); if (o.adminChangedStatus) return; const t = o.createdAt?.toDate?.().getTime(); if (t && now - t > 4*24*60*60*1000) await updateDoc(doc(db, 'artifacts/byrmalda-prod/public/data/orders', d.id), { status: 'Передача товара в доставку', updatedAt: serverTimestamp() }); }); const shipping = await getDocs(query(collection(db, 'artifacts/byrmalda-prod/public/data/orders'), where('status','==','Передача товара в доставку'))); shipping.forEach(async d => { const o = d.data(); if (o.adminChangedStatus) return; const t = o.updatedAt?.toDate?.().getTime(); if (t && now - t > 15*60*60*1000) await updateDoc(doc(db, 'artifacts/byrmalda-prod/public/data/orders', d.id), { status: 'В пути', updatedAt: serverTimestamp() }); }); } catch(e) { console.error('autoUpdate:', e); } }
 
-// 🔁 ДОСТАВКА
+// 🔁 ИСПРАВЛЕННАЯ ДОСТАВКА С КНОПКОЙ "ВЫБРАТЬ"
 window.toggleDeliveryOptions = () => { $('delivery-options').classList.toggle('active'); };
 window.selectDelivery = (country) => { document.querySelectorAll('.delivery-option').forEach(el => el.classList.remove('selected')); document.querySelectorAll('.delivery-fields').forEach(el => hide(el)); $(`del-${country}`).checked = true; $(`del-${country}`).closest('.delivery-option').classList.add('selected'); show($(`fields-${country}`)); if (userData?.deliveryAddress?.[country]) { const addr = userData.deliveryAddress[country]; if (country === 'cdek') { $('cdek-city').value = addr.city || ''; $('cdek-street').value = addr.street || ''; $('cdek-house').value = addr.house || ''; } else if (country === 'ua') { $('ua-city').value = addr.city || ''; $('ua-street').value = addr.street || ''; $('ua-house').value = addr.house || ''; } else if (country === 'usa') { $('usa-city').value = addr.city || ''; $('usa-street').value = addr.street || ''; $('usa-house').value = addr.house || ''; } } };
 window.renderDeliveryAddress = () => { if (!user || !userData) return; show($('delivery-section')); updateDeliveryDisplay(); };
@@ -488,9 +496,9 @@ window.saveDeliveryAddress = async () => { if (!user) { alert('❌ Войдит�
 
 function setupListeners() { document.addEventListener('keydown', e => { if (e.key === 'Escape') document.querySelectorAll('.modal.active').forEach(m => m.classList.remove('active')); }); }
 
-Object.assign(window, { navigate, openModal, closeModal, openLogin, switchReg, doLogin, regStep1, regStep2, regStep3, doLogout, confirmLogout, openAvatarModal, submitAvatar, filterType, handleSearch, openProd, setGal, galNav, addToCart, updCart, delCart, checkout, confirmCheckout, cancelOrder, sendMsg, toggleTheme, toggleLang, openReviewModal, setRating, submitReview, openReport, submitReport, showSizeChart, admCreateProduct, admLoadProduct, admSaveProduct, admDeleteProduct, admBlockUser, admUnblockUser, admFindOrder, admSetOrderStatus, admApproveReview, admRejectReview, admDeleteReview, admApproveAvatar, admRejectAvatar, admApproveSuggestion, admRejectSuggestion, admEditSuggestion, admMarkReportViewed, openSuggest, submitSuggestion, toggleCollabInput, toggleEditCollabInput, toggleDeliveryOptions, selectDelivery, saveDeliveryAddress, renderDeliveryAddress, changeCarousel });
+Object.assign(window, { navigate, openModal, closeModal, openLogin, switchReg, doLogin, regStep1, regStep2, regStep3, doLogout, confirmLogout, openAvatarModal, submitAvatar, filterType, handleSearch, openProd, setGal, galNav, addToCart, updCart, delCart, checkout, confirmCheckout, cancelOrder, sendMsg, toggleTheme, toggleLang, openReviewModal, setRating, submitReview, openReport, submitReport, showSizeChart, admCreateProduct, admLoadProduct, admSaveProduct, admDeleteProduct, admBlockUser, admUnblockUser, admFindOrder, admSetOrderStatus, admApproveReview, admRejectReview, admDeleteReview, admApproveAvatar, admRejectAvatar, admApproveSuggestion, admRejectSuggestion, admEditSuggestion, admMarkReportViewed, openSuggest, submitSuggestion, toggleCollabInput, toggleEditCollabInput, toggleDeliveryOptions, selectDelivery, saveDeliveryAddress, renderDeliveryAddress, changeHeroImg });
 
-console.log('🚀 BYRMALDA loaded | ✅ Все исправлено');
+console.log('🚀 BYRMALDA loaded | ✅ Все исправлено | 🔐 App Check + 📦 Доставка + 🛒 Корзина + ⭐ Отзывы');
 </script>
 </body>
 </html>
