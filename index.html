@@ -704,20 +704,53 @@
             <div class="admin-section">
                 <h3>✏️ Редактировать товар</h3>
                 <div class="flex gap-8" style="margin-bottom:16px">
-                    <input type="text" class="admin-input" id="adm-edit-id" placeholder="Введите ID товара" style="flex:1">
+                    <input type="text" class="admin-input" id="adm-edit-id" placeholder="Введите ID товара (Document ID или productId)" style="flex:1">
                     <button class="btn btn-sm" onclick="admLoadProduct()">Загрузить</button>
                 </div>
+                
+                <!-- 🔁 ПОЛНАЯ ФОРМА РЕДАКТИРОВАНИЯ (как при создании) -->
                 <div id="adm-edit-form" class="hidden">
                     <div class="admin-grid">
-                        <div class="form-group"><label class="form-label">Название</label><input class="admin-input" id="edit-name"></div>
-                        <div class="form-group"><label class="form-label">Цена</label><input type="number" class="admin-input" id="edit-price" step="0.01"></div>
-                        <div class="form-group"><label class="form-label">В наличии</label><input type="number" class="admin-input" id="edit-stock"></div>
-                        <div class="form-group"><label class="form-label">Масса</label><input type="number" class="admin-input" id="edit-weight"></div>
+                        <div class="form-group"><label class="form-label">Название *</label><input class="admin-input" id="edit-name"></div>
+                        <div class="form-group"><label class="form-label">Категория *</label>
+                            <select class="admin-input" id="edit-cat">
+                                <option value="clothing">Одежда</option>
+                                <option value="footwear">Обувь</option>
+                            </select>
+                        </div>
+                        <div class="form-group"><label class="form-label">Тип *</label><input class="admin-input" id="edit-type" placeholder="футболка, кроссовки..."></div>
+                        <div class="form-group"><label class="form-label">Цена ($) *</label><input type="number" class="admin-input" id="edit-price" step="0.01"></div>
+                        <div class="form-group"><label class="form-label">В наличии *</label><input type="number" class="admin-input" id="edit-stock"></div>
+                        <div class="form-group"><label class="form-label">Масса (г) *</label><input type="number" class="admin-input" id="edit-weight"></div>
+                        <div class="form-group"><label class="form-label">Для кого</label>
+                            <select class="admin-input" id="edit-aud">
+                                <option value="unisex">Унисекс</option>
+                                <option value="male">Мужчина</option>
+                                <option value="female">Женщина</option>
+                            </select>
+                        </div>
                         <div class="form-group"><label class="form-label">Материал</label><input class="admin-input" id="edit-mat"></div>
-                        <div class="form-group"><label class="form-label">Цвет</label><input class="admin-input" id="edit-color"></div>
+                        <div class="form-group"><label class="form-label">Цвет (через запятую)</label><input class="admin-input" id="edit-color" placeholder="Черный,Белый"></div>
+                        <div class="form-group"><label class="form-label">Размеры (через запятую)</label><input class="admin-input" id="edit-sizes" placeholder="S,M,L,XL"></div>
+                        <div class="form-group"><label class="form-label">Год релиза</label><input type="number" class="admin-input" id="edit-year" placeholder="2026"></div>
+                        <div class="form-group"><label class="form-label">Коллаборация</label>
+                            <select class="admin-input" id="edit-collab-type" onchange="toggleEditCollabInput()">
+                                <option value="no">Нет</option>
+                                <option value="yes">Да</option>
+                            </select>
+                        </div>
+                        <div class="form-group hidden" id="edit-collab-group"><label class="form-label">Название бренда</label><input class="admin-input" id="edit-collab-name"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Фотографии</label>
+                        <input type="file" class="admin-input" id="edit-photos" accept="image/*" multiple>
+                        <div id="edit-current-photos" style="margin-top:8px;font-size:12px;color:var(--text-dim)"></div>
                     </div>
                     <div class="form-group"><label class="form-label">Описание</label><textarea class="form-textarea" id="edit-desc"></textarea></div>
-                    <button class="btn" onclick="admSaveProduct()">Сохранить изменения</button>
+                    <div class="btn-group">
+                        <button class="btn" onclick="admSaveProduct()">Сохранить изменения</button>
+                        <button class="btn btn-outline" onclick="hide($('adm-edit-form'))">Отмена</button>
+                    </div>
                 </div>
             </div>
             
@@ -1831,77 +1864,180 @@ window.admMarkReportViewed = async id => {
     loadReports();
 };
 
+// 🔁 Управление коллаборацией в форме создания
 window.toggleCollabInput = () => {
     if ($('adm-collab-type').value === 'yes') show($('adm-collab-group'));
     else hide($('adm-collab-group'));
 };
 
-window.admCreateProduct = async () => {
-    const name = $('adm-name').value.trim(), cat = $('adm-cat').value, type = $('adm-type').value.trim(),
-          price = parseFloat($('adm-price').value), stock = parseInt($('adm-stock').value),
-          weight = parseInt($('adm-weight').value), year = parseInt($('adm-year').value) || new Date().getFullYear(),
-          collabType = $('adm-collab-type').value, collabName = $('adm-collab-name').value.trim();
-    if (!name || !type || !price || stock===undefined || !weight) { alert('Заполните обязательные поля'); return; }
-    const collab = collabType === 'yes' && collabName ? `Да, ${collabName}` : 'Нет';
-    
-    const files = $('adm-photos').files;
-    let images = [];
-    if (files.length > 0) {
-        for (let i = 0; i < files.length; i++) {
-            const fd = new FormData(); fd.append('image', files[i]); fd.append('key', IMGBB_KEY);
-            const res = await fetch('https://api.imgbb.com/1/upload', { method: 'POST', body: fd });
-            const data = await res.json();
-            if (data.success) images.push(data.data.url);
-        }
-    }
-    
-    const productId = genId();
-    await addDoc(collection(db, 'artifacts/byrmalda-prod/public/data/products'), {
-        productId, name, category: cat, type, price, stock, weight, audience: $('adm-aud').value,
-        material: $('adm-mat').value, color: $('adm-color').value, sizes: $('adm-sizes').value || 'S,M,L,XL',
-        collab, year, desc: $('adm-desc').value, images, published: true, deleted: false, fromUser: false,
-        createdAt: serverTimestamp()
-    });
-    alert(`✅ Товар опубликован! ID: ${productId}`);
-    ['adm-name','adm-type','adm-price','adm-stock','adm-weight','adm-mat','adm-color','adm-sizes','adm-desc','adm-collab-name'].forEach(id => $(id).value = '');
-    $('adm-photos').value = '';
-    hide($('adm-collab-group'));
+// 🔁 Управление коллаборацией в форме редактирования
+window.toggleEditCollabInput = () => {
+    if ($('edit-collab-type').value === 'yes') show($('edit-collab-group'));
+    else hide($('edit-collab-group'));
 };
 
+// 🔁 ЗАГРУЗКА ТОВАРА ДЛЯ РЕДАКТИРОВАНИЯ (исправленная)
 window.admLoadProduct = async () => {
     const pid = $('adm-edit-id').value.trim();
-    if (!pid) { alert('Введите ID'); return; }
+    if (!pid) { alert('Введите ID товара'); return; }
+    
     try {
-        const snap = await getDoc(doc(db, 'artifacts/byrmalda-prod/public/data/products', pid));
-        if (!snap.exists()) { alert('Товар не найден'); return; }
+        let snap = null;
+        let foundBy = '';
+        
+        // 🔹 Способ 1: Ищем по Document ID (прямой запрос)
+        snap = await getDoc(doc(db, 'artifacts/byrmalda-prod/public/data/products', pid));
+        if (snap.exists()) {
+            foundBy = 'Document ID';
+        }
+        
+        // 🔹 Способ 2: Если не нашли — ищем по полю productId
+        if (!snap.exists()) {
+            const q = query(
+                collection(db, 'artifacts/byrmalda-prod/public/data/products'), 
+                where('productId', '==', pid)
+            );
+            const results = await getDocs(q);
+            if (!results.empty) {
+                snap = results.docs[0];
+                foundBy = 'productId';
+            }
+        }
+        
+        // 🔹 Способ 3: Если всё ещё не нашли — ищем по названию (частичное совпадение)
+        if (!snap.exists()) {
+            const q = query(
+                collection(db, 'artifacts/byrmalda-prod/public/data/products'),
+                where('name', '>=', pid),
+                where('name', '<=', pid + '\uf8ff'),
+                limit(1)
+            );
+            const results = await getDocs(q);
+            if (!results.empty) {
+                snap = results.docs[0];
+                foundBy = 'название';
+            }
+        }
+        
+        // ❌ Если так и не нашли
+        if (!snap.exists()) { 
+            alert('❌ Товар не найден.\n\n💡 Подсказка:\n• Введите полный Document ID (из URL товара)\n• ИЛИ кастомный productId (например: BYR-2026-001)\n• ИЛИ точное название товара');
+            return; 
+        }
+        
+        // ✅ Заполняем форму данными товара
         const p = snap.data();
-        $('edit-name').value = p.name;
-        $('edit-price').value = p.price;
-        $('edit-stock').value = p.stock;
-        $('edit-weight').value = p.weight;
-        $('edit-mat').value = p.material||'';
-        $('edit-color').value = p.color||'';
-        $('edit-desc').value = p.desc||'';
+        const docId = snap.id; // Сохраняем настоящий Document ID для сохранения
+        
+        $('edit-name').value = p.name || '';
+        $('edit-cat').value = p.category || 'clothing';
+        $('edit-type').value = p.type || '';
+        $('edit-price').value = p.price || '';
+        $('edit-stock').value = p.stock || '';
+        $('edit-weight').value = p.weight || '';
+        $('edit-aud').value = p.audience || 'unisex';
+        $('edit-mat').value = p.material || '';
+        $('edit-color').value = p.color || '';
+        $('edit-sizes').value = p.sizes || 'S,M,L,XL';
+        $('edit-year').value = p.year || new Date().getFullYear();
+        $('edit-desc').value = p.desc || '';
+        
+        // 🔁 Коллаборация
+        if (p.collab && p.collab !== 'Нет') {
+            $('edit-collab-type').value = 'yes';
+            $('edit-collab-name').value = p.collab.replace('Да, ', '');
+            show($('edit-collab-group'));
+        } else {
+            $('edit-collab-type').value = 'no';
+            hide($('edit-collab-group'));
+        }
+        
+        // 🔁 Текущие фотографии
+        const photosDiv = $('edit-current-photos');
+        if (p.images && p.images.length > 0) {
+            photosDiv.innerHTML = `📷 Текущие фото: ${p.images.length} шт.<br>` + 
+                p.images.slice(0,3).map(img => `<img src="${img}" style="width:40px;height:40px;object-fit:cover;border-radius:4px;margin:2px">`).join('');
+        } else {
+            photosDiv.innerHTML = '📷 Нет фотографий';
+        }
+        
+        // 🔁 Сохраняем Document ID и текущие изображения для admSaveProduct
+        $('adm-edit-form').dataset.docId = docId;
+        $('adm-edit-form').dataset.currentImages = JSON.stringify(p.images || []);
+        
+        // Показываем форму и подсказку
         show($('adm-edit-form'));
-    } catch(e) { console.error(e); alert('Ошибка'); }
+        alert(`✅ Товар найден!\nНайдено по: ${foundBy}\nDocument ID: ${docId}`);
+        
+    } catch(e) { 
+        console.error('admLoadProduct error:', e); 
+        alert('❌ Ошибка загрузки: ' + e.message); 
+    }
 };
 
+// 🔁 СОХРАНЕНИЕ ИЗМЕНЕНИЙ ТОВАРА (полная версия)
 window.admSaveProduct = async () => {
-    const pid = $('adm-edit-id').value.trim();
-    if (!pid) return;
+    // Получаем Document ID из data-атрибута
+    const docId = $('adm-edit-form').dataset.docId;
+    if (!docId) { alert('❌ Ошибка: не указан ID товара'); return; }
+    
     try {
-        await updateDoc(doc(db, 'artifacts/byrmalda-prod/public/data/products', pid), {
+        // Собираем данные для обновления
+        const collabType = $('edit-collab-type').value;
+        const collabName = $('edit-collab-name').value.trim();
+        const collab = collabType === 'yes' && collabName ? `Да, ${collabName}` : 'Нет';
+        
+        const updateData = {
             name: $('edit-name').value.trim(),
-            price: parseFloat($('edit-price').value),
-            stock: parseInt($('edit-stock').value),
-            weight: parseInt($('edit-weight').value),
+            category: $('edit-cat').value,
+            type: $('edit-type').value.trim(),
+            price: parseFloat($('edit-price').value) || 0,
+            stock: parseInt($('edit-stock').value) || 0,
+            weight: parseInt($('edit-weight').value) || 0,
+            audience: $('edit-aud').value,
             material: $('edit-mat').value.trim(),
             color: $('edit-color').value.trim(),
-            desc: $('edit-desc').value.trim()
-        });
+            sizes: $('edit-sizes').value.trim() || 'S,M,L,XL',
+            year: parseInt($('edit-year').value) || new Date().getFullYear(),
+            collab: collab,
+            desc: $('edit-desc').value.trim(),
+            updatedAt: serverTimestamp()
+        };
+        
+        // 🔁 Обработка новых фотографий
+        const photoInput = $('edit-photos');
+        if (photoInput.files && photoInput.files.length > 0) {
+            const currentImages = JSON.parse($('adm-edit-form').dataset.currentImages || '[]');
+            const newImages = [];
+            
+            // Загружаем новые фото
+            for (let i = 0; i < photoInput.files.length; i++) {
+                const fd = new FormData();
+                fd.append('image', photoInput.files[i]);
+                fd.append('key', IMGBB_KEY);
+                const res = await fetch('https://api.imgbb.com/1/upload', { method: 'POST', body: fd });
+                const data = await res.json();
+                if (data.success) newImages.push(data.data.url);
+            }
+            
+            // Объединяем старые и новые фото
+            updateData.images = [...currentImages, ...newImages];
+        }
+        
+        await updateDoc(doc(db, 'artifacts/byrmalda-prod/public/data/products', docId), updateData);
+        
         alert('✅ Изменения сохранены!');
         hide($('adm-edit-form'));
-    } catch(e) { console.error(e); alert('❌ Ошибка: '+e.message); }
+        
+        // Если открыта страница товара — обновляем её
+        if (curProd && curProd.id === docId) {
+            openProd(docId);
+        }
+        
+    } catch(e) { 
+        console.error('admSaveProduct error:', e); 
+        alert('❌ Ошибка сохранения: ' + e.message); 
+    }
 };
 
 window.admDeleteProduct = async () => {
@@ -2036,10 +2172,10 @@ Object.assign(window, {
     cancelOrder, sendMsg, toggleTheme, toggleLang, openReviewModal, setRating, submitReview, openReport, submitReport, showSizeChart,
     admCreateProduct, admLoadProduct, admSaveProduct, admDeleteProduct, admBlockUser, admUnblockUser, admFindOrder, admSetOrderStatus,
     admApproveReview, admRejectReview, admDeleteReview, admApproveAvatar, admRejectAvatar, admApproveSuggestion, admRejectSuggestion, admEditSuggestion,
-    admMarkReportViewed, openSuggest, submitSuggestion, toggleCollabInput
+    admMarkReportViewed, openSuggest, submitSuggestion, toggleCollabInput, toggleEditCollabInput
 });
 
-console.log('🚀 BYRMALDA loaded | 🔐 App Check + ✅ Email verification FIXED');
+console.log('🚀 BYRMALDA loaded | 🔐 App Check + ✅ Edit product form FULL');
 </script>
 </body>
 </html>
