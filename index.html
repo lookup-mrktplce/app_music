@@ -56,7 +56,7 @@
         .loading { display:inline-block; width:18px; height:18px; border:2px solid rgba(0,0,0,.2); border-top-color:var(--accent); border-radius:50%; animation:spin .8s linear infinite }
         @keyframes spin { to{transform:rotate(360deg)} }
         
-        /* 🔁 КАРУСЕЛЬ НА ГЛАВНОЙ */
+        /* 🔁 КАРУСЕЛЬ */
         .hero { min-height:75vh; display:flex; align-items:center; justify-content:center; text-align:center; position:relative; overflow:hidden }
         .hero-carousel { position:absolute; inset:0; z-index:1 }
         .carousel-img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:0; transition:opacity 1s ease }
@@ -82,7 +82,7 @@
         .profile-meta { font-size:12px; color:var(--text-dim); margin-top:4px }
         .profile-meta div { margin:2px 0 }
         
-        /* 🔁 ИСПРАВЛЕННЫЙ БЛОК ДОСТАВКИ */
+        /* 🔁 ИСПРАВЛЕННАЯ ДОСТАВКА */
         .delivery-section { background:var(--bg-soft); border-radius:var(--radius); padding:20px; margin:0 0 24px; border:1px solid var(--border) }
         .delivery-title { font-size:16px; font-weight:600; margin-bottom:16px; text-transform:uppercase; letter-spacing:1px }
         .delivery-current { display:flex; justify-content:space-between; align-items:center; padding:12px; background:var(--bg); border-radius:8px; margin-bottom:12px }
@@ -220,7 +220,7 @@
     <main class="main">
         <section id="home" class="page active">
             <div class="hero">
-                <!-- 🔁 КАРУСЕЛЬ ФОТО -->
+                <!-- 🔁 КАРУСЕЛЬ -->
                 <div class="hero-carousel" id="hero-carousel">
                     <img src="https://raw.githubusercontent.com/lookup-mrktplce/xcdzxc/main/IMG_20260515_101118.png" class="carousel-img active" alt="1">
                     <img src="https://raw.githubusercontent.com/lookup-mrktplce/xcdzxc/main/IMG_20260515_103613.png" class="carousel-img" alt="2">
@@ -255,13 +255,12 @@
                         <div>ID: <span id="profile-id">-</span></div>
                         <div>Дата: <span id="profile-date">-</span></div>
                         <div>Почта: <span id="profile-email">-</span></div>
-                        <!-- 🔁 ИСПРАВЛЕНО: ОТОБРАЖЕНИЕ ДОСТАВКИ -->
                         <div>Доставка: <span id="profile-delivery">Не указана</span></div>
                     </div>
                 </div>
             </div>
             
-            <!-- 🔁 ИСПРАВЛЕННЫЙ БЛОК ДОСТАВКИ -->
+            <!-- 🔁 ИСПРАВЛЕННАЯ ДОСТАВКА -->
             <div class="delivery-section" id="delivery-section" style="display:none">
                 <div class="delivery-title">📦 Адрес доставки</div>
                 <div class="delivery-current" id="delivery-current">
@@ -336,7 +335,7 @@
 
 <!-- MODALS -->
 <div class="modal" id="login-modal"><div class="modal-content"><span class="modal-close" onclick="closeModal('login-modal')">&times;</span><div class="modal-title">Вход</div><div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" id="log-email"></div><div class="form-group"><label class="form-label">Пароль</label><input type="password" class="form-input" id="log-pass"></div><button class="btn" onclick="doLogin()">Войти</button><div class="error" id="log-err"></div><span class="link" onclick="switchReg()">Нет аккаунта? Зарегистрироваться</span></div></div>
-<div class="modal" id="reg-modal"><div class="modal-content"><span class="modal-close" onclick="closeModal('reg-modal')">&times;</span><div class="modal-title" id="reg-title">Регистрация</div><div id="reg-step-1"><div class="form-group"><label class="form-label">Email *</label><input type="email" class="form-input" id="reg-email"></div><button class="btn" onclick="regStep1()">Далее</button></div><div id="reg-step-2" class="hidden"><div class="success">✉️ Письмо с подтверждением отправлено</div><div style="margin:16px 0;font-size:13px;color:var(--text-dim)">Проверьте email и перейдите по ссылке.</div><button class="btn" onclick="regStep2()">Я подтвердил(а) почту</button></div><div id="reg-step-3" class="hidden"><div class="form-group"><label class="form-label">Имя *</label><input type="text" class="form-input" id="reg-name"></div><div class="form-group"><label class="form-label">Пароль *</label><input type="password" class="form-input" id="reg-pass"></div><div class="form-group"><label class="form-label">Повтор пароля *</label><input type="password" class="form-input" id="reg-pass2"></div><button class="btn" onclick="regStep3()">Завершить</button><div class="error" id="reg-err"></div></div><div id="reg-ok" class="hidden text-center"><div style="font-size:42px;margin:16px 0">✅</div><div style="font-size:17px;margin-bottom:20px">Добро пожаловать!</div><button class="btn" onclick="closeModal('reg-modal');navigate('profile')">В профиль</button></div></div></div>
+<div class="modal" id="reg-modal"><div class="modal-content"><span class="modal-close" onclick="closeModal('reg-modal')">&times;</span><div class="modal-title" id="reg-title">Регистрация</div><div id="reg-step-1"><div class="form-group"><label class="form-label">Email *</label><input type="email" class="form-input" id="reg-email"></div><button class="btn" onclick="regStep1()">Далее</button></div><div id="reg-step-2" class="hidden"><div class="success">✉️ Письмо с подтверждением отправлено</div><div style="margin:16px 0;font-size:13px;color:var(--text-dim)">Проверьте email и перейдите по ссылке. После подтверждения вернитесь сюда.</div><button class="btn" onclick="regStep2()">Я перешёл по ссылке</button></div><div id="reg-step-3" class="hidden"><div class="form-group"><label class="form-label">Имя *</label><input type="text" class="form-input" id="reg-name"></div><div class="form-group"><label class="form-label">Пароль *</label><input type="password" class="form-input" id="reg-pass"></div><div class="form-group"><label class="form-label">Повтор пароля *</label><input type="password" class="form-input" id="reg-pass2"></div><button class="btn" onclick="regStep3()">Завершить</button><div class="error" id="reg-err"></div></div><div id="reg-ok" class="hidden text-center"><div style="font-size:42px;margin:16px 0">✅</div><div style="font-size:17px;margin-bottom:20px">Добро пожаловать!</div><button class="btn" onclick="closeModal('reg-modal');navigate('profile')">В профиль</button></div></div></div>
 <div class="modal" id="logout-confirm-modal"><div class="modal-content" style="text-align:center"><span class="modal-close" onclick="closeModal('logout-confirm-modal')">&times;</span><div style="font-size:42px;margin:16px 0">🚪</div><div class="modal-title">Выйти?</div><p style="color:var(--text-dim);margin-bottom:24px">Вы уверены?</p><div class="btn-group" style="justify-content:center"><button class="btn btn-danger" onclick="doLogout()">Да</button><button class="btn btn-outline" onclick="closeModal('logout-confirm-modal')">Отмена</button></div></div></div>
 <div class="modal" id="avatar-modal"><div class="modal-content"><span class="modal-close" onclick="closeModal('avatar-modal')">&times;</span><div class="modal-title">Аватарка</div><div class="form-group"><label class="form-label">Фото</label><input type="file" class="form-input" id="av-file" accept="image/*"></div><button class="btn" onclick="submitAvatar()">Отправить</button></div></div>
 <div class="modal" id="suggest-modal"><div class="modal-content wide"><span class="modal-close" onclick="closeModal('suggest-modal')">&times;</span><div class="modal-title">Предложить товар</div><div class="admin-grid"><div class="form-group"><label class="form-label">Название *</label><input class="admin-input" id="sug-name"></div><div class="form-group"><label class="form-label">Категория *</label><select class="admin-input" id="sug-cat"><option value="clothing">Одежда</option><option value="footwear">Обувь</option></select></div><div class="form-group"><label class="form-label">Тип *</label><input class="admin-input" id="sug-type"></div><div class="form-group"><label class="form-label">Цена ($) *</label><input type="number" class="admin-input" id="sug-price" step="0.01"></div></div><div class="form-group"><label class="form-label">Фото *</label><input type="file" class="admin-input" id="sug-img" accept="image/*"></div><div class="admin-grid"><div class="form-group"><label class="form-label">Для кого</label><select class="admin-input" id="sug-aud"><option value="unisex">Унисекс</option><option value="male">Мужчина</option><option value="female">Женщина</option></select></div><div class="form-group"><label class="form-label">Размеры</label><input class="admin-input" id="sug-sizes"></div></div><div class="form-group"><label class="form-label">Материал</label><input class="admin-input" id="sug-mat"></div><div class="form-group"><label class="form-label">Описание</label><textarea class="form-textarea" id="sug-desc"></textarea></div><button class="btn" onclick="submitSuggestion()">Отправить</button></div></div>
@@ -360,186 +359,40 @@ let user = null, userData = null, cart = [], curProd = null, galIdx = 0, chatUnr
 const $ = id => document.getElementById(id), show = el => el.classList.remove('hidden'), hide = el => el.classList.add('hidden'), fmtDate = ts => ts?.toDate?.()?.toLocaleDateString('ru-RU') || '...', genId = () => Math.random().toString(36).substring(2, 10).toUpperCase();
 
 // 🔁 КАРУСЕЛЬ
-function initCarousel() {
-    carouselInterval = setInterval(() => changeCarousel(1), 8000);
-}
-window.changeCarousel = (dir) => {
-    const imgs = document.querySelectorAll('.carousel-img');
-    imgs[carouselIdx].classList.remove('active');
-    carouselIdx = (carouselIdx + dir + imgs.length) % imgs.length;
-    imgs[carouselIdx].classList.add('active');
-};
+function initCarousel() { carouselInterval = setInterval(() => changeCarousel(1), 8000); }
+window.changeCarousel = (dir) => { const imgs = document.querySelectorAll('.carousel-img'); imgs[carouselIdx].classList.remove('active'); carouselIdx = (carouselIdx + dir + imgs.length) % imgs.length; imgs[carouselIdx].classList.add('active'); };
 
 window.addEventListener('DOMContentLoaded', async () => {
     const urlParams = new URLSearchParams(window.location.search), oobCode = urlParams.get('oobCode'), mode = urlParams.get('mode');
-    if (oobCode && mode === 'verifyEmail') { try { await applyActionCode(auth, oobCode); window.history.replaceState({}, document.title, window.location.pathname); alert('✅ Email подтверждён!'); if (auth.currentUser) { await auth.currentUser.reload(); if (auth.currentUser.emailVerified) { await loadUser(); updateAuthUI(); } } } catch(e) { console.error(e); alert('❌ Ошибка: '+e.message); } }
+    if (oobCode && mode === 'verifyEmail') { try { await applyActionCode(auth, oobCode); window.history.replaceState({}, document.title, window.location.pathname); alert('✅ Email подтверждён! Теперь войдите в аккаунт.'); } catch(e) { console.error(e); alert('❌ Ошибка: '+e.message); } }
     initCarousel();
     onAuthStateChanged(auth, async u => {
         if (u) { user = u; await loadUser(); await loadCartFromFirestore(); updateAuthUI(); if (u.email === ADMIN_EMAIL) { $('nav-admin').classList.remove('hidden'); $('nav-suggest').classList.add('hidden'); loadAdminPanels(); } else { $('nav-admin').classList.add('hidden'); $('nav-suggest').classList.remove('hidden'); } loadOrders(); loadChat(); checkReviewSubmission(); renderDeliveryAddress(); }
         else { user = userData = null; resetAuthUI(); hide($('delivery-section')); }
     });
-    loadCartCount();
-    genCatalog();
-    setupListeners();
-    setInterval(autoUpdateOrders, 300000);
+    loadCartCount(); genCatalog(); setupListeners(); setInterval(autoUpdateOrders, 300000);
 });
 
-async function loadUser() {
-    if (!user) return;
-    try {
-        const snap = await getDoc(doc(db, 'artifacts/byrmalda-prod/users', user.uid));
-        userData = snap.exists() ? snap.data() : await createUserDoc();
-        renderProfile();
-    } catch(e) { 
-        console.error('loadUser:',e);
-        if (e.code === 'permission-denied' || e.code === 'missing-permissions') {
-            await createUserDoc();
-            userData = { uid: user.uid, email: user.email, name: user.displayName || user.email.split('@')[0] };
-            renderProfile();
-        }
-    }
-}
+async function loadUser() { if (!user) return; try { const snap = await getDoc(doc(db, 'artifacts/byrmalda-prod/users', user.uid)); userData = snap.exists() ? snap.data() : await createUserDoc(); renderProfile(); } catch(e) { console.error('loadUser:',e); if (e.code === 'permission-denied' || e.code === 'missing-permissions') { await createUserDoc(); userData = { uid: user.uid, email: user.email, name: user.displayName || user.email.split('@')[0] }; renderProfile(); } } }
+async function createUserDoc() { const data = { uid: user.uid, email: user.email, name: user.displayName || user.email.split('@')[0], avatar: null, avatarPending: null, registrationDate: serverTimestamp(), isBlocked: false, hasVerifiedProduct: false, language: 'ru', theme: 'light', hasSubmittedReview: false, cart: [], deliveryCountry: null, deliveryAddress: { cdek: null, ua: null, usa: null } }; await setDoc(doc(db, 'artifacts/byrmalda-prod/users', user.uid), data, { merge: true }); return data; }
+async function loadCartFromFirestore() { if (!user) return; try { const snap = await getDoc(doc(db, 'artifacts/byrmalda-prod/users', user.uid)); if (snap.exists() && snap.data().cart) { cart = snap.data().cart; loadCartCount(); } } catch(e) { console.error('loadCartFromFirestore:', e); } }
+async function saveCartToFirestore() { if (!user) return; try { await updateDoc(doc(db, 'artifacts/byrmalda-prod/users', user.uid), { cart: cart }); } catch(e) { console.error('saveCartToFirestore:', e); } }
 
-async function createUserDoc() {
-    const data = {
-        uid: user.uid, email: user.email, name: user.displayName || user.email.split('@')[0],
-        avatar: null, avatarPending: null, registrationDate: serverTimestamp(),
-        isBlocked: false, hasVerifiedProduct: false, language: 'ru', theme: 'light',
-        hasSubmittedReview: false, cart: [],
-        deliveryCountry: null, deliveryAddress: { cdek: null, ua: null, usa: null }
-    };
-    await setDoc(doc(db, 'artifacts/byrmalda-prod/users', user.uid), data, { merge: true });
-    return data;
-}
-
-// 🔁 ЗАГРУЗКА КОРЗИНЫ ИЗ FIRESTORE
-async function loadCartFromFirestore() {
-    if (!user) return;
-    try {
-        const snap = await getDoc(doc(db, 'artifacts/byrmalda-prod/users', user.uid));
-        if (snap.exists() && snap.data().cart) {
-            cart = snap.data().cart;
-            loadCartCount();
-        }
-    } catch(e) { console.error('loadCartFromFirestore:', e); }
-}
-
-// 🔁 СОХРАНЕНИЕ КОРЗИНЫ В FIRESTORE
-async function saveCartToFirestore() {
-    if (!user) return;
-    try {
-        await updateDoc(doc(db, 'artifacts/byrmalda-prod/users', user.uid), { cart: cart });
-    } catch(e) { console.error('saveCartToFirestore:', e); }
-}
-
-function renderProfile() {
-    if (!userData) return;
-    $('profile-name').textContent = userData.name || 'Пользователь';
-    $('profile-id').textContent = user.uid.substring(0,10)+'...';
-    $('profile-email').textContent = user.email;
-    $('profile-date').textContent = fmtDate(userData.registrationDate);
-    if (userData.avatar) $('avatar-display').innerHTML = `<img src="${userData.avatar}" style="width:100%;height:100%;object-fit:cover">`;
-    if (userData.hasVerifiedProduct) $('profile-name').innerHTML = `<span class="verified">✓</span> ${userData.name}`;
-    if (user) show($('delivery-section'));
-    updateDeliveryDisplay();
-}
-
-function updateDeliveryDisplay() {
-    if (!userData) return;
-    const country = userData.deliveryCountry;
-    const addr = userData.deliveryAddress?.[country];
-    const providerNames = { cdek: '🇷🇺 СДЭК', ua: '🇺 UaExpress', usa: '🇺🇸 USmall' };
-    
-    if (country && addr) {
-        $('profile-delivery').textContent = `${providerNames[country]} - ${addr.city}, ${addr.street}, ${addr.house}`;
-        $('delivery-provider').textContent = providerNames[country];
-        $('delivery-address-display').textContent = `${addr.city}, ${addr.street}, ${addr.house}`;
-    } else {
-        $('profile-delivery').textContent = 'Не указана';
-        $('delivery-provider').textContent = 'Не выбран';
-        $('delivery-address-display').textContent = '';
-    }
-}
+function renderProfile() { if (!userData) return; $('profile-name').textContent = userData.name || 'Пользователь'; $('profile-id').textContent = user.uid.substring(0,10)+'...'; $('profile-email').textContent = user.email; $('profile-date').textContent = fmtDate(userData.registrationDate); if (userData.avatar) $('avatar-display').innerHTML = `<img src="${userData.avatar}" style="width:100%;height:100%;object-fit:cover">`; if (userData.hasVerifiedProduct) $('profile-name').innerHTML = `<span class="verified">✓</span> ${userData.name}`; if (user) show($('delivery-section')); updateDeliveryDisplay(); }
+function updateDeliveryDisplay() { if (!userData) return; const country = userData.deliveryCountry, addr = userData.deliveryAddress?.[country], providerNames = { cdek: '🇷🇺 СДЭК', ua: '🇺🇦 UaExpress', usa: '🇺🇸 USmall' }; if (country && addr) { $('profile-delivery').textContent = `${providerNames[country]} - ${addr.city}, ${addr.street}, ${addr.house}`; $('delivery-provider').textContent = providerNames[country]; $('delivery-address-display').textContent = `${addr.city}, ${addr.street}, ${addr.house}`; } else { $('profile-delivery').textContent = 'Не указана'; $('delivery-provider').textContent = 'Не выбран'; $('delivery-address-display').textContent = ''; } }
 
 function updateAuthUI() { $('auth-btn').textContent = 'Выйти'; $('auth-btn').onclick = () => openModal('logout-confirm-modal'); $('user-email').textContent = user.email; }
 function resetAuthUI() { $('auth-btn').textContent = 'Войти'; $('auth-btn').onclick = () => openModal('login-modal'); $('user-email').textContent = 'Не авторизован'; $('profile-name').textContent = 'Гость'; $('profile-id').textContent = '-'; $('profile-email').textContent = '-'; $('profile-date').textContent = '-'; $('profile-delivery').textContent = 'Не указана'; $('avatar-display').innerHTML = '👤'; }
 
-window.openLogin = () => openModal('login-modal');
-window.switchReg = () => { closeModal('login-modal'); openModal('reg-modal'); showStep(1); };
+window.openLogin = () => openModal('login-modal'); window.switchReg = () => { closeModal('login-modal'); openModal('reg-modal'); showStep(1); };
 
-window.doLogin = async () => {
-    const email = $('log-email').value.trim(), pass = $('log-pass').value;
-    $('log-err').textContent = '';
-    if (!email || !pass) { $('log-err').textContent = 'Заполните поля'; return; }
-    try {
-        const cred = await signInWithEmailAndPassword(auth, email, pass);
-        const u = cred.user;
-        if (!u.emailVerified) {
-            try { await sendEmailVerification(u, { url: window.location.href, handleCodeInApp: true }); } catch(e) { console.log(e); }
-            await signOut(auth);
-            $('log-err').innerHTML = `✉️ Подтвердите почту.<br>Ссылка отправлена на <b>${email}</b>`;
-            return;
-        }
-        const ud = await getDoc(doc(db, 'artifacts/byrmalda-prod/users', u.uid));
-        if (ud.exists() && ud.data().isBlocked) { await signOut(auth); showBlock(); return; }
-        closeModal('login-modal');
-    } catch(e) {
-        console.error(e.code);
-        $('log-err').textContent = e.code === 'auth/user-not-found' || e.code === 'auth/wrong-password' ? 'Аккаунт не найден' : 'Ошибка: '+e.message;
-    }
-};
+window.doLogin = async () => { const email = $('log-email').value.trim(), pass = $('log-pass').value; $('log-err').textContent = ''; if (!email || !pass) { $('log-err').textContent = 'Заполните поля'; return; } try { const cred = await signInWithEmailAndPassword(auth, email, pass); const u = cred.user; if (!u.emailVerified) { await signOut(auth); $('log-err').innerHTML = `✉️ Подтвердите почту.<br>Ссылка отправлена на <b>${email}</b><br><small>Проверьте папку "Спам"</small>`; try { await sendEmailVerification(u, { url: window.location.href, handleCodeInApp: true }); } catch(e) { console.log(e); } return; } const ud = await getDoc(doc(db, 'artifacts/byrmalda-prod/users', u.uid)); if (ud.exists() && ud.data().isBlocked) { await signOut(auth); showBlock(); return; } closeModal('login-modal'); } catch(e) { console.error(e.code); if (e.code === 'auth/invalid-login-credentials') { $('log-err').innerHTML = '❌ Неверный email или пароль.<br><small>Проверьте данные или зарегистрируйтесь</small>'; } else if (e.code === 'auth/user-not-found') { $('log-err').textContent = 'Аккаунт не найден'; } else if (e.code === 'auth/wrong-password') { $('log-err').textContent = 'Неверный пароль'; } else { $('log-err').textContent = 'Ошибка: '+e.message; } } };
 
-window.regStep1 = async () => {
-    const email = $('reg-email').value.trim();
-    if (!email) { alert('Введите email'); return; }
-    try {
-        const methods = await auth.fetchSignInMethodsForEmail(email);
-        if (methods.length > 0) { $('reg-err').textContent = 'Email уже зарегистрирован'; return; }
-    } catch(e) { console.log(e); }
-    sessionStorage.setItem('pending_email', email);
-    showStep(2);
-};
+window.regStep1 = async () => { const email = $('reg-email').value.trim(); if (!email) { alert('Введите email'); return; } try { const methods = await auth.fetchSignInMethodsForEmail(email); if (methods.length > 0) { $('reg-err').textContent = 'Email уже зарегистрирован'; return; } } catch(e) { console.log(e); } sessionStorage.setItem('pending_email', email); showStep(2); try { const tempCred = await createUserWithEmailAndPassword(auth, email, Math.random().toString(36).substring(2)); await sendEmailVerification(tempCred.user, { url: window.location.href, handleCodeInApp: true }); await signOut(auth); } catch(e) { console.log('temp reg:', e); } };
 
-window.regStep2 = async () => {
-    const email = sessionStorage.getItem('pending_email');
-    if (!email) { alert('Сессия истекла'); return; }
-    const currentUser = auth.currentUser;
-    if (currentUser && currentUser.email === email) {
-        await currentUser.reload();
-        if (currentUser.emailVerified) { showStep(3); return; }
-    }
-    try {
-        if (currentUser && currentUser.email === email) await sendEmailVerification(currentUser, { url: window.location.href, handleCodeInApp: true });
-        alert('✉️ Ссылка отправлена на '+email);
-    } catch(e) { console.error(e); }
-    showStep(3);
-};
+window.regStep2 = async () => { const email = sessionStorage.getItem('pending_email'); if (!email) { alert('Сессия истекла'); return; } try { const tempCred = await signInWithEmailAndPassword(auth, email, 'temp'); await tempCred.user.reload(); if (tempCred.user.emailVerified) { await signOut(auth); showStep(3); } else { await signOut(auth); alert('✉️ Email ещё не подтверждён. Проверьте почту и спам, затем нажмите "Я перешёл по ссылке" ещё раз.'); } } catch(e) { console.log(e); alert('✉️ Email ещё не подтверждён. Проверьте почту и спам.'); } };
 
-window.regStep3 = async () => {
-    const email = sessionStorage.getItem('pending_email'), name = $('reg-name').value.trim(), p1 = $('reg-pass').value, p2 = $('reg-pass2').value;
-    $('reg-err').textContent = '';
-    if (!name || !p1 || !p2) { $('reg-err').textContent = 'Заполните все поля'; return; }
-    if (p1 !== p2) { $('reg-err').textContent = 'Пароли не совпадают'; return; }
-    if (p1.length < 6) { $('reg-err').textContent = 'Пароль минимум 6 символов'; return; }
-    try {
-        const cred = await createUserWithEmailAndPassword(auth, email, p1);
-        await sendEmailVerification(cred.user, { url: window.location.href, handleCodeInApp: true });
-        await setDoc(doc(db, 'artifacts/byrmalda-prod/users', cred.user.uid), {
-            uid: cred.user.uid, email, name, avatar: null, avatarPending: null, registrationDate: serverTimestamp(),
-            isBlocked: false, hasVerifiedProduct: false, language: 'ru', theme: 'light', hasSubmittedReview: false,
-            cart: [], deliveryCountry: null, deliveryAddress: { cdek: null, ua: null, usa: null }
-        }, { merge: true });
-        await updateProfile(cred.user, { displayName: name });
-        $('reg-step-3').classList.add('hidden');
-        $('reg-ok').classList.remove('hidden');
-    } catch(e) {
-        console.error(e.code);
-        if (e.code === 'auth/email-already-in-use') $('reg-err').textContent = 'Email уже занят';
-        else if (e.code === 'auth/invalid-email') $('reg-err').textContent = 'Неверный email';
-        else if (e.code === 'auth/weak-password') $('reg-err').textContent = 'Слабый пароль';
-        else $('reg-err').textContent = 'Ошибка: '+e.message;
-    }
-};
+window.regStep3 = async () => { const email = sessionStorage.getItem('pending_email'), name = $('reg-name').value.trim(), p1 = $('reg-pass').value, p2 = $('reg-pass2').value; $('reg-err').textContent = ''; if (!name || !p1 || !p2) { $('reg-err').textContent = 'Заполните все поля'; return; } if (p1 !== p2) { $('reg-err').textContent = 'Пароли не совпадают'; return; } if (p1.length < 6) { $('reg-err').textContent = 'Пароль минимум 6 символов'; return; } try { await signInWithEmailAndPassword(auth, email, 'temp'); const u = auth.currentUser; if (!u.emailVerified) { alert('❌ Сначала подтвердите почту'); return; } await updateProfile(u, { displayName: name }); await u.updatePassword(p1); await setDoc(doc(db, 'artifacts/byrmalda-prod/users', u.uid), { uid: u.uid, email, name, avatar: null, avatarPending: null, registrationDate: serverTimestamp(), isBlocked: false, hasVerifiedProduct: false, language: 'ru', theme: 'light', hasSubmittedReview: false, cart: [], deliveryCountry: null, deliveryAddress: { cdek: null, ua: null, usa: null } }, { merge: true }); await signOut(auth); $('reg-step-3').classList.add('hidden'); $('reg-ok').classList.remove('hidden'); } catch(e) { console.error(e.code); if (e.code === 'auth/wrong-password') { $('reg-err').textContent = 'Ошибка: сначала подтвердите почту по ссылке'; } else if (e.code === 'auth/email-already-in-use') { $('reg-err').textContent = 'Email уже занят'; } else { $('reg-err').textContent = 'Ошибка: '+e.message; } } };
 
 function showStep(n) { [1,2,3].forEach(i => $(`reg-step-${i}`).classList.add('hidden')); $('reg-ok').classList.add('hidden'); $(`reg-step-${n}`).classList.remove('hidden'); $('reg-title').textContent = ['Регистрация','Подтверждение','Завершение'][n-1]; }
 window.confirmLogout = () => { if (!user) { openModal('login-modal'); return; } openModal('logout-confirm-modal'); };
@@ -557,106 +410,21 @@ window.handleSearch = async e => { const q = e.target.value.trim().toLowerCase()
 async function searchProds(q) { const c = $('search-results'); c.innerHTML = '<div class="text-center" style="padding:32px"><div class="loading"></div></div>'; try { let coll = collection(db, 'artifacts/byrmalda-prod/public/data/products'); if (q === 'archive') { const snap = await getDocs(query(coll, where('deleted','==',true))), res = []; snap.forEach(d => res.push({...d.data(),id:d.id})); if (!res.length) { c.innerHTML = '<div class="text-center" style="padding:32px;color:var(--text-dim)">Архив пуст</div>'; return; } c.innerHTML = res.map(p => prodCard(p)).join(''); } else { const snap = await getDocs(query(coll, where('published','==',true), where('deleted','==',false))), res = []; snap.forEach(d => { const p = d.data(); if (`${p.name} ${p.type} ${p.category} ${p.desc}`.toLowerCase().includes(q)) res.push({...p,id:d.id}); }); if (!res.length) { c.innerHTML = `<div class="text-center" style="padding:32px;color:var(--text-dim)">Ничего не найдено</div>`; return; } c.innerHTML = res.map(p => prodCard(p)).join(''); } } catch(e) { console.error(e); c.innerHTML = '<div class="text-center" style="padding:32px;color:var(--error)">Ошибка</div>'; } }
 function prodCard(p) { const stock = p.stock > 0; return `<div class="prod-card" onclick="openProd('${p.id}')"><div class="card-img" style="background:var(--bg)">${p.images?.[0]?`<img src="${p.images[0]}" style="width:100%;height:100%;object-fit:cover">`:'📦'}</div><div class="card-body"><div class="card-title">${p.name}</div><div class="card-price ${stock?'':'card-nostock'}">${stock?`$${p.price}`:'Нет в наличии'}</div></div></div>`; }
 
-window.openProd = async id => {
-    try {
-        const snap = await getDoc(doc(db, 'artifacts/byrmalda-prod/public/data/products', id));
-        if (!snap.exists()) return alert('Товар не найден');
-        curProd = { ...snap.data(), id };
-        $('p-id').textContent = `ID: ${curProd.productId || id}`;
-        $('p-name').textContent = curProd.name;
-        const colors = (curProd.color || 'Белый').split(',').map(c => c.trim()).filter(c => c), sizes = (curProd.sizes || 'S,M,L,XL').split(',').map(s => s.trim()).filter(s => s);
-        const colorGroup = $('opt-color-group');
-        if (colors.length === 1) { colorGroup.innerHTML = `<label class="form-label">Цвет</label><div class="opt-static">${colors[0]}</div>`; }
-        else { colorGroup.innerHTML = `<label class="form-label">Цвет</label><select class="opt-select" id="p-color"></select>`; $('p-color').innerHTML = colors.map(c => `<option>${c}</option>`).join(''); }
-        const sizeGroup = $('opt-size-group');
-        if (sizes.length === 1) { sizeGroup.innerHTML = `<label class="form-label">Размер</label><div class="opt-static">${sizes[0]}</div>`; }
-        else { sizeGroup.innerHTML = `<label class="form-label">Размер</label><select class="opt-select" id="p-size"></select>`; $('p-size').innerHTML = sizes.map(s => `<option>${s}</option>`).join(''); }
-        $('p-specs').innerHTML = `<div class="spec-row"><span class="spec-l">Для кого</span><span class="spec-v">${curProd.audience||'Унисекс'}</span></div><div class="spec-row"><span class="spec-l">Тип</span><span class="spec-v">${curProd.type}</span></div><div class="spec-row"><span class="spec-l">Материал</span><span class="spec-v">${curProd.material||'-'}</span></div><div class="spec-row"><span class="spec-l">Цвет</span><span class="spec-v">${curProd.color||'-'}</span></div><div class="spec-row"><span class="spec-l">Коллаборация</span><span class="spec-v">${curProd.collab||'Нет'}</span></div><div class="spec-row"><span class="spec-l">Масса</span><span class="spec-v">${curProd.weight||'-'} г</span></div><div class="spec-row"><span class="spec-l">Год релиза</span><span class="spec-v">${curProd.year||'-'}</span></div><div class="spec-row"><span class="spec-l">В наличии</span><span class="spec-v">${curProd.stock} шт</span></div>`;
-        $('p-desc').textContent = curProd.desc || '';
-        $('p-price-usd').textContent = `$${curProd.price}`;
-        $('p-price-conv').textContent = `≈ ${Math.round(curProd.price*RATES.USD_TO_RUB).toLocaleString('ru-RU')} ₽ / ≈ ${Math.round(curProd.price*RATES.USD_TO_UAH).toLocaleString('ru-RU')} ₴`;
-        const stockEl = $('p-stock'), btn = $('p-action'), opts = $('p-options'), delNotice = $('p-deleted-notice');
-        if (curProd.deleted) { delNotice.classList.remove('hidden'); btn.textContent = 'Удален'; btn.disabled = true; hide(opts); }
-        else if (curProd.stock > 0) { delNotice.classList.add('hidden'); stockEl.innerHTML = '<span class="in-stock">✓ В наличии</span>'; btn.textContent = 'Купить'; btn.disabled = false; btn.onclick = () => addToCart(false); show(opts); }
-        else { delNotice.classList.add('hidden'); stockEl.innerHTML = '<span class="out-stock">✗ Нет в наличии (Предзаказ)</span>'; btn.textContent = 'Предзаказ'; btn.disabled = false; btn.onclick = () => addToCart(true); hide(opts); }
-        galIdx = 0; updateGal();
-        navigate('product');
-    } catch(e) { console.error(e); alert('Ошибка загрузки товара'); }
-};
+window.openProd = async id => { try { const snap = await getDoc(doc(db, 'artifacts/byrmalda-prod/public/data/products', id)); if (!snap.exists()) return alert('Товар не найден'); curProd = { ...snap.data(), id }; $('p-id').textContent = `ID: ${curProd.productId || id}`; $('p-name').textContent = curProd.name; const colors = (curProd.color || 'Белый').split(',').map(c => c.trim()).filter(c => c), sizes = (curProd.sizes || 'S,M,L,XL').split(',').map(s => s.trim()).filter(s => s); const colorGroup = $('opt-color-group'); if (colors.length === 1) { colorGroup.innerHTML = `<label class="form-label">Цвет</label><div class="opt-static">${colors[0]}</div>`; } else { colorGroup.innerHTML = `<label class="form-label">Цвет</label><select class="opt-select" id="p-color"></select>`; $('p-color').innerHTML = colors.map(c => `<option>${c}</option>`).join(''); } const sizeGroup = $('opt-size-group'); if (sizes.length === 1) { sizeGroup.innerHTML = `<label class="form-label">Размер</label><div class="opt-static">${sizes[0]}</div>`; } else { sizeGroup.innerHTML = `<label class="form-label">Размер</label><select class="opt-select" id="p-size"></select>`; $('p-size').innerHTML = sizes.map(s => `<option>${s}</option>`).join(''); } $('p-specs').innerHTML = `<div class="spec-row"><span class="spec-l">Для кого</span><span class="spec-v">${curProd.audience||'Унисекс'}</span></div><div class="spec-row"><span class="spec-l">Тип</span><span class="spec-v">${curProd.type}</span></div><div class="spec-row"><span class="spec-l">Материал</span><span class="spec-v">${curProd.material||'-'}</span></div><div class="spec-row"><span class="spec-l">Цвет</span><span class="spec-v">${curProd.color||'-'}</span></div><div class="spec-row"><span class="spec-l">Коллаборация</span><span class="spec-v">${curProd.collab||'Нет'}</span></div><div class="spec-row"><span class="spec-l">Масса</span><span class="spec-v">${curProd.weight||'-'} г</span></div><div class="spec-row"><span class="spec-l">Год релиза</span><span class="spec-v">${curProd.year||'-'}</span></div><div class="spec-row"><span class="spec-l">В наличии</span><span class="spec-v">${curProd.stock} шт</span></div>`; $('p-desc').textContent = curProd.desc || ''; $('p-price-usd').textContent = `$${curProd.price}`; $('p-price-conv').textContent = `≈ ${Math.round(curProd.price*RATES.USD_TO_RUB).toLocaleString('ru-RU')} ₽ / ≈ ${Math.round(curProd.price*RATES.USD_TO_UAH).toLocaleString('ru-RU')} ₴`; const stockEl = $('p-stock'), btn = $('p-action'), opts = $('p-options'), delNotice = $('p-deleted-notice'); if (curProd.deleted) { delNotice.classList.remove('hidden'); btn.textContent = 'Удален'; btn.disabled = true; hide(opts); } else if (curProd.stock > 0) { delNotice.classList.add('hidden'); stockEl.innerHTML = '<span class="in-stock">✓ В наличии</span>'; btn.textContent = 'Купить'; btn.disabled = false; btn.onclick = () => addToCart(false); show(opts); } else { delNotice.classList.add('hidden'); stockEl.innerHTML = '<span class="out-stock">✗ Нет в наличии (Предзаказ)</span>'; btn.textContent = 'Предзаказ'; btn.disabled = false; btn.onclick = () => addToCart(true); hide(opts); } galIdx = 0; updateGal(); navigate('product'); } catch(e) { console.error(e); alert('Ошибка загрузки товара'); } };
 
 function updateGal() { if (!curProd) return; const imgs = curProd.images && curProd.images.length ? curProd.images : ['https://via.placeholder.com/600/f5f5f5/111?text=BYRMALDA']; $('p-main-img').src = imgs[galIdx]; $('p-thumbs').innerHTML = imgs.map((src,i) => `<img src="${src}" class="thumb ${i===galIdx?'active':''}" onclick="setGal(${i})">`).join(''); }
-window.setGal = i => { galIdx = i; updateGal(); };
-window.galNav = d => { if (!curProd) return; const len = curProd.images?.length||1; galIdx = (galIdx + d + len) % len; updateGal(); };
+window.setGal = i => { galIdx = i; updateGal(); }; window.galNav = d => { if (!curProd) return; const len = curProd.images?.length||1; galIdx = (galIdx + d + len) % len; updateGal(); };
 
-window.addToCart = async (isPreorder=false) => {
-    if (!user) { openModal('login-modal'); return; }
-    let size = 'M', color = 'Белый';
-    const sizeEl = $('p-size'), colorEl = $('p-color');
-    if (sizeEl && sizeEl.tagName === 'SELECT') size = sizeEl.value;
-    else if (sizeEl?.closest('.opt-group')?.querySelector('.opt-static')) size = sizeEl.closest('.opt-group').querySelector('.opt-static').textContent;
-    if (colorEl && colorEl.tagName === 'SELECT') color = colorEl.value;
-    else if (colorEl?.closest('.opt-group')?.querySelector('.opt-static')) color = colorEl.closest('.opt-group').querySelector('.opt-static').textContent;
-    
-    const qty = parseInt($('p-qty')?.value)||1;
-    
-    // 🔁 ПРОВЕРКА КОЛИЧЕСТВА
-    if (!isPreorder && qty > curProd.stock) {
-        alert(`Количество выбранных позиций не соответствует количеству товара на странице, максимум штук данного товара: ${curProd.stock}`);
-        return;
-    }
-    
-    const item = { id: `${curProd.id}-${Date.now()}`, pid: curProd.id, name: curProd.name, img: curProd.images?.[0] || '', size, color, qty, price: curProd.price, weight: curProd.weight||200, isPreorder: isPreorder, at: new Date().toISOString() };
-    cart.push(item);
-    await saveCartToFirestore();
-    loadCartCount();
-    alert(`✅ ${isPreorder?'Предзаказ':'Заказ'} добавлен!`);
-    navigate('cart');
-};
+window.addToCart = async (isPreorder=false) => { if (!user) { openModal('login-modal'); return; } let size = 'M', color = 'Белый'; const sizeEl = $('p-size'), colorEl = $('p-color'); if (sizeEl && sizeEl.tagName === 'SELECT') size = sizeEl.value; else if (sizeEl?.closest('.opt-group')?.querySelector('.opt-static')) size = sizeEl.closest('.opt-group').querySelector('.opt-static').textContent; if (colorEl && colorEl.tagName === 'SELECT') color = colorEl.value; else if (colorEl?.closest('.opt-group')?.querySelector('.opt-static')) color = colorEl.closest('.opt-group').querySelector('.opt-static').textContent; const qty = parseInt($('p-qty')?.value)||1; if (!isPreorder && qty > curProd.stock) { alert(`Количество выбранных позиций не соответствует количеству товара на странице, максимум штук данного товара: ${curProd.stock}`); return; } const item = { id: `${curProd.id}-${Date.now()}`, pid: curProd.id, name: curProd.name, img: curProd.images?.[0] || '', size, color, qty, price: curProd.price, weight: curProd.weight||200, isPreorder: isPreorder, at: new Date().toISOString() }; cart.push(item); await saveCartToFirestore(); loadCartCount(); alert(`✅ ${isPreorder?'Предзаказ':'Заказ'} добавлен!`); navigate('cart'); };
 
 function loadCartCount() { const n = cart.reduce((s,i)=>s+i.qty,0); $('cart-badge').textContent = n; $('nav-cart').classList.toggle('has-badge',n>0); }
-
-function renderCart() {
-    const empty = $('cart-empty'), full = $('cart-full'), body = $('cart-items');
-    if (!cart.length) { show(empty); hide(full); return; }
-    hide(empty); show(full);
-    let sub = 0, kg = 0;
-    body.innerHTML = cart.map(it => { const tot = it.price * it.qty; sub += tot; kg += (it.weight * it.qty)/1000; return `<tr><td><input type="number" class="qty-input" value="${it.qty}" min="1" onchange="updCart('${it.id}','qty',this.value)"></td><td class="flex items-center gap-8"><img class="cart-img" src="${it.img||'https://via.placeholder.com/60/f5f5f5/111?text=📦'}"><div><div style="font-weight:500">${it.name}</div>${it.isPreorder?'<span style="font-size:11px;color:#1976d2;background:#e3f2fd;padding:2px 8px;border-radius:10px">Предзаказ</span>':'<span style="font-size:11px;color:#16a34a;background:#dcfce7;padding:2px 8px;border-radius:10px">Заказ</span>'}</div></td><td>${it.size}</td><td>${it.color}</td><td>$${it.price}</td><td><button class="btn-cancel" onclick="delCart('${it.id}')">×</button></td></tr>`; }).join('');
-    const delRUB = Math.round(kg * 900), delUSD = (delRUB / RATES.USD_TO_RUB).toFixed(2), total = sub + parseFloat(delUSD);
-    $('cart-total').textContent = `$${total.toFixed(2)}`;
-    $('.delivery-note').textContent = `Доставка: ${delRUB.toLocaleString('ru-RU')} ₽ (~$${delUSD})`;
-}
-
+function renderCart() { const empty = $('cart-empty'), full = $('cart-full'), body = $('cart-items'); if (!cart.length) { show(empty); hide(full); return; } hide(empty); show(full); let sub = 0, kg = 0; body.innerHTML = cart.map(it => { const tot = it.price * it.qty; sub += tot; kg += (it.weight * it.qty)/1000; return `<tr><td><input type="number" class="qty-input" value="${it.qty}" min="1" onchange="updCart('${it.id}','qty',this.value)"></td><td class="flex items-center gap-8"><img class="cart-img" src="${it.img||'https://via.placeholder.com/60/f5f5f5/111?text=📦'}"><div><div style="font-weight:500">${it.name}</div>${it.isPreorder?'<span style="font-size:11px;color:#1976d2;background:#e3f2fd;padding:2px 8px;border-radius:10px">Предзаказ</span>':'<span style="font-size:11px;color:#16a34a;background:#dcfce7;padding:2px 8px;border-radius:10px">Заказ</span>'}</div></td><td>${it.size}</td><td>${it.color}</td><td>$${it.price}</td><td><button class="btn-cancel" onclick="delCart('${it.id}')">×</button></td></tr>`; }).join(''); const delRUB = Math.round(kg * 900), delUSD = (delRUB / RATES.USD_TO_RUB).toFixed(2), total = sub + parseFloat(delUSD); $('cart-total').textContent = `$${total.toFixed(2)}`; $('.delivery-note').textContent = `Доставка: ${delRUB.toLocaleString('ru-RU')} ₽ (~$${delUSD})`; }
 window.updCart = async (id,f,v) => { const it = cart.find(i=>i.id===id); if (!it) return; if (f==='qty') it.qty = Math.max(1,parseInt(v)||1); await saveCartToFirestore(); renderCart(); loadCartCount(); };
 window.delCart = async id => { cart = cart.filter(i=>i.id!==id); await saveCartToFirestore(); renderCart(); loadCartCount(); };
 
 window.checkout = () => { if (!user) { openModal('login-modal'); return; } if (!cart.length) { alert('Корзина пуста'); return; } if (!userData?.deliveryCountry || !userData?.deliveryAddress?.[userData.deliveryCountry]) { alert('У вас не указан пункт выдачи заказов куда мы доставим заказ либо адрес вашего пункта выдачи неверный, пожалуйста, перепроверьте адрес или укажите его если он отсутствует'); navigate('profile'); return; } openModal('checkout-modal'); };
 
-window.confirmCheckout = async () => {
-    closeModal('checkout-modal');
-    const oid = 'ORD-'+genId();
-    const total = parseFloat($('cart-total').textContent.replace('$',''));
-    const order = { id: oid, userId: user.uid, items: cart.map(it => ({...it})), total, status: 'Ожидает оплату', tracking: 'TRK-'+genId(), adminChangedStatus: false, createdAt: serverTimestamp(), updatedAt: serverTimestamp(), deliveryAddress: userData.deliveryAddress[userData.deliveryCountry], deliveryCountry: userData.deliveryCountry };
-    await setDoc(doc(db, 'artifacts/byrmalda-prod/public/data/orders', oid), order);
-    
-    // 🔁 УМЕНЬШЕНИЕ КОЛИЧЕСТВА ТОВАРА
-    for (const it of cart) {
-        if (!it.isPreorder) {
-            const pd = await getDoc(doc(db, 'artifacts/byrmalda-prod/public/data/products', it.pid));
-            if (pd.exists()) {
-                const d = pd.data();
-                const newStock = Math.max(0, (d.stock||0) - it.qty);
-                await updateDoc(doc(db, 'artifacts/byrmalda-prod/public/data/products', it.pid), { stock: newStock });
-            }
-        }
-    }
-    
-    cart = [];
-    await saveCartToFirestore();
-    loadCartCount();
-    loadOrders();
-    alert(`✅ Заказ #${oid} создан!\nСтатус: «Ожидает оплату»\nТрекинг: ${order.tracking}\n\nНапишите @fueum для подтверждения оплаты.`);
-    navigate('profile');
-};
+window.confirmCheckout = async () => { closeModal('checkout-modal'); const oid = 'ORD-'+genId(), total = parseFloat($('cart-total').textContent.replace('$','')), order = { id: oid, userId: user.uid, items: cart.map(it => ({...it})), total, status: 'Ожидает оплату', tracking: 'TRK-'+genId(), adminChangedStatus: false, createdAt: serverTimestamp(), updatedAt: serverTimestamp(), deliveryAddress: userData.deliveryAddress[userData.deliveryCountry], deliveryCountry: userData.deliveryCountry }; await setDoc(doc(db, 'artifacts/byrmalda-prod/public/data/orders', oid), order); for (const it of cart) { if (!it.isPreorder) { const pd = await getDoc(doc(db, 'artifacts/byrmalda-prod/public/data/products', it.pid)); if (pd.exists()) { const d = pd.data(); const newStock = Math.max(0, (d.stock||0) - it.qty); await updateDoc(doc(db, 'artifacts/byrmalda-prod/public/data/products', it.pid), { stock: newStock }); } } } cart = []; await saveCartToFirestore(); loadCartCount(); loadOrders(); alert(`✅ Заказ #${oid} создан!\nСтатус: «Ожидает оплату»\nТрекинг: ${order.tracking}\n\nНапишите @fueum для подтверждения оплаты.`); navigate('profile'); };
 
 async function loadOrders() { if (!user) return; const c = $('orders-list'); c.innerHTML = '<div class="text-center" style="padding:24px"><div class="loading"></div></div>'; try { const snap = await getDocs(query(collection(db, 'artifacts/byrmalda-prod/public/data/orders'), where('userId','==',user.uid), orderBy('createdAt','desc'), limit(50))); if (snap.empty) { c.innerHTML = '<div class="text-center" style="padding:32px;color:var(--text-dim)">Заказов пока нет</div>'; return; } c.innerHTML = snap.docs.map(d => { const o = d.data(), st = o.status || 'Ожидает оплату', cls = { 'Ожидает оплату':'st-awaiting', 'Создан':'st-created', 'Передача товара в доставку':'st-shipping', 'В пути':'st-transit', 'Доставлен':'st-delivered', 'Отменён':'st-cancelled' }[st] || 'st-awaiting', canCancel = st === 'Создан', firstItem = o.items?.[0] || {}; return `<div class="order-card" onclick="openProd('${firstItem.pid}')"><div class="order-img">${firstItem.img?`<img src="${firstItem.img}" style="width:100%;height:100%;object-fit:cover">`:'📦'}</div><div class="order-info"><div class="order-name">${firstItem.name||'Товар'}</div><span class="order-status ${cls}">${st}</span><div class="order-meta"><div>Заказ: #${o.id}</div><div>Трекинг: ${o.tracking||'-'}</div><div>Сумма: $${o.total?.toFixed(2)||'0.00'}</div><div>Дата: ${fmtDate(o.createdAt)}</div></div></div><div class="order-actions"><button class="btn-cancel" ${!canCancel?'disabled':''} title="${canCancel?'Отменить':'Нельзя'}" onclick="event.stopPropagation();cancelOrder('${o.id}','${st}')">×</button></div></div>`; }).join(''); } catch(e) { console.error(e); c.innerHTML = '<div class="text-center" style="padding:24px;color:var(--error)">Ошибка</div>'; } }
 window.cancelOrder = async (oid, st) => { if (st !== 'Создан') { alert('❌ Нельзя отменить'); return; } if (!confirm('Отменить?')) return; try { await updateDoc(doc(db, 'artifacts/byrmalda-prod/public/data/orders', oid), { status: 'Отменён', updatedAt: serverTimestamp() }); alert('✅ Отменён'); loadOrders(); } catch(e) { console.error(e); alert('❌ Ошибка'); } };
@@ -712,66 +480,15 @@ window.openSuggest = () => { if (!user) openModal('login-modal'); else openModal
 window.submitSuggestion = async () => { const name = $('sug-name').value.trim(), cat = $('sug-cat').value, type = $('sug-type').value.trim(), price = parseFloat($('sug-price').value); if (!name || !type || !price) { alert('Заполните поля'); return; } const file = $('sug-img').files[0]; let imgUrl = ''; if (file) { const fd = new FormData(); fd.append('image', file); fd.append('key', IMGBB_KEY); const res = await fetch('https://api.imgbb.com/1/upload', { method: 'POST', body: fd }), data = await res.json(); if (data.success) imgUrl = data.data.url; } await addDoc(collection(db, 'artifacts/byrmalda-prod/public/data/suggestions'), { uid: user.uid, userName: userData?.name||user.email.split('@')[0], name, category: cat, type, price, img: imgUrl, audience: $('sug-aud').value, sizes: $('sug-sizes').value, material: $('sug-mat').value, desc: $('sug-desc').value, status: 'pending', ts: serverTimestamp() }); alert('✅ Отправлено!'); closeModal('suggest-modal'); loadPendingSuggestions(); };
 async function autoUpdateOrders() { if (user?.email !== ADMIN_EMAIL) return; try { const now = Date.now(), created = await getDocs(query(collection(db, 'artifacts/byrmalda-prod/public/data/orders'), where('status','==','Создан'))); created.forEach(async d => { const o = d.data(); if (o.adminChangedStatus) return; const t = o.createdAt?.toDate?.().getTime(); if (t && now - t > 4*24*60*60*1000) await updateDoc(doc(db, 'artifacts/byrmalda-prod/public/data/orders', d.id), { status: 'Передача товара в доставку', updatedAt: serverTimestamp() }); }); const shipping = await getDocs(query(collection(db, 'artifacts/byrmalda-prod/public/data/orders'), where('status','==','Передача товара в доставку'))); shipping.forEach(async d => { const o = d.data(); if (o.adminChangedStatus) return; const t = o.updatedAt?.toDate?.().getTime(); if (t && now - t > 15*60*60*1000) await updateDoc(doc(db, 'artifacts/byrmalda-prod/public/data/orders', d.id), { status: 'В пути', updatedAt: serverTimestamp() }); }); } catch(e) { console.error('autoUpdate:', e); } }
 
-// 🔁 ИСПРАВЛЕННЫЕ ФУНКЦИИ ДОСТАВКИ
+// 🔁 ДОСТАВКА
 window.toggleDeliveryOptions = () => { $('delivery-options').classList.toggle('active'); };
-
-window.selectDelivery = (country) => {
-    document.querySelectorAll('.delivery-option').forEach(el => el.classList.remove('selected'));
-    document.querySelectorAll('.delivery-fields').forEach(el => hide(el));
-    $(`del-${country}`).checked = true;
-    $(`del-${country}`).closest('.delivery-option').classList.add('selected');
-    show($(`fields-${country}`));
-    if (userData?.deliveryAddress?.[country]) {
-        const addr = userData.deliveryAddress[country];
-        if (country === 'cdek') { $('cdek-city').value = addr.city || ''; $('cdek-street').value = addr.street || ''; $('cdek-house').value = addr.house || ''; }
-        else if (country === 'ua') { $('ua-city').value = addr.city || ''; $('ua-street').value = addr.street || ''; $('ua-house').value = addr.house || ''; }
-        else if (country === 'usa') { $('usa-city').value = addr.city || ''; $('usa-street').value = addr.street || ''; $('usa-house').value = addr.house || ''; }
-    }
-};
-
+window.selectDelivery = (country) => { document.querySelectorAll('.delivery-option').forEach(el => el.classList.remove('selected')); document.querySelectorAll('.delivery-fields').forEach(el => hide(el)); $(`del-${country}`).checked = true; $(`del-${country}`).closest('.delivery-option').classList.add('selected'); show($(`fields-${country}`)); if (userData?.deliveryAddress?.[country]) { const addr = userData.deliveryAddress[country]; if (country === 'cdek') { $('cdek-city').value = addr.city || ''; $('cdek-street').value = addr.street || ''; $('cdek-house').value = addr.house || ''; } else if (country === 'ua') { $('ua-city').value = addr.city || ''; $('ua-street').value = addr.street || ''; $('ua-house').value = addr.house || ''; } else if (country === 'usa') { $('usa-city').value = addr.city || ''; $('usa-street').value = addr.street || ''; $('usa-house').value = addr.house || ''; } } };
 window.renderDeliveryAddress = () => { if (!user || !userData) return; show($('delivery-section')); updateDeliveryDisplay(); };
-
-window.saveDeliveryAddress = async () => {
-    if (!user) { alert('❌ Войдите'); return; }
-    const country = document.querySelector('input[name="delivery"]:checked')?.value;
-    if (!country) { alert('❌ Выберите страну'); return; }
-    let city, street, house;
-    if (country === 'cdek') { city = $('cdek-city').value.trim(); street = $('cdek-street').value.trim(); house = $('cdek-house').value.trim(); }
-    else if (country === 'ua') { city = $('ua-city').value.trim(); street = $('ua-street').value.trim(); house = $('ua-house').value.trim(); }
-    else if (country === 'usa') { city = $('usa-city').value.trim(); street = $('usa-street').value.trim(); house = $('usa-house').value.trim(); }
-    if (!city || !street || !house) { alert('❌ Заполните: город, улица, дом'); return; }
-    try {
-        await updateDoc(doc(db, 'artifacts/byrmalda-prod/users', user.uid), {
-            deliveryCountry: country,
-            deliveryAddress: {
-                cdek: country === 'cdek' ? { city, street, house } : (userData?.deliveryAddress?.cdek || null),
-                ua: country === 'ua' ? { city, street, house } : (userData?.deliveryAddress?.ua || null),
-                usa: country === 'usa' ? { city, street, house } : (userData?.deliveryAddress?.usa || null)
-            },
-            updatedAt: serverTimestamp()
-        });
-        userData.deliveryCountry = country;
-        if (!userData.deliveryAddress) userData.deliveryAddress = {};
-        userData.deliveryAddress[country] = { city, street, house };
-        $('delivery-success').classList.remove('hidden');
-        setTimeout(() => $('delivery-success').classList.add('hidden'), 3000);
-        $('delivery-options').classList.remove('active');
-        renderProfile();
-        updateDeliveryDisplay();
-    } catch(e) { console.error('saveDeliveryAddress:', e); alert('❌ Ошибка: '+e.message); }
-};
+window.saveDeliveryAddress = async () => { if (!user) { alert('❌ Войдите'); return; } const country = document.querySelector('input[name="delivery"]:checked')?.value; if (!country) { alert('❌ Выберите страну'); return; } let city, street, house; if (country === 'cdek') { city = $('cdek-city').value.trim(); street = $('cdek-street').value.trim(); house = $('cdek-house').value.trim(); } else if (country === 'ua') { city = $('ua-city').value.trim(); street = $('ua-street').value.trim(); house = $('ua-house').value.trim(); } else if (country === 'usa') { city = $('usa-city').value.trim(); street = $('usa-street').value.trim(); house = $('usa-house').value.trim(); } if (!city || !street || !house) { alert('❌ Заполните: город, улица, дом'); return; } try { await updateDoc(doc(db, 'artifacts/byrmalda-prod/users', user.uid), { deliveryCountry: country, deliveryAddress: { cdek: country === 'cdek' ? { city, street, house } : (userData?.deliveryAddress?.cdek || null), ua: country === 'ua' ? { city, street, house } : (userData?.deliveryAddress?.ua || null), usa: country === 'usa' ? { city, street, house } : (userData?.deliveryAddress?.usa || null) }, updatedAt: serverTimestamp() }); userData.deliveryCountry = country; if (!userData.deliveryAddress) userData.deliveryAddress = {}; userData.deliveryAddress[country] = { city, street, house }; $('delivery-success').classList.remove('hidden'); setTimeout(() => $('delivery-success').classList.add('hidden'), 3000); $('delivery-options').classList.remove('active'); renderProfile(); updateDeliveryDisplay(); } catch(e) { console.error('saveDeliveryAddress:', e); alert('❌ Ошибка: '+e.message); } };
 
 function setupListeners() { document.addEventListener('keydown', e => { if (e.key === 'Escape') document.querySelectorAll('.modal.active').forEach(m => m.classList.remove('active')); }); }
 
-Object.assign(window, {
-    navigate, openModal, closeModal, openLogin, switchReg, doLogin, regStep1, regStep2, regStep3, doLogout, confirmLogout,
-    openAvatarModal, submitAvatar, filterType, handleSearch, openProd, setGal, galNav, addToCart, updCart, delCart, checkout, confirmCheckout,
-    cancelOrder, sendMsg, toggleTheme, toggleLang, openReviewModal, setRating, submitReview, openReport, submitReport, showSizeChart,
-    admCreateProduct, admLoadProduct, admSaveProduct, admDeleteProduct, admBlockUser, admUnblockUser, admFindOrder, admSetOrderStatus,
-    admApproveReview, admRejectReview, admDeleteReview, admApproveAvatar, admRejectAvatar, admApproveSuggestion, admRejectSuggestion, admEditSuggestion,
-    admMarkReportViewed, openSuggest, submitSuggestion, toggleCollabInput, toggleEditCollabInput,
-    toggleDeliveryOptions, selectDelivery, saveDeliveryAddress, renderDeliveryAddress, changeCarousel
-});
+Object.assign(window, { navigate, openModal, closeModal, openLogin, switchReg, doLogin, regStep1, regStep2, regStep3, doLogout, confirmLogout, openAvatarModal, submitAvatar, filterType, handleSearch, openProd, setGal, galNav, addToCart, updCart, delCart, checkout, confirmCheckout, cancelOrder, sendMsg, toggleTheme, toggleLang, openReviewModal, setRating, submitReview, openReport, submitReport, showSizeChart, admCreateProduct, admLoadProduct, admSaveProduct, admDeleteProduct, admBlockUser, admUnblockUser, admFindOrder, admSetOrderStatus, admApproveReview, admRejectReview, admDeleteReview, admApproveAvatar, admRejectAvatar, admApproveSuggestion, admRejectSuggestion, admEditSuggestion, admMarkReportViewed, openSuggest, submitSuggestion, toggleCollabInput, toggleEditCollabInput, toggleDeliveryOptions, selectDelivery, saveDeliveryAddress, renderDeliveryAddress, changeCarousel });
 
 console.log('🚀 BYRMALDA loaded | ✅ Все исправлено');
 </script>
