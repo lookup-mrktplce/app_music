@@ -848,14 +848,14 @@ padding: 8px; overflow-x: auto; border-right: none; border-bottom: 1px solid var
 </div>
 </div>
 <div class="admin-section">
-<h3>🗑️ Управление товаром</h3>
+<h3>🗑️ Управление удалёнными товарами</h3>
 <div class="flex gap-8" style="margin-bottom:12px;flex-wrap:wrap">
-<input type="text" class="admin-input" id="adm-delete-id" placeholder="ID товара (или productId)" style="flex:1;min-width:200px">
+<input type="text" class="admin-input" id="adm-delete-id" placeholder="ID товара" style="flex:1;min-width:200px">
 <button class="btn btn-danger btn-sm" onclick="admDeleteProduct()">🗑️ Удалить</button>
 <button class="btn btn-success btn-sm" onclick="admRestoreProduct()">♻️ Восстановить</button>
 </div>
 <div style="font-size:11px;color:var(--text-dim)">
-💡 Введите productId (как в карточке) или документ ID. Удалённые товары попадают в архив.
+💡 Введите productId (например: ABC123XYZ) → Удалить скроет товар из каталога, Восстановить вернёт его.
 </div>
 </div>
 <div class="admin-section">
@@ -1257,8 +1257,7 @@ $('ban-message').textContent = 'Ваш аккаунт заблокирован. 
 show($('ban-timer-section'));
 startBanTimer(banUntil);
 } else {
-$('ban-message').textContent = 'Ваш аккаунт заблокирован администрацией.
-Для разблокировки обратитесь: @fueum';
+$('ban-message').textContent = 'Ваш аккаунт заблокирован администрацией.\nДля разблокировки обратитесь: @fueum';
 hide($('ban-timer-section'));
 }
 $('profile').style.pointerEvents = 'none';
@@ -1734,15 +1733,13 @@ const c = $('search-results');
 c.innerHTML = '<div class="text-center" style="padding:32px"><div class="loading"></div></div>';
 try {
 let coll = collection(db, 'artifacts/byrmalda-prod/public/data/products');
-// 🔁 АРХИВ — показываем удалённые товары
 if (q === 'archive') {
 const snap = await getDocs(query(coll, where('deleted','==',true)));
 const res = []; snap.forEach(d => res.push({...d.data(),id:d.id}));
 if (!res.length) { c.innerHTML = '<div class="text-center" style="padding:32px;color:var(--text-dim)">Архив пуст</div>'; return; }
-c.innerHTML = res.map(p => prodCard(p, true)).join('');
+c.innerHTML = res.map(p => prodCard(p,true)).join('');
 return;
 }
-// 🔁 Обычный поиск — исключаем удалённые
 const filterTypes = ['футболка','толстовка','кроссовки','аксессуар','штаны','шорты','куртка','лонгслив'];
 const isExactFilter = filterTypes.includes(q.toLowerCase());
 let snap;
@@ -1758,16 +1755,14 @@ snap.forEach(d => res.push({...d.data(),id:d.id}));
 snap.forEach(d => { const p = d.data(); if (`${p.name} ${p.type} ${p.category} ${p.desc}`.toLowerCase().includes(q)) res.push({...p,id:d.id}); });
 }
 if (!res.length) { c.innerHTML = `<div class="text-center" style="padding:32px;color:var(--text-dim)">Ничего не найдено</div>`; return; }
-c.innerHTML = res.map(p => prodCard(p, false)).join('');
+c.innerHTML = res.map(p => prodCard(p,false)).join('');
 } catch(e) { console.error(e); c.innerHTML = '<div class="text-center" style="padding:32px;color:var(--error)">Ошибка</div>'; }
 }
 function prodCard(p, isArchive = false) {
 const stock = p.stock > 0;
 const isDeleted = p.deleted === true;
 let priceDisplay = stock ? `$${p.price}` : 'Нет в наличии';
-if (isArchive) {
-priceDisplay = isDeleted ? '❌ Удалён' : (stock ? `$${p.price}` : 'Нет в наличии');
-}
+if (isDeleted) priceDisplay = '🗑️ Удалён';
 return `<div class="prod-card" onclick="openProd('${p.id}')"><div class="card-img">${p.images?.[0]?`<img src="${p.images[0]}" style="width:100%;height:100%;object-fit:cover">`:'📦'}</div><div class="card-body"><div class="card-title">${p.name}</div><div class="card-price ${stock && !isDeleted ? '' : 'card-nostock'}">${priceDisplay}</div></div></div>`;
 }
 // 📦 КАРТОЧКА ТОВАРА
@@ -1802,29 +1797,28 @@ hide($('p-creator-discount'));
 }
 $('p-price-usd').textContent = `$${displayPrice.toFixed(2)}`; $('p-price-conv').textContent = `≈ ${Math.round(displayPrice*RATES.USD_TO_RUB).toLocaleString('ru-RU')} ₽ / ≈ ${Math.round(displayPrice*RATES.USD_TO_UAH).toLocaleString('ru-RU')} ₴`;
 const stockEl=$('p-stock'), btn=$('p-action'), opts=$('p-options'), delNotice=$('p-deleted-notice');
-// 🔁 Если товар удалён — показываем сообщение и блокируем покупку
-if (curProd.deleted) {
-delNotice.classList.remove('hidden');
-delNotice.textContent = '❌ Товар был удалён';
-btn.textContent = 'Недоступен';
-btn.disabled = true;
-hide(opts);
+if (curProd.deleted) { 
+delNotice.classList.remove('hidden'); 
+delNotice.textContent = 'Товар удалён';
+btn.textContent = 'Товар удалён'; 
+btn.disabled = true; 
+hide(opts); 
 }
-else if (curProd.stock>0) {
-delNotice.classList.add('hidden');
-stockEl.innerHTML='<span class="in-stock">✓ В наличии</span>';
-btn.textContent='Купить';
-btn.disabled=false;
-btn.onclick=()=>addToCart();
-show(opts);
+else if (curProd.stock>0) { 
+delNotice.classList.add('hidden'); 
+stockEl.innerHTML='<span class="in-stock">✓ В наличии</span>'; 
+btn.textContent='Купить'; 
+btn.disabled=false; 
+btn.onclick=()=>addToCart(); 
+show(opts); 
 }
-else {
-delNotice.classList.add('hidden');
-stockEl.innerHTML='<span class="out-stock">✗ Предзаказ</span>';
-btn.textContent='Предзаказ';
-btn.disabled=false;
-btn.onclick=()=>{alert('Предзаказ добавлен в корзину'); addToCart();};
-hide(opts);
+else { 
+delNotice.classList.add('hidden'); 
+stockEl.innerHTML='<span class="out-stock">✗ Предзаказ</span>'; 
+btn.textContent='Предзаказ'; 
+btn.disabled=false; 
+btn.onclick=()=>{alert('Предзаказ добавлен в корзину'); addToCart();}; 
+hide(opts); 
 }
 if (curProd.createdByUser) {
 $('p-creator-warning').textContent = '🟡 Этот товар создавал пользователь, просьба относиться с осторожностью к покупке товара';
@@ -2016,59 +2010,58 @@ const files=$('edit-photos').files;
 if(files.length>0){const cur=JSON.parse($('adm-edit-form').dataset.curImgs||'[]');for(let f of files){const fd=new FormData();fd.append('image',f);fd.append('key',IMGBB_KEY);const res=await fetch('https://api.imgbb.com/1/upload',{method:'POST',body:fd});const d=await res.json();if(d.success)cur.push(d.data.url);} u.images=cur;}
 await updateDoc(doc(db,'artifacts/byrmalda-prod/public/data/products',docId),u); alert('✅ Сохранено'); hide($('adm-edit-form'));
 };
-// 🔁 ИСПРАВЛЕННОЕ УДАЛЕНИЕ ТОВАРА
+// 🔁 ИСПРАВЛЕННЫЕ ФУНКЦИИ УДАЛЕНИЯ/ВОССТАНОВЛЕНИЯ ТОВАРА
 window.admDeleteProduct = async () => {
-const inputId = $('adm-delete-id').value.trim();
-if (!inputId) { alert('Введите ID товара'); return; }
-if (!confirm('Точно удалить этот товар? Он переместится в архив.')) return;
+const productId = $('adm-delete-id').value.trim();
+if (!productId) { alert('Введите ID товара'); return; }
+if (!confirm('Точно удалить товар? Он переместится в архив.')) return;
 try {
-// 🔍 Сначала пробуем найти по документу
-let snap = await getDoc(doc(db, 'artifacts/byrmalda-prod/public/data/products', inputId));
-// 🔍 Если не нашли — ищем по полю productId
-if (!snap.exists()) {
-const q = query(collection(db, 'artifacts/byrmalda-prod/public/data/products'), where('productId', '==', inputId), limit(1));
-const r = await getDocs(q);
-if (!r.empty) snap = r.docs[0];
+// 🔍 Ищем документ по полю productId
+const q = query(collection(db, 'artifacts/byrmalda-prod/public/data/products'), where('productId', '==', productId), limit(1));
+const snap = await getDocs(q);
+if (snap.empty) {
+// Пробуем найти по ID документа (на случай если ввели doc ID)
+const directSnap = await getDoc(doc(db, 'artifacts/byrmalda-prod/public/data/products', productId));
+if (!directSnap.exists()) {
+alert('❌ Товар не найден');
+return;
 }
-if (!snap.exists()) { alert('❌ Товар не найден'); return; }
-// ✅ Мягкое удаление
-await updateDoc(doc(db, 'artifacts/byrmalda-prod/public/data/products', snap.id), {
-deleted: true,
-published: false,
-deletedAt: serverTimestamp()
-});
-alert('✅ Удален (перемещён в архив)');
+await updateDoc(directSnap.ref, { deleted: true, published: false, updatedAt: serverTimestamp() });
+} else {
+const docRef = snap.docs[0].ref;
+await updateDoc(docRef, { deleted: true, published: false, updatedAt: serverTimestamp() });
+}
+alert('✅ Товар удалён и перемещён в архив');
 $('adm-delete-id').value = '';
-} catch(e) {
-console.error(e);
+} catch (e) {
+console.error('admDeleteProduct:', e);
 alert('❌ Ошибка: ' + e.message);
 }
 };
-// 🔁 НОВАЯ ФУНКЦИЯ: ВОССТАНОВЛЕНИЕ ТОВАРА
 window.admRestoreProduct = async () => {
-const inputId = $('adm-delete-id').value.trim();
-if (!inputId) { alert('Введите ID товара'); return; }
+const productId = $('adm-delete-id').value.trim();
+if (!productId) { alert('Введите ID товара'); return; }
+if (!confirm('Восстановить товар? Он вернётся в каталог.')) return;
 try {
-// 🔍 Ищем товар (по документу или productId)
-let snap = await getDoc(doc(db, 'artifacts/byrmalda-prod/public/data/products', inputId));
-if (!snap.exists()) {
-const q = query(collection(db, 'artifacts/byrmalda-prod/public/data/products'), where('productId', '==', inputId), limit(1));
-const r = await getDocs(q);
-if (!r.empty) snap = r.docs[0];
+// 🔍 Ищем документ по полю productId
+const q = query(collection(db, 'artifacts/byrmalda-prod/public/data/products'), where('productId', '==', productId), limit(1));
+const snap = await getDocs(q);
+if (snap.empty) {
+// Пробуем найти по ID документа
+const directSnap = await getDoc(doc(db, 'artifacts/byrmalda-prod/public/data/products', productId));
+if (!directSnap.exists()) {
+alert('❌ Товар не найден');
+return;
 }
-if (!snap.exists()) { alert('❌ Товар не найден'); return; }
-const p = snap.data();
-if (!p.deleted) { alert('ℹ️ Этот товар уже опубликован'); return; }
-// ✅ Восстанавливаем
-await updateDoc(doc(db, 'artifacts/byrmalda-prod/public/data/products', snap.id), {
-deleted: false,
-published: true,
-restoredAt: serverTimestamp()
-});
-alert('✅ Товар восстановлен и опубликован!');
+await updateDoc(directSnap.ref, { deleted: false, published: true, updatedAt: serverTimestamp() });
+} else {
+const docRef = snap.docs[0].ref;
+await updateDoc(docRef, { deleted: false, published: true, updatedAt: serverTimestamp() });
+}
+alert('✅ Товар восстановлен и доступен в каталоге');
 $('adm-delete-id').value = '';
-} catch(e) {
-console.error(e);
+} catch (e) {
+console.error('admRestoreProduct:', e);
 alert('❌ Ошибка: ' + e.message);
 }
 };
