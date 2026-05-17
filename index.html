@@ -187,7 +187,6 @@ transition: border-color 0.2s; flex-shrink: 0;
 width: 100%; height: 100%; object-fit: cover; background: var(--bg-soft);
 display: flex; align-items: center; justify-content: center; font-size: 32px; color: var(--text-dim);
 }
-/* 🔁 Кнопка редактирования аватарки */
 .avatar-edit-btn {
 position: absolute; bottom: -4px; right: -4px;
 width: 28px; height: 28px; background: var(--accent);
@@ -202,12 +201,11 @@ font-size: 22px; margin-bottom: 4px; display: flex; align-items: center; gap: 8p
 .verified { color: var(--success); font-size: 16px; }
 .profile-meta { font-size: 12px; color: var(--text-dim); margin-top: 4px; }
 .profile-meta div { margin: 2px 0; }
-/* 🔁 СТИЛЬ ДЛЯ НИКА КРЕАТОРА */
 .creator-name { font-weight: 600; }
-.creator-lvl1 { color: #3b82f6; } /* синий */
-.creator-lvl2 { color: #f59e0b; } /* желтый */
-.creator-lvl3 { color: #22c55e; } /* зеленый */
-.creator-lvl4 { color: #ef4444; } /* красный */
+.creator-lvl1 { color: #3b82f6; }
+.creator-lvl2 { color: #f59e0b; }
+.creator-lvl3 { color: #22c55e; }
+.creator-lvl4 { color: #ef4444; }
 .creator-lvl5 { 
   background: linear-gradient(45deg, #ff0080, #ff8c00, #40e0d0, #ff0080);
   background-size: 300% 300%;
@@ -331,7 +329,6 @@ padding: 10px; background: var(--bg); border: 1px solid var(--border);
 border-radius: 4px; font-weight: 500; min-height: 40px; display: flex; align-items: center;
 }
 .desc { margin: 24px 0; line-height: 1.7; font-size: 14px; color: var(--text-dim); }
-/* 🔁 ПРЕДУПРЕЖДЕНИЕ О ТОВАРЕ ОТ ПОЛЬЗОВАТЕЛЯ */
 .user-product-warning {
 background: #fef3c7; color: #92400e; padding: 12px; border-radius: var(--radius);
 margin: 16px 0; font-size: 13px; border-left: 4px solid #f59e0b;
@@ -340,7 +337,6 @@ margin: 16px 0; font-size: 13px; border-left: 4px solid #f59e0b;
 background: #dbeafe; color: #1e40af; padding: 8px; border-radius: 4px;
 margin-top: 8px; font-size: 12px; font-style: italic;
 }
-/* 🔁 СКИДКА ДЛЯ КРЕАТОРА 5 УРОВНЯ */
 .creator-discount {
 background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 color: white; padding: 8px 16px; border-radius: 20px;
@@ -494,8 +490,6 @@ cursor: pointer; font-size: 18px; opacity: 0.6; transition: opacity 0.2s;
 .gap-8 { gap: 8px; }
 .gap-12 { gap: 12px; }
 .w-full { width: 100%; }
-
-/* 🔁 СТИЛИ ДЛЯ БАННЕРА ТЕХНИЧЕСКОГО ПЕРЕРЫВА */
 .maintenance-overlay {
 position: fixed; inset: 0; background: rgba(0,0,0,0.95);
 z-index: 9999; display: flex; align-items: center; justify-content: center;
@@ -517,8 +511,6 @@ font-family: 'Courier New', monospace; margin: 24px 0;
 padding: 16px; background: var(--bg-soft); border-radius: var(--radius);
 }
 .maintenance-timer-label { font-size: 13px; color: var(--text-dim); margin-bottom: 8px; text-transform: uppercase; }
-
-/* 🔁 СТИЛИ ДЛЯ БАННЕРА БЛОКИРОВКИ */
 .ban-overlay {
 position: fixed; inset: 0; background: rgba(0,0,0,0.95);
 z-index: 9998; display: flex; align-items: center; justify-content: center;
@@ -634,7 +626,6 @@ padding: 8px; overflow-x: auto; border-right: none; border-bottom: 1px solid var
 <div class="profile-header">
 <div class="avatar-wrap" id="avatar-wrap">
 <div class="avatar" id="avatar-display">👤</div>
-<!-- 🔁 Кнопка редактирования аватарки -->
 <div class="avatar-edit-btn" onclick="openAvatarModal()" title="Изменить аватарку">✏️</div>
 </div>
 <div class="profile-info">
@@ -643,7 +634,6 @@ padding: 8px; overflow-x: auto; border-right: none; border-bottom: 1px solid var
 <div>ID: <span id="profile-id">-</span></div>
 <div>Дата: <span id="profile-date">-</span></div>
 <div>Почта: <span id="profile-email">-</span></div>
-<!-- 🔁 ЛИМИТ ПРЕДЛОЖЕНИЙ В ПРОФИЛЕ -->
 <div id="creator-limit-display" class="hidden" style="margin-top:8px;font-size:12px;color:var(--text-dim)"></div>
 </div>
 </div>
@@ -684,14 +674,12 @@ padding: 8px; overflow-x: auto; border-right: none; border-bottom: 1px solid var
 <div class="p-info">
 <div class="product-id" id="p-id">ID: -</div>
 <h1 id="p-name">Название</h1>
-<!-- 🔁 ПРЕДУПРЕЖДЕНИЕ О ТОВАРЕ ОТ ПОЛЬЗОВАТЕЛЯ -->
 <div id="p-user-warning" class="user-product-warning hidden"></div>
 <div class="specs" id="p-specs"></div>
 <div class="desc" id="p-desc"></div>
 <div class="price-box">
 <div class="price-usd" id="p-price-usd">$0.00</div>
 <div class="price-conv" id="p-price-conv">≈ 0 ₽ / ≈ 0 ₴</div>
-<!-- 🔁 СКИДКА ДЛЯ КРЕАТОРА 5 УРОВНЯ -->
 <div id="p-creator-discount" class="creator-discount hidden"></div>
 <div class="stock" id="p-stock"></div>
 <div id="p-deleted-notice" class="deleted-notice hidden">Товар удален</div>
@@ -749,9 +737,7 @@ padding: 8px; overflow-x: auto; border-right: none; border-bottom: 1px solid var
 <button class="setting-btn" onclick="openReviewModal()"><span>⭐ Оставить отзыв</span><span>→</span></button>
 <button class="setting-btn" onclick="showSizeChart('clothing')"><span>📏 Размерная сетка (одежда)</span><span>→</span></button>
 <button class="setting-btn" onclick="showSizeChart('footwear')"><span>👟 Размерная сетка (обувь)</span><span>→</span></button>
-<!-- 🔁 Кнопка смены аватарки через Настройки -->
 <button class="setting-btn" onclick="openAvatarSettingsModal()"><span>🖼️ Сменить аватарку</span><span>→</span></button>
-<!-- 🔁 Кнопка "Креаторство" -->
 <button class="setting-btn" onclick="openCreatorInfoModal()"><span>🎨 Креаторство</span><span>→</span></button>
 <button class="setting-btn" onclick="confirmLogout()" style="border-color:var(--error);color:var(--error)">
 <span>🚪 Выйти из аккаунта</span><span>→</span>
@@ -858,7 +844,6 @@ padding: 8px; overflow-x: auto; border-right: none; border-bottom: 1px solid var
 <div class="admin-section"><h3>🖼️ Аватарки на модерации</h3><div id="adm-avatars-mod"></div></div>
 <div class="admin-section"><h3>✨ Предложения</h3><div id="adm-suggestions"></div></div>
 <div class="admin-section"><h3>🚨 Жалобы</h3><div id="adm-reports"></div></div>
-<!-- 🔁 НОВАЯ СЕКЦИЯ: ТЕХНИЧЕСКИЙ ПЕРЕРЫВ -->
 <div class="admin-section">
 <h3>⚙️ Технический перерыв</h3>
 <div class="flex gap-8" style="flex-wrap:wrap;margin-bottom:12px">
@@ -890,7 +875,6 @@ padding: 8px; overflow-x: auto; border-right: none; border-bottom: 1px solid var
 </main>
 </div>
 
-<!-- 🔁 БАННЕР ТЕХНИЧЕСКОГО ПЕРЕРЫВА -->
 <div id="maintenance-overlay" class="maintenance-overlay hidden">
 <div class="maintenance-content">
 <div class="maintenance-icon">🔧</div>
@@ -900,7 +884,6 @@ padding: 8px; overflow-x: auto; border-right: none; border-bottom: 1px solid var
 </div>
 </div>
 
-<!-- 🔁 БАННЕР БЛОКИРОВКИ -->
 <div id="ban-overlay" class="ban-overlay hidden">
 <div class="ban-content">
 <div class="ban-icon">🚫</div>
@@ -917,7 +900,6 @@ padding: 8px; overflow-x: auto; border-right: none; border-bottom: 1px solid var
 </div>
 </div>
 
-<!-- 🔁 МОДАЛЬНОЕ ОКНО: СИСТЕМА КРЕАТОРСТВА -->
 <div class="modal" id="creator-info-modal">
 <div class="modal-content wide">
 <span class="modal-close" onclick="closeModal('creator-info-modal')">&times;</span>
@@ -925,7 +907,6 @@ padding: 8px; overflow-x: auto; border-right: none; border-bottom: 1px solid var
 <div style="line-height:1.8;font-size:14px;color:var(--text-dim)">
 <p style="margin-bottom:16px"><strong>Как стать креатором:</strong><br>
 Предложите свой товар через кнопку "✨ Предложить" → админ рассмотрит заявку → при одобрении вы получите уровень креатора.</p>
-
 <p style="margin-bottom:16px"><strong>Уровни креаторов:</strong></p>
 <ul style="margin-left:20px;margin-bottom:16px">
 <li><span style="color:#3b82f6;font-weight:600">Уровень 1 (синий)</span>: 1 одобренный товар (без редактирования админом)</li>
@@ -934,7 +915,6 @@ padding: 8px; overflow-x: auto; border-right: none; border-bottom: 1px solid var
 <li><span style="color:#ef4444;font-weight:600">Уровень 4 (красный)</span>: 25 одобренных товаров (счётчик сбрасывается)</li>
 <li><span style="background:linear-gradient(45deg,#ff0080,#ff8c00,#40e0d0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:600">Уровень 5 (переливающийся)</span>: 50 одобренных товаров + <strong>скидки:</strong> обувь -10%, одежда -15%, всё -25%</li>
 </ul>
-
 <p style="margin-bottom:16px"><strong>Лимиты предложений товаров:</strong></p>
 <ul style="margin-left:20px;margin-bottom:16px">
 <li>Обычные пользователи и креаторы 1-3 уровня: <strong>1 попытка на 3 дня</strong></li>
@@ -942,7 +922,6 @@ padding: 8px; overflow-x: auto; border-right: none; border-bottom: 1px solid var
 <li>Обновление лимитов: ежедневно в <strong>00:00 по Москве</strong></li>
 <li>Если заявка отклонена — попытка всё равно считается потраченной</li>
 </ul>
-
 <p style="margin-bottom:16px"><strong>Важно:</strong><br>
 • Если админ редактировал ваш товар перед одобрением — галочка креатора не выдаётся за этот товар.<br>
 • После перехода на новый уровень счётчик одобренных товаров обнуляется для честного прогресса.<br>
@@ -952,7 +931,6 @@ padding: 8px; overflow-x: auto; border-right: none; border-bottom: 1px solid var
 </div>
 </div>
 
-<!-- MODALS -->
 <div class="modal" id="login-modal">
 <div class="modal-content">
 <span class="modal-close" onclick="closeModal('login-modal')">&times;</span>
@@ -980,6 +958,13 @@ padding: 8px; overflow-x: auto; border-right: none; border-bottom: 1px solid var
 <small>Проверьте папку "Спам"</small>
 </div>
 <button class="btn" onclick="regStep2()">Я подтвердил(а) почту</button>
+</div>
+<div id="reg-step-3" class="hidden">
+<div class="form-group"><label class="form-label">Имя *</label><input type="text" class="form-input" id="reg-name"></div>
+<div class="form-group"><label class="form-label">Пароль *</label><input type="password" class="form-input" id="reg-pass"></div>
+<div class="form-group"><label class="form-label">Повтор пароля *</label><input type="password" class="form-input" id="reg-pass2"></div>
+<button class="btn" onclick="regStep3()">Завершить</button>
+<div class="error" id="reg-err"></div>
 </div>
 <div id="reg-ok" class="hidden text-center">
 <div style="font-size:42px;margin:16px 0">✅</div>
@@ -1009,7 +994,6 @@ padding: 8px; overflow-x: auto; border-right: none; border-bottom: 1px solid var
 <button class="btn" onclick="submitAvatar()">Отправить</button>
 </div>
 </div>
-<!-- 🔁 МОДАЛЬНОЕ ОКНО ДЛЯ СМЕНЫ АВАТАРКИ ЧЕРЕЗ НАСТРОЙКИ -->
 <div class="modal" id="avatar-settings-modal">
 <div class="modal-content">
 <span class="modal-close" onclick="closeModal('avatar-settings-modal')">&times;</span>
@@ -1019,7 +1003,6 @@ padding: 8px; overflow-x: auto; border-right: none; border-bottom: 1px solid var
 <button class="btn" onclick="submitAvatarFromSettings()">Сохранить и отправить</button>
 </div>
 </div>
-<!-- 🔁 МОДАЛЬНОЕ ОКНО ПРЕДЛОЖЕНИЯ ТОВАРА (ПОЛНАЯ ФОРМА) -->
 <div class="modal" id="suggest-modal">
 <div class="modal-content wide">
 <span class="modal-close" onclick="closeModal('suggest-modal')">&times;</span>
@@ -1125,12 +1108,15 @@ padding: 8px; overflow-x: auto; border-right: none; border-bottom: 1px solid var
 </div>
 </div>
 </div>
+
 <script type="module">
+// 🔐 Firebase imports
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification, onAuthStateChanged, signOut, updateProfile, applyActionCode } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-import { getFirestore, collection, doc, setDoc, getDoc, getDocs, query, where, orderBy, limit, updateDoc, deleteDoc, addDoc, serverTimestamp, onSnapshot } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+import { getFirestore, collection, doc, setDoc, getDoc, getDocs, query, where, orderBy, limit, updateDoc, deleteDoc, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-storage.js";
-import { initializeAppCheck, ReCaptchaV3Provider, getToken } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app-check.js";
+// 🔐 App Check (закомментируйте для отладки если есть ошибки 400)
+// import { initializeAppCheck, ReCaptchaV3Provider, getToken } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app-check.js";
 
 const firebaseConfig = {
 apiKey: "AIzaSyD0YkXZgk8gh01Y7XH3ZRVU5lCjGJ_IRCw",
@@ -1141,14 +1127,28 @@ messagingSenderId: "969880048160",
 appId: "1:969880048160:web:9001a95f7ea28e98912245",
 measurementId: "G-HCQEFD2SJF"
 };
-const app = initializeApp(firebaseConfig);
-const appCheck = initializeAppCheck(app, { provider: new ReCaptchaV3Provider("6LchEOwsAAAAAPqAkyDyf2wFoucWytU6ThkQKoGB"), isTokenAutoRefreshEnabled: true });
-getToken(appCheck, true).then(() => console.log('🔐 App Check активирован')).catch(err => console.error('🔐 App Check ошибка:', err.message));
 
-const auth = getAuth(app), db = getFirestore(app), storage = getStorage(app);
+const app = initializeApp(firebaseConfig);
+
+// 🔐 App Check - ЗАКОММЕНТИРОВАНО ДЛЯ ОТЛАДКИ
+// Раскомментируйте после настройки reCAPTCHA в Firebase Console
+/*
+const appCheck = initializeAppCheck(app, {
+  provider: new ReCaptchaV3Provider("6LchEOwsAAAAAPqAkyDyf2wFoucWytU6ThkQKoGB"),
+  isTokenAutoRefreshEnabled: true
+});
+getToken(appCheck, true)
+  .then(() => console.log('🔐 App Check: активирован'))
+  .catch(err => console.error('🔐 App Check ошибка:', err.message));
+*/
+
+const auth = getAuth(app);
+const db = getFirestore(app);
+const storage = getStorage(app);
 const IMGBB_KEY = "eeef3479094c5cf6bf42607927565065";
 const ADMIN_EMAIL = "sobakastalina123@gmail.com";
 const RATES = { USD_TO_RUB: 90, USD_TO_UAH: 37 };
+
 let user = null, userData = null, curProd = null, galIdx = 0, chatUnread = 0, lang = 'ru', theme = localStorage.getItem('theme') || 'light', revStars = 0, carouselIdx = 0, carouselTimer = null, banTimerInterval = null, maintenanceTimerInterval = null;
 
 const heroImages = [
@@ -1198,12 +1198,10 @@ updateTimer();
 banTimerInterval = setInterval(updateTimer, 1000);
 }
 
-// 🔁 ПРОВЕРКА БАНА ПРИ ВХОДЕ
 async function checkAndShowBan() {
 if (!user || !userData) return;
 const isBanned = userData.isBanned || false;
 const banUntil = userData.banUntil || null;
-const banDuration = userData.banDuration || null;
 const banType = userData.banType || 'permanent';
 if (isBanned) {
 show($('ban-overlay'));
@@ -1391,7 +1389,7 @@ limitDiv.textContent = formatLimitDisplay(limit.used, limit.max, limit.nextReset
 show(limitDiv);
 }
 
-// 🔁 ФУНКЦИИ ДЛЯ АВАТАРКИ ЧЕРЕЗ НАСТРОЙКИ
+// 🔁 ФУНКЦИИ ДЛЯ АВАТАРКИ
 window.openAvatarSettingsModal = () => {
 if (!user) { openModal('login-modal'); return; }
 openModal('avatar-settings-modal');
@@ -1417,7 +1415,6 @@ $('av-settings-file').value = '';
 loadPendingAvatars();
 } catch(e) { console.error(e); alert('❌ Ошибка: '+e.message); }
 };
-
 window.openAvatarModal = () => { if (!user) openModal('login-modal'); else openModal('avatar-modal'); };
 window.submitAvatar = async () => {
 const file = $('av-file').files[0];
@@ -1437,7 +1434,6 @@ loadPendingAvatars();
 } catch(e) { console.error(e); alert('❌ Ошибка: '+e.message); }
 };
 
-// 🔁 ОКНО ИНФОРМАЦИИ О КРЕАТОРСТВЕ
 window.openCreatorInfoModal = () => {
 if (!user) { openModal('login-modal'); return; }
 openModal('creator-info-modal');
@@ -1549,14 +1545,23 @@ const stock=p.stock>0;
 return `<div class="prod-card" onclick="openProd('${p.id}')"><div class="card-img">${p.images?.[0]?`<img src="${p.images[0]}" style="width:100%;height:100%;object-fit:cover">`:'📦'}</div><div class="card-body"><div class="card-title">${p.name}</div><div class="card-price ${stock?'':'card-nostock'}">${stock?`$${p.price}`:'Нет в наличии'}</div></div></div>`;
 }
 
-// 📦 КАРТОЧКА ТОВАРА С УЧЁТОМ КРЕАТОРСТВА
+// 📦 КАРТОЧКА ТОВАРА
 window.openProd = async id => {
 try {
 const snap = await getDoc(doc(db, 'artifacts/byrmalda-prod/public/data/products', id));
 if (!snap.exists()) return alert('Товар не найден');
 curProd = { ...snap.data(), id };
 $('p-id').textContent = `ID: ${curProd.productId || id}`; $('p-name').textContent = curProd.name;
-// 🔁 ПРЕДУПРЕЖДЕНИЕ О ТОВАРЕ ОТ ПОЛЬЗОВАТЕЛЯ
+const colors=(curProd.color||'Белый').split(',').map(c=>c.trim()).filter(c=>c);
+const sizes=(curProd.sizes||'S,M,L,XL').split(',').map(s=>s.trim()).filter(s=>s);
+const colorGroup=$('opt-color-group');
+if(colors.length===1) colorGroup.innerHTML=`<label class="form-label">Цвет</label><div class="opt-static">${colors[0]}</div>`;
+else { colorGroup.innerHTML=`<label class="form-label">Цвет</label><select class="opt-select" id="p-color"></select>`; $('p-color').innerHTML=colors.map(c=>`<option>${c}</option>`).join(''); }
+const sizeGroup=$('opt-size-group');
+if(sizes.length===1) sizeGroup.innerHTML=`<label class="form-label">Размер</label><div class="opt-static">${sizes[0]}</div>`;
+else { sizeGroup.innerHTML=`<label class="form-label">Размер</label><select class="opt-select" id="p-size"></select>`; $('p-size').innerHTML=sizes.map(s=>`<option>${s}</option>`).join(''); }
+$('p-specs').innerHTML=`<div class="spec-row"><span class="spec-l">Для кого</span><span class="spec-v">${curProd.audience||'Унисекс'}</span></div><div class="spec-row"><span class="spec-l">Тип</span><span class="spec-v">${curProd.type}</span></div><div class="spec-row"><span class="spec-l">Материал</span><span class="spec-v">${curProd.material||'-'}</span></div><div class="spec-row"><span class="spec-l">Коллаборация</span><span class="spec-v">${curProd.collab||'Нет'}</span></div><div class="spec-row"><span class="spec-l">Масса</span><span class="spec-v">${curProd.weight||'-'} г</span></div><div class="spec-row"><span class="spec-l">Год релиза</span><span class="spec-v">${curProd.year||'-'}</span></div><div class="spec-row"><span class="spec-l">В наличии</span><span class="spec-v">${curProd.stock} шт</span></div>`;
+$('p-desc').textContent = curProd.desc || '';
 const warningDiv = $('p-user-warning');
 if (curProd.fromUser) {
 warningDiv.classList.remove('hidden');
@@ -1567,7 +1572,6 @@ warningDiv.innerHTML += '<br><span class="admin-edited-notice">✏️ Карто
 } else {
 warningDiv.classList.add('hidden');
 }
-// 🔁 СКИДКА ДЛЯ КРЕАТОРА 5 УРОВНЯ
 const discountDiv = $('p-creator-discount');
 if (userData?.creatorLevel === 5 && curProd.category) {
 let discount = 0, discountText = '';
@@ -1583,16 +1587,6 @@ discountDiv.classList.remove('hidden');
 $('p-price-usd').textContent = `$${curProd.price}`;
 discountDiv.classList.add('hidden');
 }
-const colors=(curProd.color||'Белый').split(',').map(c=>c.trim()).filter(c=>c);
-const sizes=(curProd.sizes||'S,M,L,XL').split(',').map(s=>s.trim()).filter(s=>s);
-const colorGroup=$('opt-color-group');
-if(colors.length===1) colorGroup.innerHTML=`<label class="form-label">Цвет</label><div class="opt-static">${colors[0]}</div>`;
-else { colorGroup.innerHTML=`<label class="form-label">Цвет</label><select class="opt-select" id="p-color"></select>`; $('p-color').innerHTML=colors.map(c=>`<option>${c}</option>`).join(''); }
-const sizeGroup=$('opt-size-group');
-if(sizes.length===1) sizeGroup.innerHTML=`<label class="form-label">Размер</label><div class="opt-static">${sizes[0]}</div>`;
-else { sizeGroup.innerHTML=`<label class="form-label">Размер</label><select class="opt-select" id="p-size"></select>`; $('p-size').innerHTML=sizes.map(s=>`<option>${s}</option>`).join(''); }
-$('p-specs').innerHTML=`<div class="spec-row"><span class="spec-l">Для кого</span><span class="spec-v">${curProd.audience||'Унисекс'}</span></div><div class="spec-row"><span class="spec-l">Тип</span><span class="spec-v">${curProd.type}</span></div><div class="spec-row"><span class="spec-l">Материал</span><span class="spec-v">${curProd.material||'-'}</span></div><div class="spec-row"><span class="spec-l">Коллаборация</span><span class="spec-v">${curProd.collab||'Нет'}</span></div><div class="spec-row"><span class="spec-l">Масса</span><span class="spec-v">${curProd.weight||'-'} г</span></div><div class="spec-row"><span class="spec-l">Год релиза</span><span class="spec-v">${curProd.year||'-'}</span></div><div class="spec-row"><span class="spec-l">В наличии</span><span class="spec-v">${curProd.stock} шт</span></div>`;
-$('p-desc').textContent = curProd.desc || '';
 $('p-price-conv').textContent = `≈ ${Math.round(curProd.price*RATES.USD_TO_RUB).toLocaleString('ru-RU')} ₽ / ≈ ${Math.round(curProd.price*RATES.USD_TO_UAH).toLocaleString('ru-RU')} ₴`;
 const stockEl=$('p-stock'), btn=$('p-action'), opts=$('p-options'), delNotice=$('p-deleted-notice');
 if (curProd.deleted) { delNotice.classList.remove('hidden'); btn.textContent='Удален'; btn.disabled=true; hide(opts); }
@@ -1695,7 +1689,7 @@ await addDoc(collection(db,'artifacts/byrmalda-prod/public/data/support'),msg); 
 };
 function updateSupportBadge() { $('support-badge').textContent=chatUnread; $('nav-support').classList.toggle('has-badge',chatUnread>0); }
 
-// ⚙️ НАСТРОЙКИ & ОТЗЫВЫ
+// ⚙️ НАСТРОЙКИ
 window.toggleTheme=()=>{theme=theme==='light'?'dark':'light';localStorage.setItem('theme',theme);applyTheme();};
 function applyTheme(){document.documentElement.setAttribute('data-theme',theme);$('theme-ind').textContent=theme==='dark'?'🌙':'️';}
 window.toggleLang=()=>{lang=lang==='ru'?'en':'ru';$('cur-lang').textContent=lang.toUpperCase();};
@@ -1841,7 +1835,6 @@ c.innerHTML=snap.docs.map(d=>{const u=d.data();return `<div class="mod-item flex
 window.admApproveAvatar=async(uid,url)=>{await updateDoc(doc(db,'artifacts/byrmalda-prod/users',uid),{avatar:url,avatarPending:null,avatarStatus:'approved'});loadPendingAvatars();};
 window.admRejectAvatar=async uid=>{await updateDoc(doc(db,'artifacts/byrmalda-prod/users',uid),{avatarPending:null,avatarStatus:'rejected'});loadPendingAvatars();};
 
-// 🔁 ПРЕДЛОЖЕНИЯ ТОВАРОВ - ПОЛНАЯ ФОРМА В АДМИНКЕ
 async function loadPendingSuggestions(){
 const c=$('adm-suggestions');c.innerHTML='<div class="text-center"><div class="loading"></div></div>';
 if(user?.email!==ADMIN_EMAIL){c.innerHTML='Доступ только для администратора';return;}
@@ -1864,12 +1857,10 @@ ${s.img?`<img src="${s.img}" style="width:100%;max-height:200px;object-fit:cover
 </div>`;
 }).join('')||'Нет предложений';
 }
-// 🔁 РЕДАКТИРОВАНИЕ ПРЕДЛОЖЕНИЯ
 window.admEditSuggestion = async (id) => {
 const snap = await getDoc(doc(db, 'artifacts/byrmalda-prod/public/data/suggestions', id));
 if (!snap.exists()) return;
 const s = snap.data();
-// Заполняем форму редактирования товара данными предложения
 $('adm-edit-id').value = id;
 $('edit-name').value = s.name || '';
 $('edit-cat').value = s.category || 'clothing';
@@ -1898,13 +1889,11 @@ $('adm-edit-form').dataset.suggestionId = id;
 show($('adm-edit-form'));
 alert('📝 Заполните форму как для обычного товара. После сохранения нажмите "Одобрить" в списке предложений.');
 };
-// 🔁 ОДОБРЕНИЕ ПРЕДЛОЖЕНИЯ
 window.admApproveSuggestion = async (id) => {
 const snap = await getDoc(doc(db, 'artifacts/byrmalda-prod/public/data/suggestions', id));
 if (!snap.exists()) return;
 const s = snap.data();
 const wasEdited = $('adm-edit-form').dataset.isSuggestion === 'true' && $('adm-edit-form').dataset.suggestionId === id;
-// Создаём товар
 const prod = {
 productId: genId(),
 name: s.name, category: s.category, type: s.type, price: s.price,
@@ -1918,7 +1907,6 @@ adminEdited: wasEdited,
 createdAt: serverTimestamp()
 };
 await addDoc(collection(db, 'artifacts/byrmalda-prod/public/data/products'), prod);
-// Обновляем статистику пользователя
 const userSnap = await getDoc(doc(db, 'artifacts/byrmalda-prod/users', s.uid));
 if (userSnap.exists()) {
 const u = userSnap.data();
@@ -1928,13 +1916,11 @@ const updateData = {
 creatorApprovedCount: newCount,
 creatorLevel: newLevel
 };
-// 🔁 СБРОС СЧЁТЧИКА ПРИ ПЕРЕХОДЕ НА НОВЫЙ УРОВЕНЬ
 const oldLevel = getCreatorLevel(u.creatorApprovedCount || 0);
 if (newLevel > oldLevel) {
-updateData.creatorApprovedCount = 0; // сброс для честного прогресса
+updateData.creatorApprovedCount = 0;
 }
 await updateDoc(doc(db, 'artifacts/byrmalda-prod/users', s.uid), updateData);
-// 🔁 УВЕДОМЛЕНИЕ ПОЛЬЗОВАТЕЛЯ О НОВОМ УРОВНЕ
 if (newLevel > oldLevel && !wasEdited) {
 const rewards = {
 1: 'синий ник и статус креатора',
@@ -1946,7 +1932,6 @@ const rewards = {
 alert(`🎉 Пользователь ${s.userName} получил уровень ${newLevel} креатора! (${rewards[newLevel]})`);
 }
 }
-// Удаляем заявку
 await updateDoc(doc(db, 'artifacts/byrmalda-prod/public/data/suggestions', id), { status: 'approved' });
 loadPendingSuggestions();
 alert('✅ Товар опубликован!');
@@ -1957,7 +1942,6 @@ loadPendingSuggestions();
 };
 window.openSuggest = async () => {
 if (!user) { openModal('login-modal'); return; }
-// 🔁 ПРОВЕРКА ЛИМИТА
 const limit = await checkCreatorLimit(user.uid);
 if (!limit.allowed) {
 alert(`❌ Лимит исчерпан: ${limit.used}/${limit.max}
@@ -1968,7 +1952,6 @@ openModal('suggest-modal');
 };
 window.submitSuggestion = async () => {
 if (!user) { openModal('login-modal'); return; }
-// 🔁 ПРОВЕРКА ЛИМИТА ПЕРЕД ОТПРАВКОЙ
 const limit = await checkCreatorLimit(user.uid);
 if (!limit.allowed) {
 alert(`❌ Лимит исчерпан: ${limit.used}/${limit.max}
@@ -1985,7 +1968,6 @@ stock,weight,audience:$('sug-aud').value,sizes:$('sug-sizes').value,color:$('sug
 material:$('sug-mat').value,desc:$('sug-desc').value,year:parseInt($('sug-year').value)||new Date().getFullYear(),
 collab,img:url,status:'pending',ts:serverTimestamp()
 });
-// 🔁 СПИСЫВАЕМ ПОПЫТКУ
 await useCreatorLimit(user.uid);
 alert('✅ Отправлено на модерацию!');
 closeModal('suggest-modal');
@@ -2051,14 +2033,13 @@ hide($('maintenance-overlay'));
 } catch(e) { console.error('emergencyStopMaintenance:', e); alert('❌ Ошибка: '+e.message); }
 };
 
-// 🔁 ЗАГРУЗКА ПОЛЬЗОВАТЕЛЯ С УЧЁТОМ КРЕАТОРСТВА
+// 🔁 ЗАГРУЗКА ПОЛЬЗОВАТЕЛЯ
 async function loadUser() {
 if (!user) return;
 try {
 const snap = await getDoc(doc(db, 'artifacts/byrmalda-prod/users', user.uid));
 userData = snap.exists() ? snap.data() : await createUserDoc();
 renderProfile(); syncCartFromDB();
-// 🔁 ОБНОВЛЕНИЕ ЛИМИТА
 renderCreatorLimit();
 } catch(e) {
 console.error('loadUser:',e);
@@ -2072,7 +2053,6 @@ avatar: null, avatarPending: null, registrationDate: serverTimestamp(),
 isBlocked: false, hasVerifiedProduct: false, language: 'ru', theme: 'light',
 reviewStatus: 'none', deliveryCountry: null, deliveryAddress: { cdek: null, ua: null, usa: null },
 cart: [], isBanned: false, banType: null, banUntil: null, banDuration: null,
-// 🔁 ПОЛЯ КРЕАТОРСТВА
 creatorLevel: 0, creatorApprovedCount: 0, creatorLimitUsed: 0, creatorLimitLastReset: 0
 };
 await setDoc(doc(db, 'artifacts/byrmalda-prod/users', user.uid), d, { merge: true });
@@ -2082,7 +2062,6 @@ function renderProfile() {
 if (!userData) return;
 const nameEl = $('profile-name');
 nameEl.textContent = userData.name || 'Пользователь';
-// 🔁 ЦВЕТ НИКА В ЗАВИСИМОСТИ ОТ УРОВНЯ
 const level = userData.creatorLevel || 0;
 if (level > 0) {
 nameEl.classList.add('creator-name', getCreatorColorClass(level));
@@ -2101,50 +2080,119 @@ function resetAuthUI() { $('auth-btn').textContent = 'Войти'; $('auth-btn')
 
 window.openLogin = () => openModal('login-modal');
 window.switchReg = () => { closeModal('login-modal'); openModal('reg-modal'); showStep(1); };
+
+// 🔁 ВХОД - ИСПРАВЛЕННЫЙ
 window.doLogin = async () => {
-const email = $('log-email').value.trim(), pass = $('log-pass').value; $('log-err').textContent = '';
+const email = $('log-email').value.trim(), pass = $('log-pass').value;
+$('log-err').textContent = '';
 if (!email || !pass) { $('log-err').textContent = 'Заполните поля'; return; }
 try {
 const cred = await signInWithEmailAndPassword(auth, email, pass);
-if (!cred.user.emailVerified) {
-await sendEmailVerification(cred.user, { url: window.location.href, handleCodeInApp: true });
+const u = cred.user;
+if (!u.emailVerified) {
+try {
+await sendEmailVerification(u, { url: window.location.href, handleCodeInApp: true });
+} catch(e) { console.log('sendEmailVerification error:', e); }
 await signOut(auth);
-$('log-err').innerHTML = `✉️ Подтвердите почту.<br>Новая ссылка отправлена.`; return;
+$('log-err').innerHTML = `✉️ Подтвердите почту.<br>Новая ссылка отправлена на <b>${email}</b><br><small>Проверьте папку "Спам"</small>`;
+return;
 }
-const ud = await getDoc(doc(db, 'artifacts/byrmalda-prod/users', cred.user.uid));
+const ud = await getDoc(doc(db, 'artifacts/byrmalda-prod/users', u.uid));
 if (ud.exists() && ud.data().isBlocked) { await signOut(auth); showBlock(); return; }
 closeModal('login-modal');
-} catch(e) { $('log-err').textContent = 'Неверный email или пароль'; }
+} catch(e) {
+console.error(e.code);
+$('log-err').textContent = e.code === 'auth/user-not-found' || e.code === 'auth/wrong-password'
+? 'Аккаунт не найден или неверный пароль'
+: 'Ошибка: '+e.message;
+}
 };
+
+// 🔁 РЕГИСТРАЦИЯ ШАГ 1
 window.regStep1 = async () => {
-const email = $('reg-email').value.trim(), name = $('reg-name').value.trim(), p1 = $('reg-pass').value, p2 = $('reg-pass2').value;
+const email = $('reg-email').value.trim();
+if (!email) { alert('Введите email'); return; }
+try {
+const methods = await auth.fetchSignInMethodsForEmail(email);
+if (methods.length > 0) {
+$('reg-err').textContent = 'Email уже зарегистрирован';
+return;
+}
+} catch(e) { console.log('fetchSignInMethods error:', e); }
+sessionStorage.setItem('pending_email', email);
+showStep(2);
+};
+
+// 🔁 РЕГИСТРАЦИЯ ШАГ 2 - ИСПРАВЛЕННЫЙ
+window.regStep2 = async () => {
+const email = sessionStorage.getItem('pending_email');
+if (!email) { alert('Ошибка: сессия истекла'); return; }
+const currentUser = auth.currentUser;
+if (currentUser && currentUser.email === email) {
+await currentUser.reload();
+if (currentUser.emailVerified) {
+showStep(3);
+return;
+}
+}
+try {
+if (currentUser && currentUser.email === email) {
+await sendEmailVerification(currentUser, { url: window.location.href, handleCodeInApp: true });
+}
+alert('✉️ Новая ссылка отправлена на ' + email + '\nПроверьте почту и папку "Спам"!');
+} catch(e) { console.error('sendEmailVerification error:', e); }
+showStep(3);
+};
+
+// 🔁 РЕГИСТРАЦИЯ ШАГ 3 - ЗАВЕРШЕНИЕ
+window.regStep3 = async () => {
+const email = sessionStorage.getItem('pending_email'), name = $('reg-name').value.trim(), p1 = $('reg-pass').value, p2 = $('reg-pass2').value;
 $('reg-err').textContent = '';
-if (!email || !name || !p1 || !p2) { $('reg-err').textContent = 'Заполните все поля'; return; }
+if (!name || !p1 || !p2) { $('reg-err').textContent = 'Заполните все поля'; return; }
 if (p1 !== p2) { $('reg-err').textContent = 'Пароли не совпадают'; return; }
-try { 
+if (p1.length < 6) { $('reg-err').textContent = 'Пароль минимум 6 символов'; return; }
+try {
 const cred = await createUserWithEmailAndPassword(auth, email, p1);
 await sendEmailVerification(cred.user, { url: window.location.href, handleCodeInApp: true });
-showStep(2); 
-} catch(e) { $('reg-err').textContent = e.code === 'auth/email-already-in-use' ? 'Email уже зарегистрирован. Войдите.' : 'Ошибка: '+e.message; }
+await setDoc(doc(db, 'artifacts/byrmalda-prod/users', cred.user.uid), {
+uid: cred.user.uid, email, name, avatar: null, avatarPending: null,
+registrationDate: serverTimestamp(), isBlocked: false, hasVerifiedProduct: false,
+language: 'ru', theme: 'light', hasSubmittedReview: false,
+deliveryCountry: null, deliveryAddress: { cdek: null, ua: null, usa: null },
+creatorLevel: 0, creatorApprovedCount: 0, creatorLimitUsed: 0, creatorLimitLastReset: 0
+}, { merge: true });
+await updateProfile(cred.user, { displayName: name });
+$('reg-step-3').classList.add('hidden');
+$('reg-ok').classList.remove('hidden');
+} catch(e) {
+console.error(e.code);
+if (e.code === 'auth/email-already-in-use') $('reg-err').textContent = 'Email уже занят';
+else if (e.code === 'auth/invalid-email') $('reg-err').textContent = 'Неверный email';
+else if (e.code === 'auth/weak-password') $('reg-err').textContent = 'Слабый пароль';
+else $('reg-err').textContent = 'Ошибка: '+e.message;
+}
 };
-window.regStep2 = async () => {
-try {
-await auth.currentUser.reload();
-if (auth.currentUser.emailVerified) {
-await updateProfile(auth.currentUser, { displayName: $('reg-name').value });
-await createUserDoc(); $('reg-step-2').classList.add('hidden'); $('reg-ok').classList.remove('hidden');
-} else { $('reg-err').textContent = 'Почта ещё не подтверждена. Проверьте письмо.'; }
-} catch(e) { $('reg-err').textContent = 'Ошибка: '+e.message; }
-};
-function showStep(n) { [1,2].forEach(i => $(`reg-step-${i}`).classList.add('hidden')); $('reg-ok').classList.add('hidden'); $(`reg-step-${n}`).classList.remove('hidden'); $('reg-title').textContent = ['Регистрация','Подтверждение почты','Завершение'][n-1]; }
+
+function showStep(n) {
+[1,2,3].forEach(i => $(`reg-step-${i}`).classList.add('hidden'));
+$('reg-ok').classList.add('hidden');
+$(`reg-step-${n}`).classList.remove('hidden');
+$('reg-title').textContent = ['Регистрация','Подтверждение почты','Завершение'][n-1];
+}
 
 window.confirmLogout = () => { if (!user) openModal('login-modal'); else openModal('logout-confirm-modal'); };
 window.doLogout = async () => { closeModal('logout-confirm-modal'); await signOut(auth); userData = null; loadCartCount(); navigate('home'); };
 window.logoutFromBan = async () => { await signOut(auth); hide($('ban-overlay')); userData = null; resetAuthUI(); navigate('home'); };
 function showBlock() {
 const m = document.createElement('div'); m.className = 'modal active';
-m.innerHTML = `<div class="modal-content text-center"><h3 style="margin-bottom:12px">🚫 Аккаунт заблокирован</h3><p style="color:var(--text-dim);margin-bottom:20px">Разблокировка: <a href="https://t.me/fueum" target="_blank" style="color:#0088cc;font-weight:600">@fueum</a></p><button class="btn" onclick="this.closest('.modal').remove()">Понятно</button></div>`;
-document.body.appendChild(m); m.onclick = e => { if (e.target === m) m.remove(); };
+m.innerHTML = `<div class="modal-content" style="max-width:480px;text-align:center">
+<div style="font-size:42px;margin:16px 0">🚫</div>
+<h3 style="margin-bottom:12px">Аккаунт заблокирован</h3>
+<p style="color:var(--text-dim);margin-bottom:20px">Для разблокировки напишите: <a href="https://t.me/fueum" target="_blank" style="color:#0088cc;font-weight:600">@fueum</a></p>
+<button class="btn" onclick="this.closest('.modal').remove();navigate('home')">Понятно</button>
+</div>`;
+document.body.appendChild(m);
+m.onclick = e => { if (e.target === m) m.remove(); };
 }
 
 async function autoUpdateOrders(){
@@ -2154,9 +2202,9 @@ function setupListeners(){document.addEventListener('keydown',e=>{if(e.key==='Es
 
 // 🔁 ЭКСПОРТ ВСЕХ ФУНКЦИЙ
 Object.assign(window, {
-navigate, openModal, closeModal, openLogin, switchReg, doLogin, regStep1, regStep2, openAvatarModal, submitAvatar,
-filterType, handleSearch, openProd, setGal, galNav, addToCart, updCart, delCart, checkout, confirmCheckout, cancelOrder,
-sendMsg, toggleTheme, toggleLang, openReviewModal, setRating, submitReview, openReport, submitReport, showSizeChart,
+navigate, openModal, closeModal, openLogin, switchReg, doLogin, regStep1, regStep2, regStep3, doLogout, confirmLogout,
+openAvatarModal, submitAvatar, filterType, handleSearch, openProd, setGal, galNav, addToCart, updCart, delCart, checkout, confirmCheckout,
+cancelOrder, sendMsg, toggleTheme, toggleLang, openReviewModal, setRating, submitReview, openReport, submitReport, showSizeChart,
 admCreateProduct, admLoadProduct, admSaveProduct, admDeleteProduct, admBlockUser, admUnblockUser, admTempBanUser, admUnbanAfterUser,
 admFindOrder, admSetOrderStatus, admApproveReview, admRejectReview, admDeleteReview, admApproveAvatar, admRejectAvatar,
 admApproveSuggestion, admRejectSuggestion, admEditSuggestion, openSuggest, submitSuggestion, toggleCollabInput,
@@ -2165,7 +2213,7 @@ confirmLogout, doLogout, logoutFromBan, openAvatarSettingsModal, submitAvatarFro
 toggleMaintenance, saveMaintenanceSchedule, emergencyStopMaintenance, openCreatorInfoModal
 });
 
-console.log('🚀 BYRMALDA loaded | 🔐 App Check + 🎨 Creator System + Limits + Full Product Suggest');
+console.log('🚀 BYRMALDA loaded | ✅ Auth Fixed | 🔐 App Check Disabled for Debug');
 </script>
 </body>
 </html>
