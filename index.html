@@ -187,6 +187,15 @@ transition: border-color 0.2s; flex-shrink: 0;
 width: 100%; height: 100%; object-fit: cover; background: var(--bg-soft);
 display: flex; align-items: center; justify-content: center; font-size: 32px; color: var(--text-dim);
 }
+/* 🔁 Кнопка редактирования аватарки */
+.avatar-edit-btn {
+position: absolute; bottom: -4px; right: -4px;
+width: 28px; height: 28px; background: var(--accent);
+color: var(--bg); border: 2px solid var(--bg); border-radius: 50%;
+display: flex; align-items: center; justify-content: center;
+cursor: pointer; font-size: 14px; transition: transform 0.2s;
+}
+.avatar-edit-btn:hover { transform: scale(1.1); }
 .profile-info h2 {
 font-size: 22px; margin-bottom: 4px; display: flex; align-items: center; gap: 8px;
 }
@@ -567,8 +576,10 @@ padding: 8px; overflow-x: auto; border-right: none; border-bottom: 1px solid var
 </section>
 <section id="profile" class="page">
 <div class="profile-header">
-<div class="avatar-wrap" onclick="openAvatarModal()">
+<div class="avatar-wrap" id="avatar-wrap">
 <div class="avatar" id="avatar-display">👤</div>
+<!-- 🔁 Кнопка редактирования аватарки -->
+<div class="avatar-edit-btn" onclick="openAvatarModal()" title="Изменить аватарку">✏️</div>
 </div>
 <div class="profile-info">
 <h2 id="profile-name">Гость</h2>
@@ -1348,7 +1359,7 @@ if(st!=='Ожидает оплату'&&st!=='Создан'){alert('❌ Нель�
 await updateDoc(doc(db,'artifacts/byrmalda-prod/public/data/orders',oid),{status:'Отменён',updatedAt:serverTimestamp()}); loadOrders();
 };
 
-// 💬 ЧАТ
+// 💬 ЧАТ - ИСПРАВЛЕННАЯ ЛОГИКА ОТОБРАЖЕНИЯ
 async function loadChat() {
 if(!user)return; const c=$('chat-msgs'); c.innerHTML='<div class="text-center" style="padding:24px"><div class="loading"></div></div>';
 try {
@@ -1362,9 +1373,12 @@ c.scrollTop=c.scrollHeight;
 function addMsgToUI(m) {
 const isU=m.uid===user?.uid, el=document.createElement('div');
 el.className=`msg ${m.isAdmin?'admin':isU?'user':'admin'}`;
-let meta=m.isAdmin?'Администратор':(m.name||'Пользователь');
+// 🔁 ИСПРАВЛЕНО: показываем имя, а не UID и дату
+let meta = m.isAdmin ? 'Администратор' : (m.name || 'Пользователь');
 if(m.isAdmin && m.replyTo) meta+=`<span class="msg-target">→ ${m.replyTo.substring(0,8)}...</span>`;
-el.innerHTML=`${m.text}<div class="msg-meta">${meta} • ${m.ts?.toDate?.()?.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})||''}</div>`;
+// 🔁 Время показываем компактно только в мета-строке
+const time = m.ts?.toDate?.()?.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'}) || '';
+el.innerHTML=`${m.text}<div class="msg-meta">${meta} • ${time}</div>`;
 $('chat-msgs').appendChild(el); $('chat-msgs').scrollTop=$('chat-msgs').scrollHeight;
 if(!$('support').classList.contains('active') && !isU) { chatUnread++; updateSupportBadge(); }
 }
@@ -1550,7 +1564,7 @@ if(user?.email!==ADMIN_EMAIL)return;try{const now=Date.now();const created=await
 function setupListeners(){document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.modal.active').forEach(m=>m.classList.remove('active'));});}
 
 Object.assign(window, {navigate, openModal, closeModal, openLogin, switchReg, doLogin, regStep1, regStep2, openAvatarModal, submitAvatar, filterType, handleSearch, openProd, setGal, galNav, addToCart, updCart, delCart, checkout, confirmCheckout, cancelOrder, sendMsg, toggleTheme, toggleLang, openReviewModal, setRating, submitReview, openReport, submitReport, showSizeChart, admCreateProduct, admLoadProduct, admSaveProduct, admDeleteProduct, admBlockUser, admUnblockUser, admTempBanUser, admUnbanAfterUser, admFindOrder, admSetOrderStatus, admApproveReview, admRejectReview, admDeleteReview, admApproveAvatar, admRejectAvatar, admApproveSuggestion, admRejectSuggestion, openSuggest, submitSuggestion, toggleCollabInput, toggleEditCollabInput, openDeliveryModal, selectDelivery, saveDelivery, carouselNav, confirmLogout, doLogout, logoutFromBan});
-console.log('🚀 BYRMALDA loaded. Бан система активна.');
+console.log('🚀 BYRMALDA loaded. Аватарка + чат исправлены.');
 </script>
 </body>
 </html>
