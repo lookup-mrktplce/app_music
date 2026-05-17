@@ -202,6 +202,24 @@ font-size: 22px; margin-bottom: 4px; display: flex; align-items: center; gap: 8p
 .verified { color: var(--success); font-size: 16px; }
 .profile-meta { font-size: 12px; color: var(--text-dim); margin-top: 4px; }
 .profile-meta div { margin: 2px 0; }
+/* 🔁 СТИЛЬ ДЛЯ НИКА КРЕАТОРА */
+.creator-name { font-weight: 600; }
+.creator-lvl1 { color: #3b82f6; } /* синий */
+.creator-lvl2 { color: #f59e0b; } /* желтый */
+.creator-lvl3 { color: #22c55e; } /* зеленый */
+.creator-lvl4 { color: #ef4444; } /* красный */
+.creator-lvl5 { 
+  background: linear-gradient(45deg, #ff0080, #ff8c00, #40e0d0, #ff0080);
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientShift 3s ease infinite;
+}
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
 .delivery-box {
 background: var(--bg-soft); border-radius: var(--radius); padding: 16px; 
 margin: 0 0 24px; border: 1px solid var(--border);
@@ -313,6 +331,21 @@ padding: 10px; background: var(--bg); border: 1px solid var(--border);
 border-radius: 4px; font-weight: 500; min-height: 40px; display: flex; align-items: center;
 }
 .desc { margin: 24px 0; line-height: 1.7; font-size: 14px; color: var(--text-dim); }
+/* 🔁 ПРЕДУПРЕЖДЕНИЕ О ТОВАРЕ ОТ ПОЛЬЗОВАТЕЛЯ */
+.user-product-warning {
+background: #fef3c7; color: #92400e; padding: 12px; border-radius: var(--radius);
+margin: 16px 0; font-size: 13px; border-left: 4px solid #f59e0b;
+}
+.admin-edited-notice {
+background: #dbeafe; color: #1e40af; padding: 8px; border-radius: 4px;
+margin-top: 8px; font-size: 12px; font-style: italic;
+}
+/* 🔁 СКИДКА ДЛЯ КРЕАТОРА 5 УРОВНЯ */
+.creator-discount {
+background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+color: white; padding: 8px 16px; border-radius: 20px;
+font-size: 12px; font-weight: 600; display: inline-block; margin: 8px 0;
+}
 .catalog-grid, .results-grid {
 display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
 gap: 24px; margin-top: 24px;
@@ -610,6 +643,8 @@ padding: 8px; overflow-x: auto; border-right: none; border-bottom: 1px solid var
 <div>ID: <span id="profile-id">-</span></div>
 <div>Дата: <span id="profile-date">-</span></div>
 <div>Почта: <span id="profile-email">-</span></div>
+<!-- 🔁 ЛИМИТ ПРЕДЛОЖЕНИЙ В ПРОФИЛЕ -->
+<div id="creator-limit-display" class="hidden" style="margin-top:8px;font-size:12px;color:var(--text-dim)"></div>
 </div>
 </div>
 </div>
@@ -649,11 +684,15 @@ padding: 8px; overflow-x: auto; border-right: none; border-bottom: 1px solid var
 <div class="p-info">
 <div class="product-id" id="p-id">ID: -</div>
 <h1 id="p-name">Название</h1>
+<!-- 🔁 ПРЕДУПРЕЖДЕНИЕ О ТОВАРЕ ОТ ПОЛЬЗОВАТЕЛЯ -->
+<div id="p-user-warning" class="user-product-warning hidden"></div>
 <div class="specs" id="p-specs"></div>
 <div class="desc" id="p-desc"></div>
 <div class="price-box">
 <div class="price-usd" id="p-price-usd">$0.00</div>
 <div class="price-conv" id="p-price-conv">≈ 0 ₽ / ≈ 0 ₴</div>
+<!-- 🔁 СКИДКА ДЛЯ КРЕАТОРА 5 УРОВНЯ -->
+<div id="p-creator-discount" class="creator-discount hidden"></div>
 <div class="stock" id="p-stock"></div>
 <div id="p-deleted-notice" class="deleted-notice hidden">Товар удален</div>
 <div class="options" id="p-options">
@@ -712,6 +751,8 @@ padding: 8px; overflow-x: auto; border-right: none; border-bottom: 1px solid var
 <button class="setting-btn" onclick="showSizeChart('footwear')"><span>👟 Размерная сетка (обувь)</span><span>→</span></button>
 <!-- 🔁 Кнопка смены аватарки через Настройки -->
 <button class="setting-btn" onclick="openAvatarSettingsModal()"><span>🖼️ Сменить аватарку</span><span>→</span></button>
+<!-- 🔁 Кнопка "Креаторство" -->
+<button class="setting-btn" onclick="openCreatorInfoModal()"><span>🎨 Креаторство</span><span>→</span></button>
 <button class="setting-btn" onclick="confirmLogout()" style="border-color:var(--error);color:var(--error)">
 <span>🚪 Выйти из аккаунта</span><span>→</span>
 </button>
@@ -876,6 +917,41 @@ padding: 8px; overflow-x: auto; border-right: none; border-bottom: 1px solid var
 </div>
 </div>
 
+<!-- 🔁 МОДАЛЬНОЕ ОКНО: СИСТЕМА КРЕАТОРСТВА -->
+<div class="modal" id="creator-info-modal">
+<div class="modal-content wide">
+<span class="modal-close" onclick="closeModal('creator-info-modal')">&times;</span>
+<div class="modal-title">🎨 Система креаторства BYRMALDA</div>
+<div style="line-height:1.8;font-size:14px;color:var(--text-dim)">
+<p style="margin-bottom:16px"><strong>Как стать креатором:</strong><br>
+Предложите свой товар через кнопку "✨ Предложить" → админ рассмотрит заявку → при одобрении вы получите уровень креатора.</p>
+
+<p style="margin-bottom:16px"><strong>Уровни креаторов:</strong></p>
+<ul style="margin-left:20px;margin-bottom:16px">
+<li><span style="color:#3b82f6;font-weight:600">Уровень 1 (синий)</span>: 1 одобренный товар (без редактирования админом)</li>
+<li><span style="color:#f59e0b;font-weight:600">Уровень 2 (желтый)</span>: 5 одобренных товаров (счётчик сбрасывается)</li>
+<li><span style="color:#22c55e;font-weight:600">Уровень 3 (зеленый)</span>: 10 одобренных товаров (счётчик сбрасывается)</li>
+<li><span style="color:#ef4444;font-weight:600">Уровень 4 (красный)</span>: 25 одобренных товаров (счётчик сбрасывается)</li>
+<li><span style="background:linear-gradient(45deg,#ff0080,#ff8c00,#40e0d0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:600">Уровень 5 (переливающийся)</span>: 50 одобренных товаров + <strong>скидки:</strong> обувь -10%, одежда -15%, всё -25%</li>
+</ul>
+
+<p style="margin-bottom:16px"><strong>Лимиты предложений товаров:</strong></p>
+<ul style="margin-left:20px;margin-bottom:16px">
+<li>Обычные пользователи и креаторы 1-3 уровня: <strong>1 попытка на 3 дня</strong></li>
+<li>Креаторы 4-5 уровня: <strong>3 попытки на 3 дня</strong> (1 в день)</li>
+<li>Обновление лимитов: ежедневно в <strong>00:00 по Москве</strong></li>
+<li>Если заявка отклонена — попытка всё равно считается потраченной</li>
+</ul>
+
+<p style="margin-bottom:16px"><strong>Важно:</strong><br>
+• Если админ редактировал ваш товар перед одобрением — галочка креатора не выдаётся за этот товар.<br>
+• После перехода на новый уровень счётчик одобренных товаров обнуляется для честного прогресса.<br>
+• Скидки креатора 5 уровня применяются автоматически при просмотре товаров.</p>
+</div>
+<button class="btn mt-16" onclick="closeModal('creator-info-modal')">Понятно</button>
+</div>
+</div>
+
 <!-- MODALS -->
 <div class="modal" id="login-modal">
 <div class="modal-content">
@@ -894,11 +970,7 @@ padding: 8px; overflow-x: auto; border-right: none; border-bottom: 1px solid var
 <div class="modal-title" id="reg-title">Регистрация</div>
 <div id="reg-step-1">
 <div class="form-group"><label class="form-label">Email *</label><input type="email" class="form-input" id="reg-email"></div>
-<div class="form-group"><label class="form-label">Имя *</label><input type="text" class="form-input" id="reg-name"></div>
-<div class="form-group"><label class="form-label">Пароль *</label><input type="password" class="form-input" id="reg-pass"></div>
-<div class="form-group"><label class="form-label">Повтор пароля *</label><input type="password" class="form-input" id="reg-pass2"></div>
 <button class="btn" onclick="regStep1()">Далее</button>
-<div class="error" id="reg-err"></div>
 </div>
 <div id="reg-step-2" class="hidden text-center">
 <div style="font-size:42px;margin:16px 0">✉️</div>
@@ -947,23 +1019,39 @@ padding: 8px; overflow-x: auto; border-right: none; border-bottom: 1px solid var
 <button class="btn" onclick="submitAvatarFromSettings()">Сохранить и отправить</button>
 </div>
 </div>
+<!-- 🔁 МОДАЛЬНОЕ ОКНО ПРЕДЛОЖЕНИЯ ТОВАРА (ПОЛНАЯ ФОРМА) -->
 <div class="modal" id="suggest-modal">
 <div class="modal-content wide">
 <span class="modal-close" onclick="closeModal('suggest-modal')">&times;</span>
 <div class="modal-title">Предложить товар</div>
 <div class="admin-grid">
 <div class="form-group"><label class="form-label">Название *</label><input class="admin-input" id="sug-name"></div>
-<div class="form-group"><label class="form-label">Категория *</label><select class="admin-input" id="sug-cat"><option value="clothing">Одежда</option><option value="footwear">Обувь</option></select></div>
-<div class="form-group"><label class="form-label">Тип *</label><input class="admin-input" id="sug-type"></div>
+<div class="form-group"><label class="form-label">Категория *</label>
+<select class="admin-input" id="sug-cat"><option value="clothing">Одежда</option><option value="footwear">Обувь</option></select>
+</div>
+<div class="form-group"><label class="form-label">Тип *</label><input class="admin-input" id="sug-type" placeholder="футболка, кроссовки, лонгслив..."></div>
 <div class="form-group"><label class="form-label">Цена ($) *</label><input type="number" class="admin-input" id="sug-price" step="0.01"></div>
+<div class="form-group"><label class="form-label">В наличии *</label><input type="number" class="admin-input" id="sug-stock" value="10" min="1"></div>
+<div class="form-group"><label class="form-label">Масса (г) *</label><input type="number" class="admin-input" id="sug-weight" value="200"></div>
 </div>
 <div class="form-group"><label class="form-label">Фото *</label><input type="file" class="admin-input" id="sug-img" accept="image/*"></div>
 <div class="admin-grid">
-<div class="form-group"><label class="form-label">Для кого</label><select class="admin-input" id="sug-aud"><option value="unisex">Унисекс</option><option value="male">Мужчина</option><option value="female">Женщина</option></select></div>
-<div class="form-group"><label class="form-label">Размеры</label><input class="admin-input" id="sug-sizes"></div>
+<div class="form-group"><label class="form-label">Для кого</label>
+<select class="admin-input" id="sug-aud"><option value="unisex">Унисекс</option><option value="male">Мужчина</option><option value="female">Женщина</option></select>
 </div>
+<div class="form-group"><label class="form-label">Размеры (через запятую)</label><input class="admin-input" id="sug-sizes" placeholder="S,M,L или 41,42,43"></div>
+</div>
+<div class="form-group"><label class="form-label">Цвет (через запятую)</label><input class="admin-input" id="sug-color" placeholder="Черный,Белый"></div>
 <div class="form-group"><label class="form-label">Материал</label><input class="admin-input" id="sug-mat"></div>
 <div class="form-group"><label class="form-label">Описание</label><textarea class="form-textarea" id="sug-desc"></textarea></div>
+<div class="form-group"><label class="form-label">Год релиза</label><input type="number" class="admin-input" id="sug-year" placeholder="2026"></div>
+<div class="form-group"><label class="form-label">Коллаборация</label>
+<select class="admin-input" id="sug-collab-type" onchange="toggleSuggestCollabInput()">
+<option value="no">Нет</option>
+<option value="yes">Да</option>
+</select>
+</div>
+<div class="form-group hidden" id="sug-collab-group"><label class="form-label">Название бренда</label><input class="admin-input" id="sug-collab-name"></div>
 <button class="btn" onclick="submitSuggestion()">Отправить на модерацию</button>
 </div>
 </div>
@@ -1143,11 +1231,9 @@ if (banTimerInterval) clearInterval(banTimerInterval);
 
 // 🔁 ФУНКЦИИ ДЛЯ ТЕХНИЧЕСКОГО ПЕРЕРЫВА
 function parseDateTimeMSK(dateStr, timeStr) {
-// Конвертируем дату и время из формата ввода в таймстамп по Москве (UTC+3)
 const [year, month, day] = dateStr.split('-').map(Number);
 const [hours, minutes] = timeStr.split(':').map(Number);
 const date = new Date(Date.UTC(year, month - 1, day, hours, minutes, 0));
-// Корректируем на разницу с Москвой (UTC+3)
 const mskOffset = 3 * 60 * 60 * 1000;
 return date.getTime() - mskOffset;
 }
@@ -1164,19 +1250,16 @@ if (maintenanceTimerInterval) clearInterval(maintenanceTimerInterval);
 const updateTimer = () => {
 const now = Date.now();
 if (now < startTimestamp) {
-// Ещё не началось
 $('maint-timer-display').textContent = 'Ожидание начала...';
 show($('maint-timer-display'));
 return;
 }
 if (now >= endTimestamp) {
-// Закончилось
 $('maint-timer-display').textContent = 'Перерыв завершён';
 show($('maint-timer-display'));
 if (maintenanceTimerInterval) clearInterval(maintenanceTimerInterval);
 return;
 }
-// Идёт перерыв
 $('maint-timer-display').textContent = formatTimeRemaining(endTimestamp);
 show($('maint-timer-display'));
 };
@@ -1184,45 +1267,28 @@ updateTimer();
 maintenanceTimerInterval = setInterval(updateTimer, 1000);
 }
 async function checkAndShowMaintenance() {
-// Админу не показываем никогда
-if (user?.email === ADMIN_EMAIL) {
-hide($('maintenance-overlay'));
-return;
-}
+if (user?.email === ADMIN_EMAIL) { hide($('maintenance-overlay')); return; }
 try {
 const configSnap = await getDoc(doc(db, 'artifacts/byrmalda-prod/config/maintenance'));
-if (!configSnap.exists()) {
-hide($('maintenance-overlay'));
-return;
-}
+if (!configSnap.exists()) { hide($('maintenance-overlay')); return; }
 const config = configSnap.data();
-if (!config.enabled) {
-hide($('maintenance-overlay'));
-if (maintenanceTimerInterval) clearInterval(maintenanceTimerInterval);
-return;
-}
+if (!config.enabled) { hide($('maintenance-overlay')); if (maintenanceTimerInterval) clearInterval(maintenanceTimerInterval); return; }
 const now = Date.now();
 const startTs = config.startTimestamp;
 const endTs = config.endTimestamp;
 if (now >= startTs && now < endTs) {
-// Перерыв активен
 show($('maintenance-overlay'));
 startMaintenanceTimer(startTs, endTs);
 } else if (now < startTs) {
-// Ещё не начался
 show($('maintenance-overlay'));
 $('maint-timer-display').textContent = 'Ожидание начала...';
 show($('maint-timer-display'));
 startMaintenanceTimer(startTs, endTs);
 } else {
-// Уже закончился
 hide($('maintenance-overlay'));
 if (maintenanceTimerInterval) clearInterval(maintenanceTimerInterval);
 }
-} catch(e) {
-console.error('checkMaintenance:', e);
-hide($('maintenance-overlay'));
-}
+} catch(e) { console.error('checkMaintenance:', e); hide($('maintenance-overlay')); }
 }
 
 function initCarousel() {
@@ -1242,137 +1308,88 @@ function updateCarousel() {
 document.querySelectorAll('.hero-slide').forEach((s,i) => s.classList.toggle('active', i===carouselIdx));
 }
 
-window.addEventListener('DOMContentLoaded', () => {
-const url = new URL(window.location.href);
-const oob = url.searchParams.get('oobCode'), mode = url.searchParams.get('mode');
-if (oob && mode === 'verifyEmail') {
-applyActionCode(auth, oob).then(() => {
-url.searchParams.delete('oobCode'); url.searchParams.delete('mode');
-window.history.replaceState({}, '', url);
-alert('✅ Email подтверждён!');
-}).catch(e => alert('❌ Ошибка подтверждения: ' + e.message));
+// 🔁 ФУНКЦИИ ДЛЯ КРЕАТОРСТВА
+function getCreatorLevel(approvedCount) {
+if (approvedCount >= 50) return 5;
+if (approvedCount >= 25) return 4;
+if (approvedCount >= 10) return 3;
+if (approvedCount >= 5) return 2;
+if (approvedCount >= 1) return 1;
+return 0;
 }
-applyTheme(); initCarousel();
-onAuthStateChanged(auth, async u => {
-if (u) {
-user = u; await loadUser(); updateAuthUI();
-if (u.email === ADMIN_EMAIL) { show($('nav-admin')); hide($('nav-suggest')); loadAdminPanels(); loadMaintenanceStatus(); }
-else { hide($('nav-admin')); show($('nav-suggest')); }
-loadOrders(); loadChat(); checkReviewStatus(); renderDelivery();
-await checkAndShowBan();
-await checkAndShowMaintenance();
-} else {
-user = userData = null; resetAuthUI(); hide($('delivery-box')); hide($('ban-overlay')); hide($('maintenance-overlay'));
-if (banTimerInterval) clearInterval(banTimerInterval);
-if (maintenanceTimerInterval) clearInterval(maintenanceTimerInterval);
+function getCreatorColorClass(level) {
+if (level === 0) return '';
+if (level === 1) return 'creator-lvl1';
+if (level === 2) return 'creator-lvl2';
+if (level === 3) return 'creator-lvl3';
+if (level === 4) return 'creator-lvl4';
+if (level === 5) return 'creator-lvl5';
+return '';
 }
-});
-loadCartCount(); genCatalog(); setupListeners(); setInterval(autoUpdateOrders, 300000);
-});
-
-async function loadUser() {
-if (!user) return;
+function getCreatorLimit(level) {
+if (level >= 4) return { max: 3, periodDays: 3 };
+return { max: 1, periodDays: 3 };
+}
+function getNextResetMSK() {
+const now = new Date();
+const mskOffset = 3 * 60 * 60 * 1000;
+const mskNow = new Date(now.getTime() + mskOffset);
+const nextMidnight = new Date(mskNow);
+nextMidnight.setUTCHours(24, 0, 0, 0);
+return nextMidnight.getTime() - mskOffset;
+}
+async function checkCreatorLimit(uid) {
 try {
-const snap = await getDoc(doc(db, 'artifacts/byrmalda-prod/users', user.uid));
-userData = snap.exists() ? snap.data() : await createUserDoc();
-renderProfile(); syncCartFromDB();
-} catch(e) {
-console.error('loadUser:',e);
-if (e.code === 'permission-denied') { await createUserDoc(); loadUser(); }
-}
-}
-async function createUserDoc() {
-const d = {
-uid: user.uid, email: user.email, name: user.displayName || user.email.split('@')[0],
-avatar: null, avatarPending: null, registrationDate: serverTimestamp(),
-isBlocked: false, hasVerifiedProduct: false, language: 'ru', theme: 'light',
-reviewStatus: 'none', deliveryCountry: null, deliveryAddress: { cdek: null, ua: null, usa: null },
-cart: [],
-isBanned: false, banType: null, banUntil: null, banDuration: null
-};
-await setDoc(doc(db, 'artifacts/byrmalda-prod/users', user.uid), d, { merge: true });
-return d;
-}
-function renderProfile() {
-if (!userData) return;
-$('profile-name').textContent = userData.name || 'Пользователь';
-$('profile-id').textContent = user.uid.substring(0,10)+'...';
-$('profile-email').textContent = user.email;
-$('profile-date').textContent = fmtDate(userData.registrationDate);
-if (userData.avatar) $('avatar-display').innerHTML = `<img src="${userData.avatar}" style="width:100%;height:100%;object-fit:cover">`;
-if (userData.hasVerifiedProduct) $('profile-name').innerHTML = `<span class="verified">✓</span> ${userData.name}`;
-}
-function updateAuthUI() { $('auth-btn').textContent = 'Выйти'; $('auth-btn').onclick = () => openModal('logout-confirm-modal'); $('user-email').textContent = user.email; }
-function resetAuthUI() { $('auth-btn').textContent = 'Войти'; $('auth-btn').onclick = () => openModal('login-modal'); $('user-email').textContent = 'Не авторизован'; $('profile-name').textContent = 'Гость'; $('profile-id').textContent = '-'; $('profile-email').textContent = '-'; $('profile-date').textContent = '-'; $('avatar-display').innerHTML = '👤'; }
-
-window.openLogin = () => openModal('login-modal');
-window.switchReg = () => { closeModal('login-modal'); openModal('reg-modal'); showStep(1); };
-window.doLogin = async () => {
-const email = $('log-email').value.trim(), pass = $('log-pass').value; $('log-err').textContent = '';
-if (!email || !pass) { $('log-err').textContent = 'Заполните поля'; return; }
-try {
-const cred = await signInWithEmailAndPassword(auth, email, pass);
-if (!cred.user.emailVerified) {
-await sendEmailVerification(cred.user, { url: window.location.href, handleCodeInApp: true });
-await signOut(auth);
-$('log-err').innerHTML = `✉️ Подтвердите почту.<br>Новая ссылка отправлена.`; return;
-}
-const ud = await getDoc(doc(db, 'artifacts/byrmalda-prod/users', cred.user.uid));
-if (ud.exists() && ud.data().isBlocked) { await signOut(auth); showBlock(); return; }
-closeModal('login-modal');
-} catch(e) { $('log-err').textContent = 'Неверный email или пароль'; }
-};
-window.regStep1 = async () => {
-const email = $('reg-email').value.trim(), name = $('reg-name').value.trim(), p1 = $('reg-pass').value, p2 = $('reg-pass2').value;
-$('reg-err').textContent = '';
-if (!email || !name || !p1 || !p2) { $('reg-err').textContent = 'Заполните все поля'; return; }
-if (p1 !== p2) { $('reg-err').textContent = 'Пароли не совпадают'; return; }
-try { 
-const cred = await createUserWithEmailAndPassword(auth, email, p1);
-await sendEmailVerification(cred.user, {
-url: window.location.href,
-handleCodeInApp: true
+const userSnap = await getDoc(doc(db, 'artifacts/byrmalda-prod/users', uid));
+if (!userSnap.exists()) return { allowed: true, used: 0, max: 1 };
+const u = userSnap.data();
+const level = getCreatorLevel(u.creatorApprovedCount || 0);
+const limit = getCreatorLimit(level);
+const now = Date.now();
+const lastReset = u.creatorLimitLastReset || 0;
+const nextReset = getNextResetMSK();
+if (now >= nextReset || now - lastReset > limit.periodDays * 24 * 60 * 60 * 1000) {
+await updateDoc(doc(db, 'artifacts/byrmalda-prod/users', uid), {
+creatorLimitUsed: 0,
+creatorLimitLastReset: nextReset
 });
-showStep(2); 
+return { allowed: true, used: 0, max: limit.max, nextReset };
 }
-catch(e) { $('reg-err').textContent = e.code === 'auth/email-already-in-use' ? 'Email уже зарегистрирован. Войдите.' : 'Ошибка: '+e.message; }
-};
-window.regStep2 = async () => {
+const used = u.creatorLimitUsed || 0;
+return { allowed: used < limit.max, used, max: limit.max, nextReset };
+} catch(e) { console.error('checkCreatorLimit:', e); return { allowed: true, used: 0, max: 1 }; }
+}
+async function useCreatorLimit(uid) {
 try {
-await auth.currentUser.reload();
-if (auth.currentUser.emailVerified) {
-await updateProfile(auth.currentUser, { displayName: $('reg-name').value });
-await createUserDoc(); $('reg-step-2').classList.add('hidden'); $('reg-ok').classList.remove('hidden');
-} else { $('reg-err').textContent = 'Почта ещё не подтверждена. Проверьте письмо.'; }
-} catch(e) { $('reg-err').textContent = 'Ошибка: '+e.message; }
-};
-function showStep(n) { [1,2].forEach(i => $(`reg-step-${i}`).classList.add('hidden')); $('reg-ok').classList.add('hidden'); $(`reg-step-${n}`).classList.remove('hidden'); }
-
-window.confirmLogout = () => { if (!user) openModal('login-modal'); else openModal('logout-confirm-modal'); };
-window.doLogout = async () => { closeModal('logout-confirm-modal'); await signOut(auth); userData = null; loadCartCount(); navigate('home'); };
-window.logoutFromBan = async () => { await signOut(auth); hide($('ban-overlay')); userData = null; resetAuthUI(); navigate('home'); };
-function showBlock() {
-const m = document.createElement('div'); m.className = 'modal active';
-m.innerHTML = `<div class="modal-content text-center"><h3 style="margin-bottom:12px">🚫 Аккаунт заблокирован</h3><p style="color:var(--text-dim);margin-bottom:20px">Разблокировка: <a href="https://t.me/fueum" target="_blank" style="color:#0088cc;font-weight:600">@fueum</a></p><button class="btn" onclick="this.closest('.modal').remove()">Понятно</button></div>`;
-document.body.appendChild(m); m.onclick = e => { if (e.target === m) m.remove(); };
+const userSnap = await getDoc(doc(db, 'artifacts/byrmalda-prod/users', uid));
+if (!userSnap.exists()) return;
+const u = userSnap.data();
+const level = getCreatorLevel(u.creatorApprovedCount || 0);
+const limit = getCreatorLimit(level);
+const now = Date.now();
+const nextReset = getNextResetMSK();
+let lastReset = u.creatorLimitLastReset || 0;
+if (now >= nextReset || now - lastReset > limit.periodDays * 24 * 60 * 60 * 1000) {
+lastReset = nextReset;
 }
-
-window.navigate = page => {
-if (userData?.isBanned && page !== 'profile') { alert('❌ Ваш аккаунт заблокирован'); return; }
-document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-$(page).classList.add('active');
-document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-const nb = $(`nav-${page}`); if (nb) nb.classList.add('active');
-if (page==='cart') renderCart(); if (page==='catalog') genCatalog();
-if (page==='search') $('search-input').value='';
-if (page==='profile' && user) { loadOrders(); renderDelivery(); checkAndShowBan(); }
-if (page==='reviews') loadPublicReviews();
-if (page==='admin' && user?.email===ADMIN_EMAIL) loadAdminPanels();
-if (window.innerWidth <= 1024) $('sidebar').classList.remove('expanded');
-if (page==='support') { chatUnread=0; updateSupportBadge(); loadChat(); }
-};
-window.openModal = id => $(id).classList.add('active'); window.closeModal = id => $(id).classList.remove('active');
-document.querySelectorAll('.modal').forEach(m => m.onclick = e => { if (e.target===m) m.classList.remove('active'); });
+await updateDoc(doc(db, 'artifacts/byrmalda-prod/users', uid), {
+creatorLimitUsed: (u.creatorLimitUsed || 0) + 1,
+creatorLimitLastReset: lastReset
+});
+} catch(e) { console.error('useCreatorLimit:', e); }
+}
+function formatLimitDisplay(used, max, nextReset) {
+const resetDate = new Date(nextReset);
+const resetStr = `${resetDate.getDate()}.${resetDate.getMonth()+1} в 00:00 МСК`;
+return `${used}/${max} • Обновится: ${resetStr}`;
+}
+async function renderCreatorLimit() {
+if (!user) { hide($('creator-limit-display')); return; }
+const limit = await checkCreatorLimit(user.uid);
+const limitDiv = $('creator-limit-display');
+limitDiv.textContent = formatLimitDisplay(limit.used, limit.max, limit.nextReset);
+show(limitDiv);
+}
 
 // 🔁 ФУНКЦИИ ДЛЯ АВАТАРКИ ЧЕРЕЗ НАСТРОЙКИ
 window.openAvatarSettingsModal = () => {
@@ -1380,10 +1397,7 @@ if (!user) { openModal('login-modal'); return; }
 openModal('avatar-settings-modal');
 };
 window.validateSingleFile = (input) => {
-if (input.files.length > 1) {
-alert('Можно загрузить только 1 изображение');
-input.value = '';
-}
+if (input.files.length > 1) { alert('Можно загрузить только 1 изображение'); input.value = ''; }
 };
 window.submitAvatarFromSettings = async () => {
 const file = $('av-settings-file').files[0];
@@ -1422,6 +1436,29 @@ closeModal('avatar-modal');
 loadPendingAvatars();
 } catch(e) { console.error(e); alert('❌ Ошибка: '+e.message); }
 };
+
+// 🔁 ОКНО ИНФОРМАЦИИ О КРЕАТОРСТВЕ
+window.openCreatorInfoModal = () => {
+if (!user) { openModal('login-modal'); return; }
+openModal('creator-info-modal');
+};
+
+window.navigate = page => {
+if (userData?.isBanned && page !== 'profile') { alert('❌ Ваш аккаунт заблокирован'); return; }
+document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+$(page).classList.add('active');
+document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+const nb = $(`nav-${page}`); if (nb) nb.classList.add('active');
+if (page==='cart') renderCart(); if (page==='catalog') genCatalog();
+if (page==='search') $('search-input').value='';
+if (page==='profile' && user) { loadOrders(); renderDelivery(); checkAndShowBan(); renderCreatorLimit(); }
+if (page==='reviews') loadPublicReviews();
+if (page==='admin' && user?.email===ADMIN_EMAIL) loadAdminPanels();
+if (window.innerWidth <= 1024) $('sidebar').classList.remove('expanded');
+if (page==='support') { chatUnread=0; updateSupportBadge(); loadChat(); }
+};
+window.openModal = id => $(id).classList.add('active'); window.closeModal = id => $(id).classList.remove('active');
+document.querySelectorAll('.modal').forEach(m => m.onclick = e => { if (e.target===m) m.classList.remove('active'); });
 
 // 🛒 КОРЗИНА
 window.addToCart = async () => {
@@ -1472,7 +1509,7 @@ renderCart(); loadCartCount();
 
 // 🔍 КАТАЛОГ & ПОИСК
 function genCatalog() {
-const cats = [{id:'tshirts',n:'Футболки',ic:'T-shirts',t:'футболка'},{id:'hoodies',n:'Толстовки',ic:'hoodie',t:'толстовка'},{id:'longsleeve',n:'Лонгсливы',ic:'longsleeves',t:'лонгслив'},{id:'sneakers',n:'Кроссовки',ic:'sneakers',t:'кроссовки'},{id:'acc',n:'Аксессуары',ic:'accessories',t:'аксессуар'},{id:'pants',n:'Штаны',ic:'Pants',t:'штаны'},{id:'shorts',n:'Шорты',ic:'Shorts',t:'шорты'},{id:'jackets',n:'Куртки',ic:'Jackets',t:'куртка'},{id:'archive',n:'Архив',ic:'📁',t:'archive'}];
+const cats = [{id:'tshirts',n:'Футболки',ic:'👕',t:'футболка'},{id:'hoodies',n:'Толстовки',ic:'🧥',t:'толстовка'},{id:'longsleeve',n:'Лонгсливы',ic:'👕',t:'лонгслив'},{id:'sneakers',n:'Кроссовки',ic:'👟',t:'кроссовки'},{id:'acc',n:'Аксессуары',ic:'🎒',t:'аксессуар'},{id:'pants',n:'Штаны',ic:'👖',t:'штаны'},{id:'shorts',n:'Шорты',ic:'🩳',t:'шорты'},{id:'jackets',n:'Куртки',ic:'🧥',t:'куртка'},{id:'archive',n:'Архив',ic:'📁',t:'archive'}];
 $('catalog-grid').innerHTML = cats.map(c => `<div class="cat-card" onclick="filterType('${c.t}')"><div class="card-img">${c.ic}</div><div class="card-body"><div class="card-title">${c.n}</div></div></div>`).join('');
 }
 window.filterType = async type => { navigate('search'); $('search-input').value=type; await searchProds(type); };
@@ -1482,8 +1519,6 @@ const c = $('search-results');
 c.innerHTML = '<div class="text-center" style="padding:32px"><div class="loading"></div></div>';
 try {
 let coll = collection(db, 'artifacts/byrmalda-prod/public/data/products');
-
-// 🔁 Архив — отдельная логика
 if (q === 'archive') {
 const snap = await getDocs(query(coll, where('deleted','==',true)));
 const res = []; snap.forEach(d => res.push({...d.data(),id:d.id}));
@@ -1491,32 +1526,22 @@ if (!res.length) { c.innerHTML = '<div class="text-center" style="padding:32px;c
 c.innerHTML = res.map(p => prodCard(p)).join('');
 return;
 }
-
-// 🔁 Список точных типов для фильтрации (должны совпадать с полем "Тип" при создании товара!)
 const filterTypes = ['футболка','толстовка','кроссовки','аксессуар','штаны','шорты','куртка','лонгслив'];
 const isExactFilter = filterTypes.includes(q.toLowerCase());
-
 let snap;
 if (isExactFilter) {
-// 🔁 ТОЧНЫЙ поиск по полю type (только товары с этим типом)
 snap = await getDocs(query(coll, where('published','==',true), where('deleted','==',false), where('type','==',q)));
 } else {
-// 🔁 Обычный поиск по всем полям (для произвольных запросов)
 snap = await getDocs(query(coll, where('published','==',true), where('deleted','==',false)));
 }
-
 const res = [];
 if (isExactFilter) {
-// При точном поиске все результаты уже отфильтрованы по type
 snap.forEach(d => res.push({...d.data(),id:d.id}));
 } else {
-// При обычном поиске фильтруем по всем полям на клиенте
 snap.forEach(d => { const p = d.data(); if (`${p.name} ${p.type} ${p.category} ${p.desc}`.toLowerCase().includes(q)) res.push({...p,id:d.id}); });
 }
-
 if (!res.length) { c.innerHTML = `<div class="text-center" style="padding:32px;color:var(--text-dim)">Ничего не найдено</div>`; return; }
 c.innerHTML = res.map(p => prodCard(p)).join('');
-
 } catch(e) { console.error(e); c.innerHTML = '<div class="text-center" style="padding:32px;color:var(--error)">Ошибка</div>'; }
 }
 function prodCard(p) {
@@ -1524,13 +1549,40 @@ const stock=p.stock>0;
 return `<div class="prod-card" onclick="openProd('${p.id}')"><div class="card-img">${p.images?.[0]?`<img src="${p.images[0]}" style="width:100%;height:100%;object-fit:cover">`:'📦'}</div><div class="card-body"><div class="card-title">${p.name}</div><div class="card-price ${stock?'':'card-nostock'}">${stock?`$${p.price}`:'Нет в наличии'}</div></div></div>`;
 }
 
-// 📦 КАРТОЧКА ТОВАРА
+// 📦 КАРТОЧКА ТОВАРА С УЧЁТОМ КРЕАТОРСТВА
 window.openProd = async id => {
 try {
 const snap = await getDoc(doc(db, 'artifacts/byrmalda-prod/public/data/products', id));
 if (!snap.exists()) return alert('Товар не найден');
 curProd = { ...snap.data(), id };
 $('p-id').textContent = `ID: ${curProd.productId || id}`; $('p-name').textContent = curProd.name;
+// 🔁 ПРЕДУПРЕЖДЕНИЕ О ТОВАРЕ ОТ ПОЛЬЗОВАТЕЛЯ
+const warningDiv = $('p-user-warning');
+if (curProd.fromUser) {
+warningDiv.classList.remove('hidden');
+warningDiv.innerHTML = '⚠️ Этот товар создавал пользователь, просьба относиться с осторожностью к покупке товара.';
+if (curProd.adminEdited) {
+warningDiv.innerHTML += '<br><span class="admin-edited-notice">✏️ Карточка была отредактирована админом</span>';
+}
+} else {
+warningDiv.classList.add('hidden');
+}
+// 🔁 СКИДКА ДЛЯ КРЕАТОРА 5 УРОВНЯ
+const discountDiv = $('p-creator-discount');
+if (userData?.creatorLevel === 5 && curProd.category) {
+let discount = 0, discountText = '';
+if (curProd.category === 'footwear') { discount = 10; discountText = 'скидка для креатора 5 уровня: -10% на обувь'; }
+else if (curProd.category === 'clothing') { discount = 15; discountText = 'скидка для креатора 5 уровня: -15% на одежду'; }
+else { discount = 25; discountText = 'скидка для креатора 5 уровня: -25% на всё'; }
+const originalPrice = curProd.price;
+const discountedPrice = originalPrice * (1 - discount/100);
+$('p-price-usd').textContent = `$${discountedPrice.toFixed(2)} <span style="font-size:18px;color:var(--text-dim);text-decoration:line-through">$${originalPrice}</span>`;
+discountDiv.textContent = discountText;
+discountDiv.classList.remove('hidden');
+} else {
+$('p-price-usd').textContent = `$${curProd.price}`;
+discountDiv.classList.add('hidden');
+}
 const colors=(curProd.color||'Белый').split(',').map(c=>c.trim()).filter(c=>c);
 const sizes=(curProd.sizes||'S,M,L,XL').split(',').map(s=>s.trim()).filter(s=>s);
 const colorGroup=$('opt-color-group');
@@ -1541,7 +1593,7 @@ if(sizes.length===1) sizeGroup.innerHTML=`<label class="form-label">Размер
 else { sizeGroup.innerHTML=`<label class="form-label">Размер</label><select class="opt-select" id="p-size"></select>`; $('p-size').innerHTML=sizes.map(s=>`<option>${s}</option>`).join(''); }
 $('p-specs').innerHTML=`<div class="spec-row"><span class="spec-l">Для кого</span><span class="spec-v">${curProd.audience||'Унисекс'}</span></div><div class="spec-row"><span class="spec-l">Тип</span><span class="spec-v">${curProd.type}</span></div><div class="spec-row"><span class="spec-l">Материал</span><span class="spec-v">${curProd.material||'-'}</span></div><div class="spec-row"><span class="spec-l">Коллаборация</span><span class="spec-v">${curProd.collab||'Нет'}</span></div><div class="spec-row"><span class="spec-l">Масса</span><span class="spec-v">${curProd.weight||'-'} г</span></div><div class="spec-row"><span class="spec-l">Год релиза</span><span class="spec-v">${curProd.year||'-'}</span></div><div class="spec-row"><span class="spec-l">В наличии</span><span class="spec-v">${curProd.stock} шт</span></div>`;
 $('p-desc').textContent = curProd.desc || '';
-$('p-price-usd').textContent = `$${curProd.price}`; $('p-price-conv').textContent = `≈ ${Math.round(curProd.price*RATES.USD_TO_RUB).toLocaleString('ru-RU')} ₽ / ≈ ${Math.round(curProd.price*RATES.USD_TO_UAH).toLocaleString('ru-RU')} ₴`;
+$('p-price-conv').textContent = `≈ ${Math.round(curProd.price*RATES.USD_TO_RUB).toLocaleString('ru-RU')} ₽ / ≈ ${Math.round(curProd.price*RATES.USD_TO_UAH).toLocaleString('ru-RU')} ₴`;
 const stockEl=$('p-stock'), btn=$('p-action'), opts=$('p-options'), delNotice=$('p-deleted-notice');
 if (curProd.deleted) { delNotice.classList.remove('hidden'); btn.textContent='Удален'; btn.disabled=true; hide(opts); }
 else if (curProd.stock>0) { delNotice.classList.add('hidden'); stockEl.innerHTML='<span class="in-stock">✓ В наличии</span>'; btn.textContent='Купить'; btn.disabled=false; btn.onclick=()=>addToCart(); show(opts); }
@@ -1605,7 +1657,7 @@ if(st!=='Ожидает оплату'&&st!=='Создан'){alert('❌ Нель�
 await updateDoc(doc(db,'artifacts/byrmalda-prod/public/data/orders',oid),{status:'Отменён',updatedAt:serverTimestamp()}); loadOrders();
 };
 
-// 💬 ЧАТ - ПОЛНОСТЬЮ ИСПРАВЛЕННАЯ ЛОГИКА
+// 💬 ЧАТ
 async function loadChat() {
 if(!user)return; const c=$('chat-msgs'); c.innerHTML='<div class="text-center" style="padding:24px"><div class="loading"></div></div>';
 try {
@@ -1619,16 +1671,13 @@ c.scrollTop=c.scrollHeight;
 function addMsgToUI(m) {
 const isU=m.uid===user?.uid, el=document.createElement('div');
 el.className=`msg ${m.isAdmin?'admin':isU?'user':'admin'}`;
-// 🔁 ИСПРАВЛЕНО: показываем ПОЛНЫЙ UID под сообщением пользователя
 let meta = '';
 if (m.isAdmin) {
 meta = 'Администратор';
 if (m.replyTo) meta += `<span class="msg-target">→ ${m.replyTo.substring(0,8)}...</span>`;
 } else {
-// 🔁 Для пользователя: показываем [UID: полный_айди] • время
 meta = `[UID: ${m.uid}]`;
 }
-// 🔁 Время в формате 04:10
 const time = m.ts?.toDate?.()?.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'}) || '';
 el.innerHTML = `${m.text}<div class="msg-meta">${meta} • ${time}</div>`;
 $('chat-msgs').appendChild(el); $('chat-msgs').scrollTop=$('chat-msgs').scrollHeight;
@@ -1636,14 +1685,10 @@ if(!$('support').classList.contains('active') && !isU) { chatUnread++; updateSup
 }
 window.sendMsg = async () => {
 const txt=$('chat-input').value.trim(); if(!txt||!user)return;
-// 🔁 ПАРСИНГ @UID_пользователя для ответа
 let replyTo = null, displayText = txt;
 if (user.email === ADMIN_EMAIL) {
 const match = txt.match(/^@([A-Za-z0-9_-]+)\s+(.+)/);
-if (match) {
-replyTo = match[1];
-displayText = match[2];
-}
+if (match) { replyTo = match[1]; displayText = match[2]; }
 }
 const msg={uid:user.uid,name:userData?.name||user.email.split('@')[0],text:displayText,ts:serverTimestamp(),isAdmin:user.email===ADMIN_EMAIL,replyTo:replyTo};
 await addDoc(collection(db,'artifacts/byrmalda-prod/public/data/support'),msg); $('chat-input').value=''; addMsgToUI({...msg,ts:new Date()});
@@ -1705,6 +1750,7 @@ renderDelivery(); closeModal('delivery-modal');
 async function loadAdminPanels(){loadPendingReviews();loadPendingAvatars();loadPendingSuggestions();loadReports();loadMaintenanceStatus();}
 window.toggleCollabInput=()=>{if($('adm-collab-type').value==='yes')show($('adm-collab-group'));else hide($('adm-collab-group'));};
 window.toggleEditCollabInput=()=>{if($('edit-collab-type').value==='yes')show($('edit-collab-group'));else hide($('edit-collab-group'));};
+window.toggleSuggestCollabInput=()=>{if($('sug-collab-type').value==='yes')show($('sug-collab-group'));else hide($('sug-collab-group'));};
 window.admCreateProduct=async()=>{
 const name=$('adm-name').value.trim(),cat=$('adm-cat').value,type=$('adm-type').value.trim(),price=parseFloat($('adm-price').value),stock=parseInt($('adm-stock').value),weight=parseInt($('adm-weight').value),aud=$('adm-aud').value,mat=$('adm-mat').value.trim(),color=$('adm-color').value.trim(),sizes=$('adm-sizes').value.trim()||'S,M,L,XL',year=parseInt($('adm-year').value)||2026,collabType=$('adm-collab-type').value,collabName=$('adm-collab-name').value.trim(),desc=$('adm-desc').value.trim();
 if(!name||!type||isNaN(price)||isNaN(stock)||isNaN(weight)){alert('Заполните обязательные поля');return;}
@@ -1795,20 +1841,157 @@ c.innerHTML=snap.docs.map(d=>{const u=d.data();return `<div class="mod-item flex
 window.admApproveAvatar=async(uid,url)=>{await updateDoc(doc(db,'artifacts/byrmalda-prod/users',uid),{avatar:url,avatarPending:null,avatarStatus:'approved'});loadPendingAvatars();};
 window.admRejectAvatar=async uid=>{await updateDoc(doc(db,'artifacts/byrmalda-prod/users',uid),{avatarPending:null,avatarStatus:'rejected'});loadPendingAvatars();};
 
+// 🔁 ПРЕДЛОЖЕНИЯ ТОВАРОВ - ПОЛНАЯ ФОРМА В АДМИНКЕ
 async function loadPendingSuggestions(){
 const c=$('adm-suggestions');c.innerHTML='<div class="text-center"><div class="loading"></div></div>';
 if(user?.email!==ADMIN_EMAIL){c.innerHTML='Доступ только для администратора';return;}
 const snap=await getDocs(query(collection(db,'artifacts/byrmalda-prod/public/data/suggestions'),where('status','==','pending')));
-c.innerHTML=snap.docs.map(d=>{const s=d.data();return `<div class="mod-item"><div style="font-weight:500;margin-bottom:6px">${s.name}</div><div style="font-size:13px;color:var(--text-dim)">${s.type} • $${s.price} • ${s.category}</div><div class="actions"><button class="btn btn-success btn-sm" onclick="admApproveSuggestion('${d.id}')">Одобрить</button><button class="btn btn-danger btn-sm" onclick="admRejectSuggestion('${d.id}')">Отклонить</button></div></div>`;}).join('')||'Нет предложений';
+c.innerHTML=snap.docs.map(d=>{const s=d.data();
+return `<div class="mod-item">
+<div style="font-weight:600;margin-bottom:8px">${s.name} <span style="font-size:11px;color:#1976d2;background:#e3f2fd;padding:2px 8px;border-radius:10px">от ${s.userName||'пользователя'}</span></div>
+<div style="font-size:12px;color:var(--text-dim);margin:4px 0"><strong>UID:</strong> ${s.uid}</div>
+<div style="font-size:12px;color:var(--text-dim);margin:4px 0"><strong>Категория:</strong> ${s.category==='clothing'?'Одежда':'Обувь'} • <strong>Тип:</strong> ${s.type}</div>
+<div style="font-size:12px;color:var(--text-dim);margin:4px 0"><strong>Цена:</strong> $${s.price} • <strong>В наличии:</strong> ${s.stock||10} шт • <strong>Масса:</strong> ${s.weight||200}г</div>
+<div style="font-size:12px;color:var(--text-dim);margin:4px 0"><strong>Для кого:</strong> ${s.audience||'Унисекс'} • <strong>Размеры:</strong> ${s.sizes||'-'} • <strong>Цвет:</strong> ${s.color||'-'}</div>
+<div style="font-size:12px;color:var(--text-dim);margin:4px 0"><strong>Материал:</strong> ${s.material||'-'} • <strong>Год:</strong> ${s.year||'-'} • <strong>Коллаб:</strong> ${s.collab||'Нет'}</div>
+${s.img?`<img src="${s.img}" style="width:100%;max-height:200px;object-fit:cover;border-radius:4px;margin:8px 0">`:''}
+<div style="font-size:13px;color:var(--text-dim);margin:8px 0"><strong>Описание:</strong><br>${s.desc||'-'}</div>
+<div class="actions">
+<button class="btn btn-outline btn-sm" onclick="admEditSuggestion('${d.id}')">✏️ Редактировать</button>
+<button class="btn btn-success btn-sm" onclick="admApproveSuggestion('${d.id}')">✅ Одобрить</button>
+<button class="btn btn-danger btn-sm" onclick="admRejectSuggestion('${d.id}')">❌ Отклонить</button>
+</div>
+</div>`;
+}).join('')||'Нет предложений';
 }
-window.admApproveSuggestion=async id=>{
-const snap=await getDoc(doc(db,'artifacts/byrmalda-prod/public/data/suggestions',id));if(!snap.exists())return;const s=snap.data();
-await addDoc(collection(db,'artifacts/byrmalda-prod/public/data/products'),{productId:genId(),name:s.name,category:s.category,type:s.type,price:s.price,stock:10,weight:s.weight||200,audience:s.audience||'unisex',material:s.material||'',color:s.color||'',sizes:s.sizes||'S,M,L',collab:s.collab||'Нет',year:new Date().getFullYear(),desc:s.desc||'',images:s.img?[s.img]:[],published:true,deleted:false,createdAt:serverTimestamp()});
-await updateDoc(doc(db,'artifacts/byrmalda-prod/public/data/suggestions',id),{status:'approved'});loadPendingSuggestions();alert('✅ Опубликовано');
+// 🔁 РЕДАКТИРОВАНИЕ ПРЕДЛОЖЕНИЯ
+window.admEditSuggestion = async (id) => {
+const snap = await getDoc(doc(db, 'artifacts/byrmalda-prod/public/data/suggestions', id));
+if (!snap.exists()) return;
+const s = snap.data();
+// Заполняем форму редактирования товара данными предложения
+$('adm-edit-id').value = id;
+$('edit-name').value = s.name || '';
+$('edit-cat').value = s.category || 'clothing';
+$('edit-type').value = s.type || '';
+$('edit-price').value = s.price || '';
+$('edit-stock').value = s.stock || 10;
+$('edit-weight').value = s.weight || 200;
+$('edit-aud').value = s.audience || 'unisex';
+$('edit-mat').value = s.material || '';
+$('edit-color').value = s.color || '';
+$('edit-sizes').value = s.sizes || 'S,M,L,XL';
+$('edit-year').value = s.year || new Date().getFullYear();
+$('edit-desc').value = s.desc || '';
+if (s.collab && s.collab !== 'Нет') {
+$('edit-collab-type').value = 'yes';
+$('edit-collab-name').value = s.collab.replace('Да, ', '');
+show($('edit-collab-group'));
+} else {
+$('edit-collab-type').value = 'no';
+hide($('edit-collab-group'));
+}
+$('edit-current-photos').innerHTML = s.img ? `<img src="${s.img}" style="width:40px;height:40px;object-fit:cover;border-radius:4px">` : 'Нет фото';
+$('adm-edit-form').dataset.docId = id;
+$('adm-edit-form').dataset.isSuggestion = 'true';
+$('adm-edit-form').dataset.suggestionId = id;
+show($('adm-edit-form'));
+alert('📝 Заполните форму как для обычного товара. После сохранения нажмите "Одобрить" в списке предложений.');
 };
-window.admRejectSuggestion=async id=>{await deleteDoc(doc(db,'artifacts/byrmalda-prod/public/data/suggestions',id));loadPendingSuggestions();};
-window.openSuggest=()=>{if(!user)openModal('login-modal');else openModal('suggest-modal');};
-window.submitSuggestion=async()=>{const n=$('sug-name').value.trim(),c=$('sug-cat').value,t=$('sug-type').value.trim(),p=parseFloat($('sug-price').value);if(!n||!t||isNaN(p)){alert('Заполните поля');return;}let url='';const f=$('sug-img').files[0];if(f){const fd=new FormData();fd.append('image',f);fd.append('key',IMGBB_KEY);const res=await fetch('https://api.imgbb.com/1/upload',{method:'POST',body:fd});const d=await res.json();if(d.success)url=d.data.url;}await addDoc(collection(db,'artifacts/byrmalda-prod/public/data/suggestions'),{uid:user.uid,userName:userData?.name||user.email.split('@')[0],name:n,category:c,type:t,price:p,img:url,audience:$('sug-aud').value,sizes:$('sug-sizes').value,material:$('sug-mat').value,desc:$('sug-desc').value,status:'pending',ts:serverTimestamp()});alert('✅ Отправлено');closeModal('suggest-modal');loadPendingSuggestions();};
+// 🔁 ОДОБРЕНИЕ ПРЕДЛОЖЕНИЯ
+window.admApproveSuggestion = async (id) => {
+const snap = await getDoc(doc(db, 'artifacts/byrmalda-prod/public/data/suggestions', id));
+if (!snap.exists()) return;
+const s = snap.data();
+const wasEdited = $('adm-edit-form').dataset.isSuggestion === 'true' && $('adm-edit-form').dataset.suggestionId === id;
+// Создаём товар
+const prod = {
+productId: genId(),
+name: s.name, category: s.category, type: s.type, price: s.price,
+stock: s.stock || 10, weight: s.weight || 200, audience: s.audience || 'unisex',
+material: s.material || '', color: s.color || '', sizes: s.sizes || 'S,M,L',
+collab: s.collab || 'Нет', year: s.year || new Date().getFullYear(),
+desc: s.desc || '', images: s.img ? [s.img] : [],
+published: true, deleted: false,
+fromUser: true, suggestedBy: s.uid,
+adminEdited: wasEdited,
+createdAt: serverTimestamp()
+};
+await addDoc(collection(db, 'artifacts/byrmalda-prod/public/data/products'), prod);
+// Обновляем статистику пользователя
+const userSnap = await getDoc(doc(db, 'artifacts/byrmalda-prod/users', s.uid));
+if (userSnap.exists()) {
+const u = userSnap.data();
+const newCount = (u.creatorApprovedCount || 0) + (wasEdited ? 0 : 1);
+const newLevel = getCreatorLevel(newCount);
+const updateData = {
+creatorApprovedCount: newCount,
+creatorLevel: newLevel
+};
+// 🔁 СБРОС СЧЁТЧИКА ПРИ ПЕРЕХОДЕ НА НОВЫЙ УРОВЕНЬ
+const oldLevel = getCreatorLevel(u.creatorApprovedCount || 0);
+if (newLevel > oldLevel) {
+updateData.creatorApprovedCount = 0; // сброс для честного прогресса
+}
+await updateDoc(doc(db, 'artifacts/byrmalda-prod/users', s.uid), updateData);
+// 🔁 УВЕДОМЛЕНИЕ ПОЛЬЗОВАТЕЛЯ О НОВОМ УРОВНЕ
+if (newLevel > oldLevel && !wasEdited) {
+const rewards = {
+1: 'синий ник и статус креатора',
+2: 'жёлтый ник',
+3: 'зелёный ник',
+4: 'красный ник',
+5: 'переливающийся ник + скидки до 25%'
+};
+alert(`🎉 Пользователь ${s.userName} получил уровень ${newLevel} креатора! (${rewards[newLevel]})`);
+}
+}
+// Удаляем заявку
+await updateDoc(doc(db, 'artifacts/byrmalda-prod/public/data/suggestions', id), { status: 'approved' });
+loadPendingSuggestions();
+alert('✅ Товар опубликован!');
+};
+window.admRejectSuggestion = async (id) => {
+await deleteDoc(doc(db, 'artifacts/byrmalda-prod/public/data/suggestions', id));
+loadPendingSuggestions();
+};
+window.openSuggest = async () => {
+if (!user) { openModal('login-modal'); return; }
+// 🔁 ПРОВЕРКА ЛИМИТА
+const limit = await checkCreatorLimit(user.uid);
+if (!limit.allowed) {
+alert(`❌ Лимит исчерпан: ${limit.used}/${limit.max}
+${formatLimitDisplay(limit.used, limit.max, limit.nextReset)}`);
+return;
+}
+openModal('suggest-modal');
+};
+window.submitSuggestion = async () => {
+if (!user) { openModal('login-modal'); return; }
+// 🔁 ПРОВЕРКА ЛИМИТА ПЕРЕД ОТПРАВКОЙ
+const limit = await checkCreatorLimit(user.uid);
+if (!limit.allowed) {
+alert(`❌ Лимит исчерпан: ${limit.used}/${limit.max}
+${formatLimitDisplay(limit.used, limit.max, limit.nextReset)}`);
+return;
+}
+const n=$('sug-name').value.trim(),c=$('sug-cat').value,t=$('sug-type').value.trim(),p=parseFloat($('sug-price').value),stock=parseInt($('sug-stock').value)||10,weight=parseInt($('sug-weight').value)||200;
+if(!n||!t||isNaN(p)){alert('Заполните обязательные поля');return;}
+let url='';const f=$('sug-img').files[0];if(f){const fd=new FormData();fd.append('image',f);fd.append('key',IMGBB_KEY);const res=await fetch('https://api.imgbb.com/1/upload',{method:'POST',body:fd});const d=await res.json();if(d.success)url=d.data.url;}
+const collabType=$('sug-collab-type').value,collabName=$('sug-collab-name').value.trim(),collab=collabType==='yes'&&collabName?`Да, ${collabName}`:'Нет';
+await addDoc(collection(db,'artifacts/byrmalda-prod/public/data/suggestions'),{
+uid:user.uid,userName:userData?.name||user.email.split('@')[0],name:n,category:c,type:t,price:p,
+stock,weight,audience:$('sug-aud').value,sizes:$('sug-sizes').value,color:$('sug-color').value,
+material:$('sug-mat').value,desc:$('sug-desc').value,year:parseInt($('sug-year').value)||new Date().getFullYear(),
+collab,img:url,status:'pending',ts:serverTimestamp()
+});
+// 🔁 СПИСЫВАЕМ ПОПЫТКУ
+await useCreatorLimit(user.uid);
+alert('✅ Отправлено на модерацию!');
+closeModal('suggest-modal');
+loadPendingSuggestions();
+renderCreatorLimit();
+};
 
 async function loadReports(){
 const c=$('adm-reports');c.innerHTML='<div class="text-center"><div class="loading"></div></div>';
@@ -1824,18 +2007,11 @@ if (user?.email !== ADMIN_EMAIL) return;
 try {
 const snap = await getDoc(doc(db, 'artifacts/byrmalda-prod/config/maintenance'));
 const statusDiv = $('maint-status');
-if (!snap.exists()) {
-statusDiv.innerHTML = '📋 Расписание не настроено';
-return;
-}
+if (!snap.exists()) { statusDiv.innerHTML = '📋 Расписание не настроено'; return; }
 const cfg = snap.data();
 const startStr = new Date(cfg.startTimestamp).toLocaleString('ru-RU', { timeZone: 'Europe/Moscow' });
 const endStr = new Date(cfg.endTimestamp).toLocaleString('ru-RU', { timeZone: 'Europe/Moscow' });
-statusDiv.innerHTML = `
-<strong>Статус:</strong> ${cfg.enabled ? '✅ ВКЛЮЧЕН' : '❌ ВЫКЛЮЧЕН'}<br>
-<strong>Начало (МСК):</strong> ${startStr}<br>
-<strong>Окончание (МСК):</strong> ${endStr}
-`;
+statusDiv.innerHTML = `<strong>Статус:</strong> ${cfg.enabled ? '✅ ВКЛЮЧЕН' : '❌ ВЫКЛЮЧЕН'}<br><strong>Начало (МСК):</strong> ${startStr}<br><strong>Окончание (МСК):</strong> ${endStr}`;
 } catch(e) { console.error('loadMaintenanceStatus:', e); }
 }
 window.toggleMaintenance = async (enabled) => {
@@ -1858,12 +2034,7 @@ try {
 const startTs = parseDateTimeMSK(startDate, startTime);
 const endTs = parseDateTimeMSK(endDate, endTime);
 if (startTs >= endTs) { alert('Время начала должно быть раньше времени окончания'); return; }
-await setDoc(doc(db, 'artifacts/byrmalda-prod/config/maintenance'), {
-startTimestamp: startTs,
-endTimestamp: endTs,
-enabled: true,
-updatedAt: serverTimestamp()
-}, { merge: true });
+await setDoc(doc(db, 'artifacts/byrmalda-prod/config/maintenance'), { startTimestamp: startTs, endTimestamp: endTs, enabled: true, updatedAt: serverTimestamp() }, { merge: true });
 $('maint-saved').classList.remove('hidden');
 setTimeout(() => $('maint-saved').classList.add('hidden'), 3000);
 loadMaintenanceStatus();
@@ -1872,10 +2043,7 @@ loadMaintenanceStatus();
 window.emergencyStopMaintenance = async () => {
 if (!confirm('🚨 Экстренно выключить технический перерыв? Таймер будет сброшен.')) return;
 try {
-await updateDoc(doc(db, 'artifacts/byrmalda-prod/config/maintenance'), {
-enabled: false,
-emergencyStoppedAt: serverTimestamp()
-});
+await updateDoc(doc(db, 'artifacts/byrmalda-prod/config/maintenance'), { enabled: false, emergencyStoppedAt: serverTimestamp() });
 alert('✅ Технический перерыв экстренно выключен');
 loadMaintenanceStatus();
 if (maintenanceTimerInterval) clearInterval(maintenanceTimerInterval);
@@ -1883,13 +2051,121 @@ hide($('maintenance-overlay'));
 } catch(e) { console.error('emergencyStopMaintenance:', e); alert('❌ Ошибка: '+e.message); }
 };
 
+// 🔁 ЗАГРУЗКА ПОЛЬЗОВАТЕЛЯ С УЧЁТОМ КРЕАТОРСТВА
+async function loadUser() {
+if (!user) return;
+try {
+const snap = await getDoc(doc(db, 'artifacts/byrmalda-prod/users', user.uid));
+userData = snap.exists() ? snap.data() : await createUserDoc();
+renderProfile(); syncCartFromDB();
+// 🔁 ОБНОВЛЕНИЕ ЛИМИТА
+renderCreatorLimit();
+} catch(e) {
+console.error('loadUser:',e);
+if (e.code === 'permission-denied') { await createUserDoc(); loadUser(); }
+}
+}
+async function createUserDoc() {
+const d = {
+uid: user.uid, email: user.email, name: user.displayName || user.email.split('@')[0],
+avatar: null, avatarPending: null, registrationDate: serverTimestamp(),
+isBlocked: false, hasVerifiedProduct: false, language: 'ru', theme: 'light',
+reviewStatus: 'none', deliveryCountry: null, deliveryAddress: { cdek: null, ua: null, usa: null },
+cart: [], isBanned: false, banType: null, banUntil: null, banDuration: null,
+// 🔁 ПОЛЯ КРЕАТОРСТВА
+creatorLevel: 0, creatorApprovedCount: 0, creatorLimitUsed: 0, creatorLimitLastReset: 0
+};
+await setDoc(doc(db, 'artifacts/byrmalda-prod/users', user.uid), d, { merge: true });
+return d;
+}
+function renderProfile() {
+if (!userData) return;
+const nameEl = $('profile-name');
+nameEl.textContent = userData.name || 'Пользователь';
+// 🔁 ЦВЕТ НИКА В ЗАВИСИМОСТИ ОТ УРОВНЯ
+const level = userData.creatorLevel || 0;
+if (level > 0) {
+nameEl.classList.add('creator-name', getCreatorColorClass(level));
+} else {
+nameEl.classList.remove('creator-lvl1','creator-lvl2','creator-lvl3','creator-lvl4','creator-lvl5');
+}
+$('profile-id').textContent = user.uid.substring(0,10)+'...';
+$('profile-email').textContent = user.email;
+$('profile-date').textContent = fmtDate(userData.registrationDate);
+if (userData.avatar) $('avatar-display').innerHTML = `<img src="${userData.avatar}" style="width:100%;height:100%;object-fit:cover">`;
+if (userData.hasVerifiedProduct) $('profile-name').innerHTML = `<span class="verified">✓</span> ${userData.name}`;
+if (user) show($('delivery-section'));
+}
+function updateAuthUI() { $('auth-btn').textContent = 'Выйти'; $('auth-btn').onclick = () => openModal('logout-confirm-modal'); $('user-email').textContent = user.email; }
+function resetAuthUI() { $('auth-btn').textContent = 'Войти'; $('auth-btn').onclick = () => openModal('login-modal'); $('user-email').textContent = 'Не авторизован'; $('profile-name').textContent = 'Гость'; $('profile-id').textContent = '-'; $('profile-email').textContent = '-'; $('profile-date').textContent = '-'; $('avatar-display').innerHTML = '👤'; }
+
+window.openLogin = () => openModal('login-modal');
+window.switchReg = () => { closeModal('login-modal'); openModal('reg-modal'); showStep(1); };
+window.doLogin = async () => {
+const email = $('log-email').value.trim(), pass = $('log-pass').value; $('log-err').textContent = '';
+if (!email || !pass) { $('log-err').textContent = 'Заполните поля'; return; }
+try {
+const cred = await signInWithEmailAndPassword(auth, email, pass);
+if (!cred.user.emailVerified) {
+await sendEmailVerification(cred.user, { url: window.location.href, handleCodeInApp: true });
+await signOut(auth);
+$('log-err').innerHTML = `✉️ Подтвердите почту.<br>Новая ссылка отправлена.`; return;
+}
+const ud = await getDoc(doc(db, 'artifacts/byrmalda-prod/users', cred.user.uid));
+if (ud.exists() && ud.data().isBlocked) { await signOut(auth); showBlock(); return; }
+closeModal('login-modal');
+} catch(e) { $('log-err').textContent = 'Неверный email или пароль'; }
+};
+window.regStep1 = async () => {
+const email = $('reg-email').value.trim(), name = $('reg-name').value.trim(), p1 = $('reg-pass').value, p2 = $('reg-pass2').value;
+$('reg-err').textContent = '';
+if (!email || !name || !p1 || !p2) { $('reg-err').textContent = 'Заполните все поля'; return; }
+if (p1 !== p2) { $('reg-err').textContent = 'Пароли не совпадают'; return; }
+try { 
+const cred = await createUserWithEmailAndPassword(auth, email, p1);
+await sendEmailVerification(cred.user, { url: window.location.href, handleCodeInApp: true });
+showStep(2); 
+} catch(e) { $('reg-err').textContent = e.code === 'auth/email-already-in-use' ? 'Email уже зарегистрирован. Войдите.' : 'Ошибка: '+e.message; }
+};
+window.regStep2 = async () => {
+try {
+await auth.currentUser.reload();
+if (auth.currentUser.emailVerified) {
+await updateProfile(auth.currentUser, { displayName: $('reg-name').value });
+await createUserDoc(); $('reg-step-2').classList.add('hidden'); $('reg-ok').classList.remove('hidden');
+} else { $('reg-err').textContent = 'Почта ещё не подтверждена. Проверьте письмо.'; }
+} catch(e) { $('reg-err').textContent = 'Ошибка: '+e.message; }
+};
+function showStep(n) { [1,2].forEach(i => $(`reg-step-${i}`).classList.add('hidden')); $('reg-ok').classList.add('hidden'); $(`reg-step-${n}`).classList.remove('hidden'); $('reg-title').textContent = ['Регистрация','Подтверждение почты','Завершение'][n-1]; }
+
+window.confirmLogout = () => { if (!user) openModal('login-modal'); else openModal('logout-confirm-modal'); };
+window.doLogout = async () => { closeModal('logout-confirm-modal'); await signOut(auth); userData = null; loadCartCount(); navigate('home'); };
+window.logoutFromBan = async () => { await signOut(auth); hide($('ban-overlay')); userData = null; resetAuthUI(); navigate('home'); };
+function showBlock() {
+const m = document.createElement('div'); m.className = 'modal active';
+m.innerHTML = `<div class="modal-content text-center"><h3 style="margin-bottom:12px">🚫 Аккаунт заблокирован</h3><p style="color:var(--text-dim);margin-bottom:20px">Разблокировка: <a href="https://t.me/fueum" target="_blank" style="color:#0088cc;font-weight:600">@fueum</a></p><button class="btn" onclick="this.closest('.modal').remove()">Понятно</button></div>`;
+document.body.appendChild(m); m.onclick = e => { if (e.target === m) m.remove(); };
+}
+
 async function autoUpdateOrders(){
 if(user?.email!==ADMIN_EMAIL)return;try{const now=Date.now();const created=await getDocs(query(collection(db,'artifacts/byrmalda-prod/public/data/orders'),where('status','==','Создан')));created.forEach(async d=>{const o=d.data();if(o.adminChangedStatus)return;const t=o.createdAt?.toDate?.().getTime();if(t&&now-t>4*24*60*60*1000)await updateDoc(doc(db,'artifacts/byrmalda-prod/public/data/orders',d.id),{status:'Передача товара в доставку',updatedAt:serverTimestamp()});});const shipping=await getDocs(query(collection(db,'artifacts/byrmalda-prod/public/data/orders'),where('status','==','Передача товара в доставку')));shipping.forEach(async d=>{const o=d.data();if(o.adminChangedStatus)return;const t=o.updatedAt?.toDate?.().getTime();if(t&&now-t>15*60*60*1000)await updateDoc(doc(db,'artifacts/byrmalda-prod/public/data/orders',d.id),{status:'В пути',updatedAt:serverTimestamp()});});}catch(e){}
 }
 function setupListeners(){document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.modal.active').forEach(m=>m.classList.remove('active'));});}
 
-Object.assign(window, {navigate, openModal, closeModal, openLogin, switchReg, doLogin, regStep1, regStep2, openAvatarModal, submitAvatar, filterType, handleSearch, openProd, setGal, galNav, addToCart, updCart, delCart, checkout, confirmCheckout, cancelOrder, sendMsg, toggleTheme, toggleLang, openReviewModal, setRating, submitReview, openReport, submitReport, showSizeChart, admCreateProduct, admLoadProduct, admSaveProduct, admDeleteProduct, admBlockUser, admUnblockUser, admTempBanUser, admUnbanAfterUser, admFindOrder, admSetOrderStatus, admApproveReview, admRejectReview, admDeleteReview, admApproveAvatar, admRejectAvatar, admApproveSuggestion, admRejectSuggestion, openSuggest, submitSuggestion, toggleCollabInput, toggleEditCollabInput, openDeliveryModal, selectDelivery, saveDelivery, carouselNav, confirmLogout, doLogout, logoutFromBan, openAvatarSettingsModal, submitAvatarFromSettings, validateSingleFile, toggleMaintenance, saveMaintenanceSchedule, emergencyStopMaintenance});
-console.log('🚀 BYRMALDA loaded. Аватарка через настройки + тех. перерыв добавлены.');
+// 🔁 ЭКСПОРТ ВСЕХ ФУНКЦИЙ
+Object.assign(window, {
+navigate, openModal, closeModal, openLogin, switchReg, doLogin, regStep1, regStep2, openAvatarModal, submitAvatar,
+filterType, handleSearch, openProd, setGal, galNav, addToCart, updCart, delCart, checkout, confirmCheckout, cancelOrder,
+sendMsg, toggleTheme, toggleLang, openReviewModal, setRating, submitReview, openReport, submitReport, showSizeChart,
+admCreateProduct, admLoadProduct, admSaveProduct, admDeleteProduct, admBlockUser, admUnblockUser, admTempBanUser, admUnbanAfterUser,
+admFindOrder, admSetOrderStatus, admApproveReview, admRejectReview, admDeleteReview, admApproveAvatar, admRejectAvatar,
+admApproveSuggestion, admRejectSuggestion, admEditSuggestion, openSuggest, submitSuggestion, toggleCollabInput,
+toggleEditCollabInput, toggleSuggestCollabInput, openDeliveryModal, selectDelivery, saveDelivery, carouselNav,
+confirmLogout, doLogout, logoutFromBan, openAvatarSettingsModal, submitAvatarFromSettings, validateSingleFile,
+toggleMaintenance, saveMaintenanceSchedule, emergencyStopMaintenance, openCreatorInfoModal
+});
+
+console.log('🚀 BYRMALDA loaded | 🔐 App Check + 🎨 Creator System + Limits + Full Product Suggest');
 </script>
 </body>
 </html>
