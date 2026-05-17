@@ -1197,6 +1197,7 @@ const show = el => el.classList.remove('hidden');
 const hide = el => el.classList.add('hidden');
 const fmtDate = ts => ts?.toDate?.()?.toLocaleDateString('ru-RU') || '...';
 const genId = () => Math.random().toString(36).substring(2, 10).toUpperCase();
+
 function parseTimeStr(timeStr) {
 const parts = timeStr.split(':').map(p => parseInt(p) || 0);
 while (parts.length < 4) parts.unshift(0);
@@ -1341,42 +1342,40 @@ return `${hours}ч`;
 function getMaxSuggestions(creatorLevel) {
 return creatorLevel >= 4 ? 3 : 1;
 }
-function getResetPeriodDays(creatorLevel) {
-return 3;
-}
-async function checkSuggestionLimit() {
-if (!user || !userData) return { allowed: false, reason: 'not_logged_in' };
-if (user.email === ADMIN_EMAIL) return { allowed: true };
-let count = Number(userData.suggestionCount) || 0;
-let reset = userData.suggestionLimitReset;
+
+// 🔧 ИСПРАВЛЕННАЯ ЛОГИКА ЛИМИТОВ
+async function refreshLimitState() {
+if (!user || !userData) return;
 const now = Date.now();
-if (!reset) {
-reset = getMoscowMidnight();
-}
-const resetPeriodDays = 3;
-const nextReset = Number(reset) + resetPeriodDays * 24 * 60 * 60 * 1000;
-if (now >= nextReset) {
+const resetPeriodMs = 3 * 24 * 60 * 60 * 1000;
+let lastReset = Number(userData.suggestionLimitReset) || getMoscowMidnight();
+let count = Number(userData.suggestionCount) || 0;
+
+// Если прошло 3 дня с последнего сброса
+if (now >= lastReset + resetPeriodMs) {
 count = 0;
-const newReset = nextReset;
-try {
-await updateDoc(doc(db, 'artifacts/byrmalda-prod/users', user.uid), {
-suggestionCount: 0,
-suggestionLimitReset: newReset
-});
-} catch (e) {
-console.error("Failed to reset limit:", e);
-}
+// Вычисляем следующее точное время 00:00 МСК для сброса
+let nextReset = getMoscowMidnight();
+while (nextReset < now) nextReset += 24 * 60 * 60 * 1000;
+lastReset = nextReset;
+
 userData.suggestionCount = 0;
-userData.suggestionLimitReset = newReset;
-count = 0;
-reset = newReset;
+userData.suggestionLimitReset = lastReset;
+updateDoc(doc(db, 'artifacts/byrmalda-prod/users', user.uid), {
+suggestionCount: 0,
+suggestionLimitReset: lastReset
+}).catch(e => console.error("Limit sync error:", e));
 }
-const maxSuggestions = getMaxSuggestions(userData.creatorLevel || 0);
-if (count >= maxSuggestions) {
-return { allowed: false, reason: 'limit_exceeded', resetTime: nextReset, used: count, max: maxSuggestions };
+renderCreatorLimit();
 }
-return { allowed: true, used: count, max: maxSuggestions, resetTime: nextReset };
+
+function canSuggest() {
+if (user?.email === ADMIN_EMAIL) return true;
+const count = Number(userData?.suggestionCount) || 0;
+const max = getMaxSuggestions(userData?.creatorLevel || 0);
+return count < max;
 }
+
 async function incrementSuggestionCount() {
 if (!user || !userData) return;
 const current = Number(userData.suggestionCount) || 0;
@@ -1385,11 +1384,13 @@ try {
 await updateDoc(doc(db, 'artifacts/byrmalda-prod/users', user.uid), {
 suggestionCount: userData.suggestionCount
 });
+renderCreatorLimit();
 } catch (e) {
 console.error("Failed to increment limit:", e);
 userData.suggestionCount = current;
 }
 }
+
 function renderCreatorLimit() {
 if (!user || !userData) { hide($('creator-limit-display')); return; }
 if (user.email === ADMIN_EMAIL) { hide($('creator-limit-display')); return; }
@@ -1402,6 +1403,8 @@ const limitEl = $('creator-limit-display');
 limitEl.textContent = `${used}/${maxSuggestions} • лимит обновится через ${timeUntil}`;
 show(limitEl);
 }
+// 🔚 КОНЕЦ ИСПРАВЛЕНИЙ ЛИМИТОВ
+
 function updateCreatorNicknameColor() {
 if (!user || !userData) return;
 const nameEl = $('profile-name');
@@ -1519,6 +1522,7 @@ loadOrders(); loadChat(); checkReviewStatus(); renderDelivery(); renderCreatorLi
 await checkAndShowBan();
 await checkAndShowMaintenance();
 updateCreatorNicknameColor();
+await refreshLimitState(); // Инициализация лимитов при входе
 } else {
 user = userData = null; resetAuthUI(); hide($('delivery-box')); hide($('ban-overlay')); hide($('maintenance-overlay')); hide($('creator-limit-display'));
 if (banTimerInterval) clearInterval(banTimerInterval);
@@ -1532,8 +1536,6 @@ if (!user) return;
 try {
 const snap = await getDoc(doc(db, 'artifacts/byrmalda-prod/users', user.uid));
 userData = snap.exists() ? snap.data() : await createUserDoc();
-if (!userData.suggestionCount) userData.suggestionCount = 0;
-if (!userData.suggestionLimitReset) userData.suggestionLimitReset = getMoscowMidnight();
 renderProfile(); syncCartFromDB();
 } catch(e) {
 console.error('loadUser:',e);
@@ -1623,7 +1625,7 @@ document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'))
 const nb = $(`nav-${page}`); if (nb) nb.classList.add('active');
 if (page==='cart') renderCart(); if (page==='catalog') genCatalog();
 if (page==='search') $('search-input').value='';
-if (page==='profile' && user) { loadOrders(); renderDelivery(); renderCreatorLimit(); checkAndShowBan(); updateCreatorNicknameColor(); }
+if (page==='profile' && user) { loadOrders(); renderDelivery(); renderCreatorLimit(); checkAndShowBan(); updateCreatorNicknameColor(); refreshLimitState(); }
 if (page==='reviews') loadPublicReviews();
 if (page==='admin' && user?.email===ADMIN_EMAIL) loadAdminPanels();
 if (window.innerWidth <= 1024) $('sidebar').classList.remove('expanded');
@@ -1877,7 +1879,7 @@ const snap=await getDocs(query(collection(db,'artifacts/byrmalda-prod/public/dat
 if(snap.empty){c.innerHTML='<div class="text-center" style="padding:32px;color:var(--text-dim)">Заказов нет</div>';return;}
 c.innerHTML=snap.docs.map(d=>{
 const o=d.data(); const st=o.status||'Ожидает оплату';
-const cls={'Ожидает оплату':'st-awaiting','Создан':'st-created','Передача товара в доставку':'st-shipping','В пути':'st-transit','Доставлен':'st-delivered','Отменён':'st-cancelled'}[st]||'st-awaiting';
+const cls={'Ожидает оплата':'st-awaiting','Создан':'st-created','Передача товара в доставку':'st-shipping','В пути':'st-transit','Доставлен':'st-delivered','Отменён':'st-cancelled'}[st]||'st-awaiting';
 const canCancel=st==='Ожидает оплата'||st==='Создан';
 const first=o.items?.[0]||{};
 return `<div class="order-card" onclick="openProd('${first.pid}')"><div class="order-img">${first.img?`<img src="${first.img}" style="width:100%;height:100%;object-fit:cover">`:'📦'}</div><div class="order-info"><div class="order-name">${first.name||'Товар'}</div><span class="order-status ${cls}">${st}</span><div class="order-meta"><div>Заказ: #${o.id}</div><div>Трекинг: ${o.tracking||'-'}</div><div>Сумма: $${o.total?.toFixed(2)||'0.00'}</div><div>Дата: ${fmtDate(o.createdAt)}</div></div></div><div class="order-actions"><button class="btn-cancel" ${!canCancel?'disabled':''} onclick="event.stopPropagation();cancelOrder('${o.id}','${st}')">×</button></div></div>`;
@@ -2046,17 +2048,14 @@ const files=$('edit-photos').files;
 if(files.length>0){const cur=JSON.parse($('adm-edit-form').dataset.curImgs||'[]');for(let f of files){const fd=new FormData();fd.append('image',f);fd.append('key',IMGBB_KEY);const res=await fetch('https://api.imgbb.com/1/upload',{method:'POST',body:fd});const d=await res.json();if(d.success)cur.push(d.data.url);} u.images=cur;}
 await updateDoc(doc(db,'artifacts/byrmalda-prod/public/data/products',docId),u); alert('✅ Сохранено'); hide($('adm-edit-form'));
 };
-// 🔁 ИСПРАВЛЕННЫЕ ФУНКЦИИ УДАЛЕНИЯ/ВОССТАНОВЛЕНИЯ ТОВАРА
 window.admDeleteProduct = async () => {
 const productId = $('adm-delete-id').value.trim();
 if (!productId) { alert('Введите ID товара'); return; }
 if (!confirm('Точно удалить товар? Он переместится в архив.')) return;
 try {
-// 🔍 Ищем документ по полю productId
 const q = query(collection(db, 'artifacts/byrmalda-prod/public/data/products'), where('productId', '==', productId), limit(1));
 const snap = await getDocs(q);
 if (snap.empty) {
-// Пробуем найти по ID документа (на случай если ввели doc ID)
 const directSnap = await getDoc(doc(db, 'artifacts/byrmalda-prod/public/data/products', productId));
 if (!directSnap.exists()) {
 alert('❌ Товар не найден');
@@ -2079,11 +2078,9 @@ const productId = $('adm-delete-id').value.trim();
 if (!productId) { alert('Введите ID товара'); return; }
 if (!confirm('Восстановить товар? Он вернётся в каталог.')) return;
 try {
-// 🔍 Ищем документ по полю productId
 const q = query(collection(db, 'artifacts/byrmalda-prod/public/data/products'), where('productId', '==', productId), limit(1));
 const snap = await getDocs(q);
 if (snap.empty) {
-// Пробуем найти по ID документа
 const directSnap = await getDoc(doc(db, 'artifacts/byrmalda-prod/public/data/products', productId));
 if (!directSnap.exists()) {
 alert('❌ Товар не найден');
@@ -2101,7 +2098,6 @@ console.error('admRestoreProduct:', e);
 alert('❌ Ошибка: ' + e.message);
 }
 };
-// 🔁 СИСТЕМА БАНОВ
 window.admBlockUser=async()=>{const uid=$('adm-uid').value.trim();if(!uid)return;await updateDoc(doc(db,'artifacts/byrmalda-prod/users',uid),{isBanned:true,banType:'permanent',banUntil:null,banDuration:null});alert('✅ Пользователь заблокирован навсегда');};
 window.admUnblockUser=async()=>{const uid=$('adm-uid').value.trim();if(!uid)return;await updateDoc(doc(db,'artifacts/byrmalda-prod/users',uid),{isBanned:false,banType:null,banUntil:null,banDuration:null});alert('✅ Пользователь разблокирован');};
 window.admTempBanUser=async()=>{
@@ -2242,39 +2238,34 @@ submittedBy: s.uid
 };
 await addDoc(collection(db, 'artifacts/byrmalda-prod/public/data/products'), productData);
 await updateDoc(doc(db, 'artifacts/byrmalda-prod/public/data/suggestions', id), { status: 'approved' });
+// 🔧 Убрано incrementSuggestionCount() отсюда! Лимит списывается только при отправке пользователем.
 if (!wasEdited && s.uid) {
 await updateCreatorProgress(s.uid, false);
 }
-await incrementSuggestionCount();
 loadPendingSuggestions();
 alert('✅ Опубликовано');
 };
 window.admRejectSuggestion = async id => {
 await deleteDoc(doc(db, 'artifacts/byrmalda-prod/public/data/suggestions', id));
-await incrementSuggestionCount();
+// 🔧 Убрано incrementSuggestionCount() отсюда!
 loadPendingSuggestions();
 };
-// 🔁 ИСПРАВЛЕННАЯ ЛОГИКА ЛИМИТОВ ДЛЯ КНОПКИ "ПРЕДЛОЖИТЬ"
 window.openSuggest = async () => {
 if (!user) { openModal('login-modal'); return; }
-// Сначала проверяем лимит
-const limitCheck = await checkSuggestionLimit();
-if (!limitCheck.allowed) {
-// Если лимит исчерпан — показываем ошибку
-$('limit-reset-time').textContent = `Обновление: через ${formatTimeUntilReset(limitCheck.resetTime)}`;
-show($('limit-exceeded-modal'));
+await refreshLimitState(); // Обновляем состояние перед проверкой
+if (!canSuggest()) {
+const resetTime = userData.suggestionLimitReset + (3 * 24 * 60 * 60 * 1000);
+$('limit-reset-time').textContent = `Обновление: ${new Date(resetTime).toLocaleString('ru-RU', {timeZone:'Europe/Moscow'})}`;
+openModal('limit-exceeded-modal');
 return;
 }
-// Если лимит есть — открываем окно
 openModal('suggest-modal');
 };
 window.submitSuggestion = async () => {
 if (!user) { openModal('login-modal'); return; }
-// Финальная проверка лимита перед отправкой
-const limitCheck = await checkSuggestionLimit();
-if (!limitCheck.allowed) {
-$('limit-reset-time').textContent = `Обновление: через ${formatTimeUntilReset(limitCheck.resetTime)}`;
-show($('limit-exceeded-modal'));
+// Финальная проверка перед отправкой
+if (!canSuggest()) {
+alert('❌ Лимит исчерпан. Попробуйте позже.');
 closeModal('suggest-modal');
 return;
 }
@@ -2304,11 +2295,12 @@ desc: $('sug-desc').value,
 status: 'pending',
 ts: serverTimestamp()
 });
-// Списываем попытку ТОЛЬКО после успешной отправки
+// 🔧 Лимит списывается ТОЛЬКО после успешной отправки заявки
 await incrementSuggestionCount();
 alert('✅ Отправлено на модерацию');
 closeModal('suggest-modal');
-renderCreatorLimit();
+// Сброс полей формы
+$('sug-name').value=''; $('sug-type').value=''; $('sug-price').value=''; $('sug-stock').value=''; $('sug-img').value=''; $('sug-sizes').value=''; $('sug-mat').value=''; $('sug-desc').value='';
 };
 async function loadReports(){
 const c=$('adm-reports');c.innerHTML='<div class="text-center"><div class="loading"></div></div>';
