@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BYRMALDA | Premium Fashion</title>
-<!-- 🔐 reCAPTCHA v3 для Firebase App Check -->
 <script src="https://www.google.com/recaptcha/api.js?render=6LchEOwsAAAAAPqAkyDyf2wFoucWytU6ThkQKoGB"></script>
 <style>
 :root {
@@ -252,6 +251,7 @@ margin: 4px 0; font-weight: 500;
 .st-transit { background: #dbeafe; color: #1d4ed8; }
 .st-delivered { background: #ede9fe; color: #6d28d9; }
 .st-cancelled { background: #fee2e2; color: #b91c1c; }
+.st-archived { background: #f3f4f6; color: #6b7280; }
 .order-meta { font-size: 11px; color: var(--text-dim); margin-top: 4px; }
 .order-actions { display: flex; align-items: center; }
 .btn-cancel {
@@ -554,6 +554,9 @@ padding: 16px; background: var(--bg-soft); border-radius: var(--radius);
   background: var(--bg-soft); padding: 12px; border-radius: 6px;
   margin: 12px 0; font-size: 12px;
 }
+.grant-creator-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;
+}
 @media (max-width: 1024px) {
 .sidebar { width: 64px; }
 .sidebar.expanded, .sidebar:hover { width: 220px; }
@@ -657,7 +660,6 @@ padding: 8px; overflow-x: auto; border-right: none; border-bottom: 1px solid var
 <div>Дата: <span id="profile-date">-</span></div>
 <div>Почта: <span id="profile-email">-</span></div>
 </div>
-<div class="creator-limit hidden" id="creator-limit-display"></div>
 </div>
 </div>
 <div class="delivery-box hidden" id="delivery-box">
@@ -761,6 +763,8 @@ padding: 8px; overflow-x: auto; border-right: none; border-bottom: 1px solid var
 <button class="setting-btn" onclick="showSizeChart('footwear')"><span>👟 Размерная сетка (обувь)</span><span>→</span></button>
 <button class="setting-btn" onclick="openAvatarSettingsModal()"><span>🖼️ Сменить аватарку</span><span>→</span></button>
 <button class="setting-btn" onclick="openCreatorInfo()"><span>✨ Креаторство</span><span>→</span></button>
+<!-- 🔁 ЛИМИТ ПЕРЕНОСИТСЯ СЮДА -->
+<div class="creator-limit hidden" id="creator-limit-settings" style="margin:8px 0;padding:12px;background:var(--bg-soft);border-radius:6px;font-size:12px"></div>
 <button class="setting-btn" onclick="confirmLogout()" style="border-color:var(--error);color:var(--error)">
 <span>🚪 Выйти из аккаунта</span><span>→</span>
 </button>
@@ -835,9 +839,37 @@ padding: 8px; overflow-x: auto; border-right: none; border-bottom: 1px solid var
 <div class="btn-group"><button class="btn" onclick="admSaveProduct()">Сохранить</button><button class="btn btn-outline" onclick="hide($('adm-edit-form'))">Отмена</button></div>
 </div>
 </div>
+<!-- 🔁 УДАЛЕНИЕ/ВОССТАНОВЛЕНИЕ ТОВАРА -->
 <div class="admin-section">
-<h3>🗑️ Удалить товар</h3>
-<div class="flex gap-8"><input type="text" class="admin-input" id="adm-delete-id" placeholder="ID товара" style="flex:1"><button class="btn btn-danger btn-sm" onclick="admDeleteProduct()">Удалить</button></div>
+<h3>🗑️ Управление товаром</h3>
+<div class="flex gap-8" style="margin-bottom:12px;flex-wrap:wrap">
+<input type="text" class="admin-input" id="adm-manage-id" placeholder="ID товара" style="flex:1;min-width:200px">
+<button class="btn btn-danger btn-sm" onclick="admArchiveProduct()">🗑️ Удалить (в архив)</button>
+<button class="btn btn-success btn-sm" onclick="admRestoreProduct()">♻️ Восстановить</button>
+</div>
+<div style="font-size:12px;color:var(--text-dim)">Удалённые товары перемещаются в архив и помечаются как "Удалён". Восстановление возвращает товар в каталог.</div>
+</div>
+<!-- 🔁 ВЫДАЧА КРЕАТОРА НА ПЕРИОД -->
+<div class="admin-section">
+<h3>🎁 Выдать креаторство на период</h3>
+<div class="grant-creator-grid">
+<div class="form-group"><label class="form-label">UID пользователя *</label><input class="admin-input" id="grant-uid" placeholder="Введите UID"></div>
+<div class="form-group"><label class="form-label">Уровень креатора *</label>
+<select class="admin-input" id="grant-level">
+<option value="1">1 уровень (Синий)</option>
+<option value="2">2 уровень (Жёлтый)</option>
+<option value="3">3 уровень (Зелёный)</option>
+<option value="4">4 уровень (Красный)</option>
+<option value="5">5 уровень (Переливающийся)</option>
+</select>
+</div>
+</div>
+<div class="flex gap-8" style="margin-bottom:12px;flex-wrap:wrap">
+<div class="form-group" style="flex:1"><label class="form-label">Начало *</label><input type="datetime-local" class="admin-input" id="grant-start"></div>
+<div class="form-group" style="flex:1"><label class="form-label">Окончание *</label><input type="datetime-local" class="admin-input" id="grant-end"></div>
+</div>
+<button class="btn" onclick="grantCreatorPeriod()">✨ Выдать креаторство</button>
+<div class="success hidden" id="grant-success" style="margin-top:12px">✅ Креаторство выдано!</div>
 </div>
 <div class="admin-section">
 <h3>👥 Пользователи</h3>
@@ -953,12 +985,22 @@ padding: 8px; overflow-x: auto; border-right: none; border-bottom: 1px solid var
 • 3 попытки отправить товар на модерацию каждые 3 дня (1 в день)<br>
 • Лимит обновляется в 00:00 по московскому времени
 </div>
+<h4>💰 Купить уровень креатора:</h4>
+<div class="limit-info">
+<strong>Цены за месяц:</strong><br>
+• 1 уровень — 500 ₽/мес<br>
+• 2 уровень — 1300 ₽/мес<br>
+• 3 уровень — 2000 ₽/мес<br>
+• 4-5 уровни — 2500 ₽/мес
+</div>
+<button class="btn btn-sm" style="width:auto;margin:8px 0" onclick="buyCreatorLevel()">🛒 Купить уровень креатора</button>
 <h4>📋 Важные правила:</h4>
 <ul>
 <li>Товары, отредактированные админом перед одобрением, НЕ считаются для повышения уровня</li>
 <li>После перехода на новый уровень счётчик одобренных товаров обнуляется</li>
 <li>Отклонённые товары не уменьшают ваш уровень</li>
 <li>Лимиты на предложения обновляются автоматически в 00:00 МСК</li>
+<li>Купленное креаторство действует до указанной даты, после чего уровень сбрасывается</li>
 </ul>
 <button class="btn mt-16" onclick="closeModal('creator-info-modal')">Понятно</button>
 </div>
@@ -1159,11 +1201,12 @@ const RATES = { USD_TO_RUB: 90, USD_TO_UAH: 37 };
 
 let user = null, userData = null, curProd = null, galIdx = 0, chatUnread = 0, lang = 'ru', theme = localStorage.getItem('theme') || 'light', revStars = 0, carouselIdx = 0, carouselTimer = null, banTimerInterval = null, maintenanceTimerInterval = null;
 
+// 🔁 НОВЫЕ ССЫЛКИ ДЛЯ ГЕРОЯ
 const heroImages = [
-  "https://raw.githubusercontent.com/lookup-mrktplce/xcdzxc/main/IMG_20260515_101118.png",
-  "https://raw.githubusercontent.com/lookup-mrktplce/xcdzxc/main/IMG_20260515_103613.png",
-  "https://raw.githubusercontent.com/lookup-mrktplce/xcdzxc/main/file_00000000756c71f49ea43663444da286.png",
-  "https://via.placeholder.com/420x560/111/fff?text=Slide+4"
+  "https://i.ibb.co/C5Pt8Rmh/IMG-20260517-222612.png",
+  "https://i.ibb.co/TM8vNXDx/IMG-20260517-222236.png",
+  "https://i.ibb.co/N2t8MfX6/photo-2026-05-17-22-27-07.jpg",
+  "https://i.ibb.co/mVYThhdY/photo-2026-05-17-22-27-01.jpg"
 ];
 
 const $ = id => document.getElementById(id);
@@ -1351,8 +1394,10 @@ function formatTimeUntilReset(ms) {
   if (days > 0) return `${days} дн ${hours} ч`;
   return `${hours} ч`;
 }
-function getUserLimit(userData) {
+function getUserLimit(userData, isAdmin = false) {
   if (!userData) return { max: 1, used: 0 };
+  // 🔁 АДМИН НЕ ИМЕЕТ ЛИМИТОВ
+  if (isAdmin) return { max: 999, used: 0 };
   const level = userData.creatorLevel || 0;
   const max = level >= 4 ? 3 : 1;
   const used = userData.suggestionUsed || 0;
@@ -1364,12 +1409,12 @@ function getUserLimit(userData) {
   }
   return { max, used, reset: false };
 }
-function canSubmitSuggestion(userData) {
-  const limit = getUserLimit(userData);
+function canSubmitSuggestion(userData, isAdmin = false) {
+  const limit = getUserLimit(userData, isAdmin);
   return limit.used < limit.max;
 }
-function useSuggestionLimit(userData) {
-  if (!userData) return;
+function useSuggestionLimit(userData, isAdmin = false) {
+  if (!userData || isAdmin) return;
   const now = Date.now();
   const midnight = getMoscowMidnight();
   if (now >= midnight && (userData.suggestionLastReset || 0) < midnight) {
@@ -1404,6 +1449,28 @@ function calculateCreatorDiscount(level, category, basePrice) {
   };
 }
 
+// 🔁 ПРОВЕРКА ИСТОЧЕНИЯ КРЕАТОРСТВА ПО ДАТЕ
+async function checkCreatorExpiry() {
+  if (!user || !userData) return;
+  const expiry = userData.creatorExpiryDate;
+  if (expiry && Date.now() >= expiry) {
+    // 🔁 СБРОС КРЕАТОРСТВА
+    await updateDoc(doc(db, 'artifacts/byrmalda-prod/users', user.uid), {
+      creatorLevel: 0,
+      creatorExpiryDate: null,
+      suggestionUsed: 0,
+      suggestionLastReset: 0
+    });
+    userData.creatorLevel = 0;
+    userData.creatorExpiryDate = null;
+    userData.suggestionUsed = 0;
+    userData.suggestionLastReset = 0;
+    alert('⏰ Ваш период креаторства истёк. Уровень сброшен.');
+    renderProfile();
+    renderCreatorLimit();
+  }
+}
+
 function initCarousel() {
   const slides = document.querySelectorAll('.hero-slide');
   slides.forEach((s,i) => { if(s) s.src = heroImages[i % heroImages.length]; });
@@ -1423,7 +1490,7 @@ function updateCarousel() {
   });
 }
 
-window.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('DOMContentLoaded', async () => {
   const url = new URL(window.location.href);
   const oob = url.searchParams.get('oobCode'), mode = url.searchParams.get('mode');
   if (oob && mode === 'verifyEmail') {
@@ -1437,11 +1504,17 @@ window.addEventListener('DOMContentLoaded', () => {
   onAuthStateChanged(auth, async u => {
     if (u) {
       user = u; await loadUser(); updateAuthUI();
-      if (u.email === ADMIN_EMAIL) { show($('nav-admin')); hide($('nav-suggest')); loadAdminPanels(); loadMaintenanceStatus(); }
-      else { hide($('nav-admin')); show($('nav-suggest')); }
-      loadOrders(); loadChat(); checkReviewStatus(); renderDelivery(); renderCreatorLimit();
+      if (u.email === ADMIN_EMAIL) { 
+        show($('nav-admin')); hide($('nav-suggest')); 
+        loadAdminPanels(); loadMaintenanceStatus(); 
+      } else { 
+        hide($('nav-admin')); show($('nav-suggest')); 
+      }
+      loadOrders(); loadChat(); checkReviewStatus(); renderDelivery(); 
+      renderCreatorLimit(); // 🔁 В НАСТРОЙКАХ
       await checkAndShowBan();
       await checkAndShowMaintenance();
+      await checkCreatorExpiry(); // 🔁 ПРОВЕРКА ИСТОЧЕНИЯ
     } else {
       user = userData = null; resetAuthUI(); hide($('delivery-box')); hide($('ban-overlay')); hide($('maintenance-overlay'));
       if (banTimerInterval) clearInterval(banTimerInterval);
@@ -1470,7 +1543,8 @@ async function createUserDoc() {
     reviewStatus: 'none', deliveryCountry: null, deliveryAddress: { cdek: null, ua: null, usa: null },
     cart: [],
     isBanned: false, banType: null, banUntil: null, banDuration: null,
-    creatorLevel: 0, creatorApprovedCount: 0, suggestionUsed: 0, suggestionLastReset: 0
+    creatorLevel: 0, creatorApprovedCount: 0, suggestionUsed: 0, suggestionLastReset: 0,
+    creatorExpiryDate: null // 🔁 ДЛЯ ВРЕМЕННОГО КРЕАТОРСТВА
   };
   await setDoc(doc(db, 'artifacts/byrmalda-prod/users', user.uid), d, { merge: true });
   return d;
@@ -1491,15 +1565,17 @@ function renderProfile() {
   } else if (userData.hasVerifiedProduct && $('profile-name')) {
     $('profile-name').innerHTML = `<span class="verified">✓</span> ${userData.name}`;
   }
-  renderCreatorLimit();
 }
+// 🔁 ЛИМИТ ТЕПЕРЬ В НАСТРОЙКАХ
 function renderCreatorLimit() {
-  if (!user || !userData || !$('creator-limit-display')) { hide($('creator-limit-display')); return; }
-  const limit = getUserLimit(userData);
+  const isAdmin = user?.email === ADMIN_EMAIL;
+  const limitEl = $('creator-limit-settings');
+  if (!user || !userData || !limitEl) { hide(limitEl); return; }
+  const limit = getUserLimit(userData, isAdmin);
   const resetTime = formatTimeUntilReset(getTimeUntilReset());
   const text = `${limit.used}/${limit.max} • лимит обновится через ${resetTime}`;
-  $('creator-limit-display').textContent = text;
-  show($('creator-limit-display'));
+  limitEl.textContent = text;
+  show(limitEl);
 }
 function updateAuthUI() { 
   if($('auth-btn')) {
@@ -1519,7 +1595,7 @@ function resetAuthUI() {
   if($('profile-email')) $('profile-email').textContent = '-'; 
   if($('profile-date')) $('profile-date').textContent = '-'; 
   if($('avatar-display')) $('avatar-display').innerHTML = '👤'; 
-  hide($('creator-limit-display')); 
+  if($('creator-limit-settings')) hide($('creator-limit-settings'));
 }
 
 window.openLogin = () => openModal('login-modal');
@@ -1587,7 +1663,8 @@ window.navigate = page => {
   const nb = $(`nav-${page}`); if (nb) nb.classList.add('active');
   if (page==='cart') renderCart(); if (page==='catalog') genCatalog();
   if (page==='search' && $('search-input')) $('search-input').value='';
-  if (page==='profile' && user) { loadOrders(); renderDelivery(); checkAndShowBan(); renderCreatorLimit(); }
+  if (page==='profile' && user) { loadOrders(); renderDelivery(); checkAndShowBan(); }
+  if (page==='settings' && user) renderCreatorLimit(); // 🔁 ОБНОВЛЕНИЕ ЛИМИТА
   if (page==='reviews') loadPublicReviews();
   if (page==='admin' && user?.email===ADMIN_EMAIL) loadAdminPanels();
   if (window.innerWidth <= 1024 && $('sidebar')) $('sidebar').classList.remove('expanded');
@@ -1645,18 +1722,28 @@ window.submitAvatar = async () => {
   } catch(e) { console.error(e); alert('❌ Ошибка: '+e.message); }
 };
 
-// 🛒 КОРЗИНА
+// 🛒 КОРЗИНА — С ПРОВЕРКОЙ НАЛИЧИЯ
 window.addToCart = async () => {
   if (!user) { openModal('login-modal'); return; }
-  if (!userData) return;
+  if (!userData || !curProd) return;
+  
   let size = 'M', color = 'Белый';
   const sizeEl = $('p-size'), colorEl = $('p-color');
   if (sizeEl && sizeEl.tagName==='SELECT') size = sizeEl.value; else if (sizeEl?.closest?.('.opt-group')?.querySelector?.('.opt-static')) size = sizeEl.closest('.opt-group').querySelector('.opt-static').textContent;
   if (colorEl && colorEl.tagName==='SELECT') color = colorEl.value; else if (colorEl?.closest?.('.opt-group')?.querySelector?.('.opt-static')) color = colorEl.closest('.opt-group').querySelector('.opt-static').textContent;
+  
+  const qty = parseInt($('p-qty')?.value) || 1;
+  
+  // 🔁 ПРОВЕРКА: количество не превышает наличие
+  if (qty > (curProd?.stock || 0)) {
+    alert(`❌ количество выбранных товаров превышает количества наличия товара, максимальное количество: ${curProd.stock}`);
+    return;
+  }
+  
   const item = {
     id: `${curProd?.id}-${Date.now()}`, pid: curProd?.id, name: curProd?.name,
     img: curProd?.images?.[0]||'', size, color,
-    qty: parseInt($('p-qty')?.value)||1, price: curProd?.price, weight: curProd?.weight||200,
+    qty: qty, price: curProd?.price, weight: curProd?.weight||200, stock: curProd?.stock,
     isPreorder: false, at: new Date().toISOString()
   };
   if (!userData.cart) userData.cart = [];
@@ -1664,34 +1751,67 @@ window.addToCart = async () => {
   await updateDoc(doc(db, 'artifacts/byrmalda-prod/users', user.uid), { cart: userData.cart });
   loadCartCount(); alert(`✅ Добавлено в корзину!`); navigate('cart');
 };
+
 function loadCartCount() { const n = (userData?.cart||[]).reduce((s,i)=>s+(i?.qty||0),0); if($('cart-badge')) $('cart-badge').textContent = n; if($('nav-cart')) $('nav-cart').classList.toggle('has-badge', n>0); }
 function syncCartFromDB() { loadCartCount(); if (userData?.cart) renderCart(); }
-window.renderCart = () => {
+
+window.renderCart = async () => {
   const items = userData?.cart || [];
   const empty = $('cart-empty'), full = $('cart-full'), body = $('cart-items');
   if (!items.length) { if(empty) show(empty); if(full) hide(full); return; }
   if(empty) hide(empty); if(full) show(full);
+  
   let sub=0, kg=0;
   if(body) {
-    body.innerHTML = items.map(it => {
+    body.innerHTML = '';
+    for (const it of items) {
+      // 🔁 ПРОВЕРКА: актуальное наличие из базы
+      let currentStock = it?.stock || 0;
+      try {
+        const pSnap = await getDoc(doc(db, 'artifacts/byrmalda-prod/public/data/products', it?.pid));
+        if (pSnap?.exists()) {
+          currentStock = pSnap.data()?.stock || 0;
+        }
+      } catch(e) { console.warn('Не удалось проверить наличие:', e); }
+      
       const tot = (it?.price||0) * (it?.qty||1); sub+=tot; kg+=((it?.weight||200)*(it?.qty||1))/1000;
-      return `<tr><td><input type="number" class="qty-input" value="${it?.qty||1}" min="1" onchange="updCart('${it?.id}','qty',this.value)"></td><td class="flex items-center gap-8"><img class="cart-img" src="${it?.img||'https://via.placeholder.com/60/f5f5f5/111?text=📦'}" onerror="this.src='https://via.placeholder.com/60/f5f5f5/111?text=No'"><div><div style="font-weight:500">${it?.name||'Товар'}</div></div></td><td>${it?.size||'-'}</td><td>${it?.color||'-'}</td><td>$${it?.price||0}</td><td><button class="btn-cancel" onclick="delCart('${it?.id}')">×</button></td></tr>`;
-    }).join('');
+      const canChange = (it?.qty||1) <= currentStock;
+      
+      body.innerHTML += `<tr>
+        <td><input type="number" class="qty-input" value="${it?.qty||1}" min="1" max="${currentStock}" data-pid="${it?.pid}" onchange="updCart('${it?.id}','qty',this.value, ${currentStock})" ${!canChange ? 'disabled style="color:var(--error)"' : ''}></td>
+        <td class="flex items-center gap-8"><img class="cart-img" src="${it?.img||'https://via.placeholder.com/60/f5f5f5/111?text=📦'}" onerror="this.src='https://via.placeholder.com/60/f5f5f5/111?text=No'"><div><div style="font-weight:500">${it?.name||'Товар'}</div></div></td>
+        <td>${it?.size||'-'}</td><td>${it?.color||'-'}</td><td>$${it?.price||0}</td>
+        <td><button class="btn-cancel" onclick="delCart('${it?.id}')">×</button></td>
+      </tr>`;
+    }
   }
   const delRUB = Math.round(kg*900), delUSD = (delRUB/RATES.USD_TO_RUB).toFixed(2);
   if($('cart-total')) $('cart-total').textContent = `$${(sub+parseFloat(delUSD)).toFixed(2)}`;
   if($('.delivery-note')) $('.delivery-note').textContent = `Доставка: ${delRUB.toLocaleString('ru-RU')} ₽ (~$${delUSD})`;
 };
-window.updCart = async (id,f,v) => {
-  const it = userData?.cart?.find(i=>i?.id===id); if(!it)return;
-  if(f==='qty') it.qty=Math.max(1,parseInt(v)||1);
-  await updateDoc(doc(db,'artifacts/byrmalda-prod/users',user.uid),{cart:userData.cart});
+
+window.updCart = async (id, f, v, maxStock) => {
+  const it = userData?.cart?.find(i => i?.id === id); 
+  if(!it) return;
+  
+  const newQty = Math.max(1, parseInt(v) || 1);
+  
+  // 🔁 ПРОВЕРКА: не больше наличия
+  if (newQty > maxStock) {
+    alert(`❌ количество выбранных товаров превышает количества наличия товара, максимальное количество: ${maxStock}`);
+    if($('cart-items')) renderCart(); // Перерисовать с правильным значением
+    return;
+  }
+  
+  if(f==='qty') it.qty = newQty;
+  await updateDoc(doc(db,'artifacts/byrmalda-prod/users',user.uid), {cart: userData.cart});
   renderCart(); loadCartCount();
 };
+
 window.delCart = async id => {
   if(userData?.cart) {
-    userData.cart = userData.cart.filter(i=>i?.id!==id);
-    await updateDoc(doc(db,'artifacts/byrmalda-prod/users',user.uid),{cart:userData.cart});
+    userData.cart = userData.cart.filter(i => i?.id !== id);
+    await updateDoc(doc(db,'artifacts/byrmalda-prod/users',user.uid), {cart: userData.cart});
     renderCart(); loadCartCount();
   }
 };
@@ -1715,7 +1835,7 @@ async function searchProds(q) {
       const snap = await getDocs(query(coll, where('deleted','==',true)));
       const res = []; snap.forEach(d => res.push({...d.data(),id:d.id}));
       if (!res.length && c) { c.innerHTML = '<div class="text-center" style="padding:32px;color:var(--text-dim)">Архив пуст</div>'; return; }
-      if(c) c.innerHTML = res.map(p => prodCard(p)).join('');
+      if(c) c.innerHTML = res.map(p => prodCard(p, true)).join(''); // 🔁 archive=true
       return;
     }
 
@@ -1737,16 +1857,19 @@ async function searchProds(q) {
     }
 
     if (!res.length && c) { c.innerHTML = `<div class="text-center" style="padding:32px;color:var(--text-dim)">Ничего не найдено</div>`; return; }
-    if(c) c.innerHTML = res.map(p => prodCard(p)).join('');
+    if(c) c.innerHTML = res.map(p => prodCard(p, false)).join('');
 
   } catch(e) { console.error(e); if(c) c.innerHTML = '<div class="text-center" style="padding:32px;color:var(--error)">Ошибка</div>'; }
 }
-function prodCard(p) {
-  const stock=p?.stock>0;
-  return `<div class="prod-card" onclick="openProd('${p?.id}')"><div class="card-img">${p?.images?.[0]?`<img src="${p.images[0]}" style="width:100%;height:100%;object-fit:cover" onerror="this.src='https://via.placeholder.com/220/f5f5f5/111?text=No'">`:'📦'}</div><div class="card-body"><div class="card-title">${p?.name||'Товар'}</div><div class="card-price ${stock?'':'card-nostock'}">${stock?`$${p?.price||0}`:'Нет в наличии'}</div></div></div>`;
+function prodCard(p, isArchive = false) {
+  const stock = p?.stock > 0;
+  const isDeleted = p?.deleted;
+  let priceHtml = stock ? `$${p?.price||0}` : 'Нет в наличии';
+  if (isDeleted) priceHtml = 'Удалён';
+  return `<div class="prod-card" onclick="openProd('${p?.id}')"><div class="card-img">${p?.images?.[0]?`<img src="${p.images[0]}" style="width:100%;height:100%;object-fit:cover" onerror="this.src='https://via.placeholder.com/220/f5f5f5/111?text=No'">`:'📦'}</div><div class="card-body"><div class="card-title">${p?.name||'Товар'}</div><div class="card-price ${isDeleted?'st-archived':(stock?'':'card-nostock')}">${priceHtml}</div></div></div>`;
 }
 
-// 📦 КАРТОЧКА ТОВАРА — с улучшенной обработкой ошибок
+// 📦 КАРТОЧКА ТОВАРА
 window.openProd = async id => {
   try {
     const snap = await getDoc(doc(db, 'artifacts/byrmalda-prod/public/data/products', id));
@@ -1812,15 +1935,18 @@ window.openProd = async id => {
     if($('p-price-conv')) $('p-price-conv').textContent = `≈ ${Math.round(displayPrice*RATES.USD_TO_RUB).toLocaleString('ru-RU')} ₽ / ≈ ${Math.round(displayPrice*RATES.USD_TO_UAH).toLocaleString('ru-RU')} ₴`;
     
     const stockEl=$('p-stock'), btn=$('p-action'), opts=$('p-options'), delNotice=$('p-deleted-notice');
+    
+    // 🔁 ПРОВЕРКА: УДАЛЁННЫЙ ТОВАР
     if (curProd?.deleted) { 
-      if(delNotice) delNotice.classList.remove('hidden'); 
-      if(btn) { btn.textContent='Удален'; btn.disabled=true; }
+      if(delNotice) { delNotice.classList.remove('hidden'); delNotice.textContent = 'Товар удален'; }
+      if(btn) { btn.textContent='Удален'; btn.disabled=true; btn.onclick=null; }
       if(opts) hide(opts); 
     } else if ((curProd?.stock||0)>0) { 
       if(delNotice) delNotice.classList.add('hidden'); 
       if(stockEl) stockEl.innerHTML='<span class="in-stock">✓ В наличии</span>'; 
       if(btn) { btn.textContent='Купить'; btn.disabled=false; btn.onclick=()=>addToCart(); }
       if(opts) show(opts); 
+      if($('p-qty')) $('p-qty').max = curProd.stock;
     } else { 
       if(delNotice) delNotice.classList.add('hidden'); 
       if(stockEl) stockEl.innerHTML='<span class="out-stock">✗ Предзаказ</span>'; 
@@ -1835,7 +1961,7 @@ window.openProd = async id => {
   }
 };
 
-// 🔁 ОБНОВЛЕНИЕ ГАЛЕРЕИ — с обработкой ошибок загрузки изображений
+// 🔁 ОБНОВЛЕНИЕ ГАЛЕРЕИ
 function updateGal() { 
   if(!curProd) return; 
   let imgs = [];
@@ -1867,34 +1993,43 @@ window.galNav = d => {
   updateGal(); 
 };
 
-// 🚀 ОФОРМЛЕНИЕ ЗАКАЗА
+// 🚀 ОФОРМЛЕНИЕ ЗАКАЗА — С ПРОВЕРКОЙ ДОСТАВКИ И СТОКА
 window.checkout = async () => {
-  if(!user){openModal('login-modal');return;} 
+  if(!user){openModal('login-modal');return;}
   if(!userData?.cart?.length){alert('Корзина пуста');return;}
-  if(!userData?.deliveryCountry || !userData?.deliveryAddress?.[userData.deliveryCountry]){ 
-    alert('Укажите адрес доставки в профиле'); navigate('profile'); return; 
+  
+  // 🔁 ПРОВЕРКА: доставка указана
+  if(!userData?.deliveryCountry || !userData?.deliveryAddress?.[userData.deliveryCountry]){
+    alert('❌ Укажите адрес доставки в профиле перед оформлением заказа'); 
+    navigate('profile'); return;
   }
+  
+  // 🔁 ПРОВЕРКА: наличие товаров
   for(const item of userData.cart) {
     const pSnap = await getDoc(doc(db, 'artifacts/byrmalda-prod/public/data/products', item?.pid));
     if(!pSnap?.exists()) continue;
     const p = pSnap.data();
     if((item?.qty||0) > (p?.stock||0)) {
-      alert(`❌ Количество выбранных позиций не соответствует количеству товара на странице. Максимум: ${p?.stock||0} шт.`); return;
+      alert(`❌ количество выбранных товаров превышает количества наличия товара, максимальное количество: ${p?.stock||0}`); return;
     }
   }
   openModal('checkout-modal');
 };
+
 window.confirmCheckout = async () => {
   closeModal('checkout-modal');
   const oid='ORD-'+genId(), total=parseFloat($('cart-total')?.textContent?.replace('$','')||'0');
   const order={id:oid,userId:user.uid,items:[...userData.cart],total,status:'Ожидает оплату',tracking:'TRK-'+genId(),adminChangedStatus:false,createdAt:serverTimestamp(),updatedAt:serverTimestamp(),deliveryAddress:userData.deliveryAddress[userData.deliveryCountry],deliveryCountry:userData.deliveryCountry};
   await setDoc(doc(db,'artifacts/byrmalda-prod/public/data/orders',oid),order);
+  
+  // 🔁 СПИСАНИЕ СТОКА
   for(const it of order.items) {
     const pSnap=await getDoc(doc(db,'artifacts/byrmalda-prod/public/data/products',it?.pid));
     if(pSnap?.exists()){
       const d=pSnap.data(); await updateDoc(doc(db,'artifacts/byrmalda-prod/public/data/products',it?.pid),{stock:Math.max(0,(d?.stock||0)-(it?.qty||0))});
     }
   }
+  
   if(userData) userData.cart=[];
   await updateDoc(doc(db,'artifacts/byrmalda-prod/users',user.uid),{cart:[]});
   loadCartCount(); loadOrders();
@@ -1902,7 +2037,7 @@ window.confirmCheckout = async () => {
   navigate('profile');
 };
 
-// 📋 ЗАКАЗЫ
+// 📋 ЗАКАЗЫ — С ПРОВЕРКОЙ СТАТУСА ДЛЯ ОТМЕНЫ
 async function loadOrders() {
   if(!user) return;
   const c=$('orders-list'); 
@@ -1913,8 +2048,9 @@ async function loadOrders() {
     if(c) {
       c.innerHTML=snap.docs.map(d=>{
         const o=d.data(); const st=o?.status||'Ожидает оплату';
-        const cls={'Ожидает оплату':'st-awaiting','Создан':'st-created','Передача товара в доставку':'st-shipping','В пути':'st-transit','Доставлен':'st-delivered','Отменён':'st-cancelled'}[st]||'st-awaiting';
-        const canCancel=st==='Ожидает оплату'||st==='Создан';
+        const cls={'Ожидает оплату':'st-awaiting','Создан':'st-created','Передача товара в доставку':'st-shipping','В пути':'st-transit','Доставлен':'st-delivered','Отменён':'st-cancelled','Архив':'st-archived'}[st]||'st-awaiting';
+        // 🔁 ОТМЕНА ТОЛЬКО ПРИ "Ожидает оплату"
+        const canCancel = st === 'Ожидает оплату';
         const first=o?.items?.[0]||{};
         return `<div class="order-card" onclick="openProd('${first?.pid}')"><div class="order-img">${first?.img?`<img src="${first.img}" style="width:100%;height:100%;object-fit:cover" onerror="this.src='https://via.placeholder.com/72/f5f5f5/111?text=No'">`:'📦'}</div><div class="order-info"><div class="order-name">${first?.name||'Товар'}</div><span class="order-status ${cls}">${st}</span><div class="order-meta"><div>Заказ: #${o?.id}</div><div>Трекинг: ${o?.tracking||'-'}</div><div>Сумма: $${(o?.total||0).toFixed(2)}</div><div>Дата: ${fmtDate(o?.createdAt)}</div></div></div><div class="order-actions"><button class="btn-cancel" ${!canCancel?'disabled':''} onclick="event.stopPropagation();cancelOrder('${o?.id}','${st}')">×</button></div></div>`;
       }).join('');
@@ -1922,13 +2058,14 @@ async function loadOrders() {
   } catch(e) { if(c) c.innerHTML='<div class="text-center" style="padding:24px;color:var(--error)">Ошибка</div>'; }
 }
 window.cancelOrder = async (oid, st) => {
-  if(st!=='Ожидает оплату'&&st!=='Создан'){alert('❌ Нельзя отменить');return;} 
+  // 🔁 ПРОВЕРКА СТАТУСА
+  if(st!=='Ожидает оплату'){alert('❌ Нельзя отменить: заказ уже в обработке');return;}
   if(!confirm('Отменить заказ?')) return;
   await updateDoc(doc(db,'artifacts/byrmalda-prod/public/data/orders',oid),{status:'Отменён',updatedAt:serverTimestamp()}); 
   loadOrders();
 };
 
-// 💬 ЧАТ
+// 💬 ЧАТ — С АВТО-СООБЩЕНИЕМ ДЛЯ ПОКУПКИ КРЕАТОРСТВА
 async function loadChat() {
   if(!user) return; 
   const c=$('chat-msgs'); 
@@ -2001,7 +2138,6 @@ async function checkReviewStatus() {
     userData.reviewStatus = 'none';
   }
 }
-
 window.openReviewModal = () => {
   if (!user) { openModal('login-modal'); return; }
   if (userData?.reviewStatus === 'pending' || userData?.reviewStatus === 'approved') { 
@@ -2156,8 +2292,19 @@ window.saveDelivery = async () => {
   renderDelivery(); closeModal('delivery-modal');
 };
 
-// 🔁 ИНФОРМАЦИЯ О КРЕАТОРСТВЕ
+// 🔁 ИНФОРМАЦИЯ О КРЕАТОРСТВЕ + ПОКУПКА
 window.openCreatorInfo = () => { openModal('creator-info-modal'); };
+window.buyCreatorLevel = () => {
+  closeModal('creator-info-modal');
+  navigate('support');
+  // 🔁 АВТО-СООБЩЕНИЕ В ЧАТ
+  setTimeout(async () => {
+    if($('chat-input')) {
+      $('chat-input').value = 'хочу купить уровень креатора';
+      await sendMsg();
+    }
+  }, 500);
+};
 
 // 🛡️ АДМИН ПАНЕЛЬ
 async function loadAdminPanels(){
@@ -2279,6 +2426,87 @@ window.admSaveProduct = async () => {
   alert('✅ Сохранено'); 
   hide($('adm-edit-form'));
 };
+
+// 🔁 УДАЛЕНИЕ/ВОССТАНОВЛЕНИЕ ТОВАРА
+window.admArchiveProduct = async () => {
+  const pid = $('adm-manage-id')?.value?.trim();
+  if(!pid) { alert('Введите ID товара'); return; }
+  if(!confirm('Точно удалить товар? Он переместится в архив.')) return;
+  try {
+    let snap = await getDoc(doc(db, 'artifacts/byrmalda-prod/public/data/products', pid));
+    if(!snap?.exists()){
+      const q = query(collection(db, 'artifacts/byrmalda-prod/public/data/products'), where('productId','==',pid), limit(1));
+      const r = await getDocs(q);
+      if(!r?.empty) snap = r.docs[0];
+    }
+    if(!snap?.exists()){ alert('Товар не найден'); return; }
+    await updateDoc(doc(db, 'artifacts/byrmalda-prod/public/data/products', snap.id), {
+      deleted: true, published: false, archivedAt: serverTimestamp()
+    });
+    alert('✅ Товар перемещён в архив');
+    if($('adm-manage-id')) $('adm-manage-id').value = '';
+  } catch(e) { alert('Ошибка: '+e.message); }
+};
+window.admRestoreProduct = async () => {
+  const pid = $('adm-manage-id')?.value?.trim();
+  if(!pid) { alert('Введите ID товара'); return; }
+  try {
+    let snap = await getDoc(doc(db, 'artifacts/byrmalda-prod/public/data/products', pid));
+    if(!snap?.exists()){
+      const q = query(collection(db, 'artifacts/byrmalda-prod/public/data/products'), where('productId','==',pid), limit(1));
+      const r = await getDocs(q);
+      if(!r?.empty) snap = r.docs[0];
+    }
+    if(!snap?.exists()){ alert('Товар не найден'); return; }
+    await updateDoc(doc(db, 'artifacts/byrmalda-prod/public/data/products', snap.id), {
+      deleted: false, published: true, archivedAt: null
+    });
+    alert('✅ Товар восстановлен в каталог');
+    if($('adm-manage-id')) $('adm-manage-id').value = '';
+  } catch(e) { alert('Ошибка: '+e.message); }
+};
+
+// 🔁 ВЫДАЧА КРЕАТОРСТВА НА ПЕРИОД
+window.grantCreatorPeriod = async () => {
+  const uid = $('grant-uid')?.value?.trim();
+  const level = parseInt($('grant-level')?.value) || 1;
+  const startStr = $('grant-start')?.value;
+  const endStr = $('grant-end')?.value;
+  
+  if(!uid || !startStr || !endStr) { alert('Заполните все поля'); return; }
+  
+  const startDate = new Date(startStr).getTime();
+  const endDate = new Date(endStr).getTime();
+  
+  if(endDate <= startDate) { alert('Дата окончания должна быть позже даты начала'); return; }
+  
+  try {
+    // 🔁 ОБНОВЛЕНИЕ ПОЛЬЗОВАТЕЛЯ
+    await updateDoc(doc(db, 'artifacts/byrmalda-prod/users', uid), {
+      creatorLevel: level,
+      creatorExpiryDate: endDate,
+      hasVerifiedProduct: true,
+      // 🔁 СБРОС ЛИМИТОВ ПРИ ВЫДАЧЕ
+      suggestionUsed: 0,
+      suggestionLastReset: getMoscowMidnight()
+    });
+    
+    if($('grant-success')) {
+      $('grant-success').classList.remove('hidden');
+      setTimeout(() => hide($('grant-success')), 3000);
+    }
+    alert(`✅ Креаторство уровня ${level} выдано до ${new Date(endDate).toLocaleString('ru-RU')}`);
+    
+    // Очистка полей
+    if($('grant-uid')) $('grant-uid').value = '';
+    if($('grant-start')) $('grant-start').value = '';
+    if($('grant-end')) $('grant-end').value = '';
+    
+  } catch(e) {
+    alert('Ошибка: '+e.message);
+  }
+};
+
 window.admDeleteProduct = async () => {
   const pid = $('adm-delete-id')?.value?.trim();
   if(!pid) return;
@@ -2540,7 +2768,8 @@ window.admRejectSuggestion = async id => {
 
 window.openSuggest = async () => {
   if (!user) { openModal('login-modal'); return; }
-  if (!canSubmitSuggestion(userData)) {
+  const isAdmin = user.email === ADMIN_EMAIL;
+  if (!canSubmitSuggestion(userData, isAdmin)) {
     const resetTime = formatTimeUntilReset(getTimeUntilReset());
     alert(`❌ Лимит исчерпан. Попробуйте через ${resetTime}.`);
     return;
@@ -2549,7 +2778,8 @@ window.openSuggest = async () => {
 };
 
 window.submitSuggestion = async () => {
-  if (!canSubmitSuggestion(userData)) {
+  const isAdmin = user?.email === ADMIN_EMAIL;
+  if (!canSubmitSuggestion(userData, isAdmin)) {
     const resetTime = formatTimeUntilReset(getTimeUntilReset());
     alert(`❌ Лимит исчерпан. Попробуйте через ${resetTime}.`);
     return;
@@ -2583,7 +2813,7 @@ window.submitSuggestion = async () => {
     status: 'pending',
     ts: serverTimestamp()
   });
-  useSuggestionLimit(userData);
+  useSuggestionLimit(userData, isAdmin);
   await updateDoc(doc(db, 'artifacts/byrmalda-prod/users', user.uid), {
     suggestionUsed: userData?.suggestionUsed,
     suggestionLastReset: userData?.suggestionLastReset
@@ -2693,7 +2923,7 @@ function setupListeners(){
   });
 }
 
-// 🔁 ЭКСПОРТ ФУНКЦИЙ В ГЛОБАЛЬНУЮ ОБЛАСТЬ
+// 🔁 ЭКСПОРТ ФУНКЦИЙ
 Object.assign(window, {
   navigate, openModal, closeModal, openLogin, switchReg, doLogin, regStep1, regStep2, 
   openAvatarModal, submitAvatar, filterType, handleSearch, openProd, setGal, galNav, 
@@ -2706,10 +2936,10 @@ Object.assign(window, {
   toggleCollabInput, toggleEditCollabInput, openDeliveryModal, selectDelivery, saveDelivery, 
   carouselNav, confirmLogout, doLogout, logoutFromBan, openAvatarSettingsModal, 
   submitAvatarFromSettings, validateSingleFile, toggleMaintenance, saveMaintenanceSchedule, 
-  emergencyStopMaintenance, openCreatorInfo
+  emergencyStopMaintenance, openCreatorInfo, buyCreatorLevel, admArchiveProduct, admRestoreProduct, grantCreatorPeriod
 });
 
-console.log('🚀 BYRMALDA loaded. Все функции исправлены и готовы к работе.');
+console.log('🚀 BYRMALDA loaded. Все функции включены: валидация стока, архив/восстановление, креаторство на период, покупка уровня, доставка.');
 </script>
 </body>
 </html>
