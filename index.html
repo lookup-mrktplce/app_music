@@ -486,8 +486,6 @@ cursor: pointer; font-size: 18px; opacity: 0.6; transition: opacity 0.2s;
 .gap-8 { gap: 8px; }
 .gap-12 { gap: 12px; }
 .w-full { width: 100%; }
-
-/* 🔁 СТИЛИ ДЛЯ БАННЕРА ТЕХНИЧЕСКОГО ПЕРЕРЫВА */
 .maintenance-overlay {
 position: fixed; inset: 0; background: rgba(0,0,0,0.95);
 z-index: 9999; display: flex; align-items: center; justify-content: center;
@@ -509,8 +507,6 @@ font-family: 'Courier New', monospace; margin: 24px 0;
 padding: 16px; background: var(--bg-soft); border-radius: var(--radius);
 }
 .maintenance-timer-label { font-size: 13px; color: var(--text-dim); margin-bottom: 8px; text-transform: uppercase; }
-
-/* 🔁 СТИЛИ ДЛЯ БАННЕРА БЛОКИРОВКИ */
 .ban-overlay {
 position: fixed; inset: 0; background: rgba(0,0,0,0.95);
 z-index: 9998; display: flex; align-items: center; justify-content: center;
@@ -532,8 +528,6 @@ font-family: 'Courier New', monospace; margin: 24px 0;
 padding: 16px; background: var(--bg-soft); border-radius: var(--radius);
 }
 .ban-timer-label { font-size: 13px; color: var(--text-dim); margin-bottom: 8px; text-transform: uppercase; }
-
-/* 🔁 СТИЛИ ДЛЯ МОДАЛЬНОГО ОКНА КРЕАТОРСТВА */
 .creator-level-info {
   font-size: 13px; line-height: 1.6; color: var(--text-dim);
 }
@@ -543,9 +537,7 @@ padding: 16px; background: var(--bg-soft); border-radius: var(--radius);
 .creator-level-info ul {
   padding-left: 20px; margin: 8px 0;
 }
-.creator-level-info li {
-  margin: 4px 0;
-}
+.creator-level-info li { margin: 4px 0; }
 .level-badge {
   display: inline-block; padding: 2px 8px; border-radius: 4px;
   font-size: 11px; font-weight: 500; margin-right: 6px;
@@ -694,7 +686,7 @@ padding: 8px; overflow-x: auto; border-right: none; border-bottom: 1px solid var
 <button class="btn btn-outline btn-sm" style="margin-bottom:16px;width:auto" onclick="navigate('catalog')">← Назад</button>
 <div class="product-grid">
 <div class="gallery">
-<img src="" class="main-img" id="p-main-img" alt="">
+<img src="" class="main-img" id="p-main-img" alt="" onerror="this.src='https://via.placeholder.com/600/f5f5f5/111?text=No+Image'">
 <div class="gallery-nav">
 <button class="gallery-btn" onclick="galNav(-1)">←</button>
 <button class="gallery-btn" onclick="galNav(1)">→</button>
@@ -939,20 +931,17 @@ padding: 8px; overflow-x: auto; border-right: none; border-bottom: 1px solid var
 <div class="modal-title">✨ Система креаторства BYRMALDA</div>
 <div class="creator-level-info">
 <p>Станьте креатором и получайте привилегии за ваши предложения товаров!</p>
-
 <h4>📊 Уровни креаторов:</h4>
 <div><span class="level-badge level-1">Уровень 1</span> <strong>Синий ник</strong> — 1 одобренный товар (не редактированный админом)</div>
 <div><span class="level-badge level-2">Уровень 2</span> <strong>Жёлтый ник</strong> — 5 одобренных товаров (счётчик обнуляется после перехода)</div>
 <div><span class="level-badge level-3">Уровень 3</span> <strong>Зелёный ник</strong> — 10 одобренных товаров (счётчик обнуляется после перехода)</div>
 <div><span class="level-badge level-4">Уровень 4</span> <strong>Красный ник</strong> — 25 одобренных товаров (счётчик обнуляется после перехода)</div>
 <div><span class="level-badge level-5">Уровень 5</span> <strong>Переливающийся ник</strong> — 50 одобренных товаров (счётчик обнуляется после перехода)</div>
-
 <h4>🎁 Привилегии 5 уровня:</h4>
 <ul>
 <li>Скидка 25% на все товары (обувь 10%, одежда 15%)</li>
 <li>Специальная цена отображается в карточке товара</li>
 </ul>
-
 <h4>⏱️ Лимиты на предложения:</h4>
 <div class="limit-info">
 <strong>Обычные пользователи и креаторы 1-3 уровня:</strong><br>
@@ -964,7 +953,6 @@ padding: 8px; overflow-x: auto; border-right: none; border-bottom: 1px solid var
 • 3 попытки отправить товар на модерацию каждые 3 дня (1 в день)<br>
 • Лимит обновляется в 00:00 по московскому времени
 </div>
-
 <h4>📋 Важные правила:</h4>
 <ul>
 <li>Товары, отредактированные админом перед одобрением, НЕ считаются для повышения уровня</li>
@@ -972,7 +960,6 @@ padding: 8px; overflow-x: auto; border-right: none; border-bottom: 1px solid var
 <li>Отклонённые товары не уменьшают ваш уровень</li>
 <li>Лимиты на предложения обновляются автоматически в 00:00 МСК</li>
 </ul>
-
 <button class="btn mt-16" onclick="closeModal('creator-info-modal')">Понятно</button>
 </div>
 </div>
@@ -1077,7 +1064,7 @@ padding: 8px; overflow-x: auto; border-right: none; border-bottom: 1px solid var
 <div class="form-group">
 <label class="form-label">Оценка</label>
 <div style="font-size:22px;letter-spacing:4px;cursor:pointer" id="rev-stars">
-<span onclick="setRating(1)">☆</span><span onclick="setRating(2)">☆</span><span onclick="setRating(3)">☆</span><span onclick="setRating(4)">☆</span><span onclick="setRating(5)">☆</span>
+<span>☆</span><span>☆</span><span>☆</span><span>☆</span><span>☆</span>
 </div>
 </div>
 <div class="form-group"><label class="form-label">Текст *</label><textarea class="form-textarea" id="rev-text"></textarea></div>
@@ -1140,30 +1127,36 @@ padding: 8px; overflow-x: auto; border-right: none; border-bottom: 1px solid var
 </div>
 </div>
 </div>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification, onAuthStateChanged, signOut, updateProfile, applyActionCode } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-import { getFirestore, collection, doc, setDoc, getDoc, getDocs, query, where, orderBy, limit, updateDoc, deleteDoc, addDoc, serverTimestamp, onSnapshot } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-storage.js";
+import { getFirestore, collection, doc, setDoc, getDoc, getDocs, query, where, orderBy, limit, updateDoc, deleteDoc, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+import { getStorage } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-storage.js";
 import { initializeAppCheck, ReCaptchaV3Provider, getToken } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app-check.js";
 
 const firebaseConfig = {
-apiKey: "AIzaSyD0YkXZgk8gh01Y7XH3ZRVU5lCjGJ_IRCw",
-authDomain: "frwerwerwr.firebaseapp.com",
-projectId: "frwerwerwr",
-storageBucket: "frwerwerwr.firebasestorage.app",
-messagingSenderId: "969880048160",
-appId: "1:969880048160:web:9001a95f7ea28e98912245",
-measurementId: "G-HCQEFD2SJF"
+  apiKey: "AIzaSyD0YkXZgk8gh01Y7XH3ZRVU5lCjGJ_IRCw",
+  authDomain: "frwerwerwr.firebaseapp.com",
+  projectId: "frwerwerwr",
+  storageBucket: "frwerwerwr.firebasestorage.app",
+  messagingSenderId: "969880048160",
+  appId: "1:969880048160:web:9001a95f7ea28e98912245",
+  measurementId: "G-HCQEFD2SJF"
 };
+
 const app = initializeApp(firebaseConfig);
-const appCheck = initializeAppCheck(app, { provider: new ReCaptchaV3Provider("6LchEOwsAAAAAPqAkyDyf2wFoucWytU6ThkQKoGB"), isTokenAutoRefreshEnabled: true });
+const appCheck = initializeAppCheck(app, { 
+  provider: new ReCaptchaV3Provider("6LchEOwsAAAAAPqAkyDyf2wFoucWytU6ThkQKoGB"), 
+  isTokenAutoRefreshEnabled: true 
+});
 getToken(appCheck, true).then(() => console.log('🔐 App Check активирован')).catch(err => console.error('🔐 App Check ошибка:', err.message));
 
 const auth = getAuth(app), db = getFirestore(app), storage = getStorage(app);
 const IMGBB_KEY = "eeef3479094c5cf6bf42607927565065";
 const ADMIN_EMAIL = "sobakastalina123@gmail.com";
 const RATES = { USD_TO_RUB: 90, USD_TO_UAH: 37 };
+
 let user = null, userData = null, curProd = null, galIdx = 0, chatUnread = 0, lang = 'ru', theme = localStorage.getItem('theme') || 'light', revStars = 0, carouselIdx = 0, carouselTimer = null, banTimerInterval = null, maintenanceTimerInterval = null;
 
 const heroImages = [
@@ -1174,698 +1167,819 @@ const heroImages = [
 ];
 
 const $ = id => document.getElementById(id);
-const show = el => el.classList.remove('hidden');
-const hide = el => el.classList.add('hidden');
+const show = el => el?.classList?.remove('hidden');
+const hide = el => el?.classList?.add('hidden');
 const fmtDate = ts => ts?.toDate?.()?.toLocaleDateString('ru-RU') || '...';
 const genId = () => Math.random().toString(36).substring(2, 10).toUpperCase();
 
 // 🔁 ФУНКЦИИ ДЛЯ ТАЙМЕРА БАНА
 function parseTimeStr(timeStr) {
-const parts = timeStr.split(':').map(p => parseInt(p) || 0);
-while (parts.length < 4) parts.unshift(0);
-return { days: parts[0], hours: parts[1], minutes: parts[2], seconds: parts[3] };
+  const parts = timeStr.split(':').map(p => parseInt(p) || 0);
+  while (parts.length < 4) parts.unshift(0);
+  return { days: parts[0], hours: parts[1], minutes: parts[2], seconds: parts[3] };
 }
 function timeToSeconds(timeObj) {
-return timeObj.days * 86400 + timeObj.hours * 3600 + timeObj.minutes * 60 + timeObj.seconds;
+  return timeObj.days * 86400 + timeObj.hours * 3600 + timeObj.minutes * 60 + timeObj.seconds;
 }
 function secondsToTimeStr(totalSeconds) {
-const days = Math.floor(totalSeconds / 86400);
-const hours = Math.floor((totalSeconds % 86400) / 3600);
-const minutes = Math.floor((totalSeconds % 3600) / 60);
-const seconds = totalSeconds % 60;
-return `${String(days).padStart(2,'0')}:${String(hours).padStart(2,'0')}:${String(minutes).padStart(2,'0')}:${String(seconds).padStart(2,'0')}`;
+  const days = Math.floor(totalSeconds / 86400);
+  const hours = Math.floor((totalSeconds % 86400) / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+  return `${String(days).padStart(2,'0')}:${String(hours).padStart(2,'0')}:${String(minutes).padStart(2,'0')}:${String(seconds).padStart(2,'0')}`;
 }
 function startBanTimer(untilTimestamp) {
-if (banTimerInterval) clearInterval(banTimerInterval);
-const updateTimer = () => {
-const now = Date.now();
-const remaining = Math.max(0, untilTimestamp - now);
-if (remaining === 0) {
-$('ban-timer').textContent = '00:00:00:00';
-$('ban-reload-msg').style.display = 'block';
-if (banTimerInterval) clearInterval(banTimerInterval);
-return;
-}
-const totalSeconds = Math.floor(remaining / 1000);
-$('ban-timer').textContent = secondsToTimeStr(totalSeconds);
-};
-updateTimer();
-banTimerInterval = setInterval(updateTimer, 1000);
+  if (banTimerInterval) clearInterval(banTimerInterval);
+  const updateTimer = () => {
+    const now = Date.now();
+    const remaining = Math.max(0, untilTimestamp - now);
+    if (remaining === 0) {
+      if($('ban-timer')) $('ban-timer').textContent = '00:00:00:00';
+      if($('ban-reload-msg')) $('ban-reload-msg').style.display = 'block';
+      if (banTimerInterval) clearInterval(banTimerInterval);
+      return;
+    }
+    const totalSeconds = Math.floor(remaining / 1000);
+    if($('ban-timer')) $('ban-timer').textContent = secondsToTimeStr(totalSeconds);
+  };
+  updateTimer();
+  banTimerInterval = setInterval(updateTimer, 1000);
 }
 
 // 🔁 ПРОВЕРКА БАНА ПРИ ВХОДЕ
 async function checkAndShowBan() {
-if (!user || !userData) return;
-const isBanned = userData.isBanned || false;
-const banUntil = userData.banUntil || null;
-const banDuration = userData.banDuration || null;
-const banType = userData.banType || 'permanent';
-if (isBanned) {
-show($('ban-overlay'));
-if (banType === 'temporary' && banUntil) {
-$('ban-message').textContent = 'Ваш аккаунт временно заблокирован.';
-show($('ban-timer-section'));
-startBanTimer(banUntil);
-} else if (banType === 'unban-after' && banUntil) {
-$('ban-message').textContent = 'Ваш аккаунт заблокирован. Разблокировка запланирована.';
-show($('ban-timer-section'));
-startBanTimer(banUntil);
-} else {
-$('ban-message').textContent = 'Ваш аккаунт заблокирован администрацией.\nДля разблокировки обратитесь: @fueum';
-hide($('ban-timer-section'));
-}
-$('profile').style.pointerEvents = 'none';
-$('profile').style.opacity = '0.3';
-} else {
-hide($('ban-overlay'));
-$('profile').style.pointerEvents = 'auto';
-$('profile').style.opacity = '1';
-if (banTimerInterval) clearInterval(banTimerInterval);
-}
+  if (!user || !userData) return;
+  const isBanned = userData.isBanned || false;
+  const banUntil = userData.banUntil || null;
+  const banType = userData.banType || 'permanent';
+  if (isBanned) {
+    show($('ban-overlay'));
+    if (banType === 'temporary' && banUntil) {
+      if($('ban-message')) $('ban-message').textContent = 'Ваш аккаунт временно заблокирован.';
+      show($('ban-timer-section'));
+      startBanTimer(banUntil);
+    } else if (banType === 'unban-after' && banUntil) {
+      if($('ban-message')) $('ban-message').textContent = 'Ваш аккаунт заблокирован. Разблокировка запланирована.';
+      show($('ban-timer-section'));
+      startBanTimer(banUntil);
+    } else {
+      if($('ban-message')) $('ban-message').textContent = 'Ваш аккаунт заблокирован администрацией.\nДля разблокировки обратитесь: @fueum';
+      hide($('ban-timer-section'));
+    }
+    if($('profile')) {
+      $('profile').style.pointerEvents = 'none';
+      $('profile').style.opacity = '0.3';
+    }
+  } else {
+    hide($('ban-overlay'));
+    if($('profile')) {
+      $('profile').style.pointerEvents = 'auto';
+      $('profile').style.opacity = '1';
+    }
+    if (banTimerInterval) clearInterval(banTimerInterval);
+  }
 }
 
 // 🔁 ФУНКЦИИ ДЛЯ ТЕХНИЧЕСКОГО ПЕРЕРЫВА
 function parseDateTimeMSK(dateStr, timeStr) {
-const [year, month, day] = dateStr.split('-').map(Number);
-const [hours, minutes] = timeStr.split(':').map(Number);
-const date = new Date(Date.UTC(year, month - 1, day, hours, minutes, 0));
-const mskOffset = 3 * 60 * 60 * 1000;
-return date.getTime() - mskOffset;
+  const [year, month, day] = dateStr.split('-').map(Number);
+  const [hours, minutes] = timeStr.split(':').map(Number);
+  const date = new Date(Date.UTC(year, month - 1, day, hours, minutes, 0));
+  const mskOffset = 3 * 60 * 60 * 1000;
+  return date.getTime() - mskOffset;
 }
 function formatTimeRemaining(untilTimestamp) {
-const now = Date.now();
-const diff = Math.max(0, untilTimestamp - now);
-const hours = Math.floor(diff / (1000 * 60 * 60));
-const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-return `${String(hours).padStart(2,'0')}:${String(minutes).padStart(2,'0')}:${String(seconds).padStart(2,'0')}`;
+  const now = Date.now();
+  const diff = Math.max(0, untilTimestamp - now);
+  const hours = Math.floor(diff / (1000 * 60 * 60));
+  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+  const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+  return `${String(hours).padStart(2,'0')}:${String(minutes).padStart(2,'0')}:${String(seconds).padStart(2,'0')}`;
 }
 function startMaintenanceTimer(startTimestamp, endTimestamp) {
-if (maintenanceTimerInterval) clearInterval(maintenanceTimerInterval);
-const updateTimer = () => {
-const now = Date.now();
-if (now < startTimestamp) {
-$('maint-timer-display').textContent = 'Ожидание начала...';
-show($('maint-timer-display'));
-return;
-}
-if (now >= endTimestamp) {
-$('maint-timer-display').textContent = 'Перерыв завершён';
-show($('maint-timer-display'));
-if (maintenanceTimerInterval) clearInterval(maintenanceTimerInterval);
-return;
-}
-$('maint-timer-display').textContent = formatTimeRemaining(endTimestamp);
-show($('maint-timer-display'));
-};
-updateTimer();
-maintenanceTimerInterval = setInterval(updateTimer, 1000);
+  if (maintenanceTimerInterval) clearInterval(maintenanceTimerInterval);
+  const updateTimer = () => {
+    const now = Date.now();
+    if (now < startTimestamp) {
+      if($('maint-timer-display')) {
+        $('maint-timer-display').textContent = 'Ожидание начала...';
+        show($('maint-timer-display'));
+      }
+      return;
+    }
+    if (now >= endTimestamp) {
+      if($('maint-timer-display')) {
+        $('maint-timer-display').textContent = 'Перерыв завершён';
+        show($('maint-timer-display'));
+      }
+      if (maintenanceTimerInterval) clearInterval(maintenanceTimerInterval);
+      return;
+    }
+    if($('maint-timer-display')) {
+      $('maint-timer-display').textContent = formatTimeRemaining(endTimestamp);
+      show($('maint-timer-display'));
+    }
+  };
+  updateTimer();
+  maintenanceTimerInterval = setInterval(updateTimer, 1000);
 }
 async function checkAndShowMaintenance() {
-if (user?.email === ADMIN_EMAIL) {
-hide($('maintenance-overlay'));
-return;
-}
-try {
-const configSnap = await getDoc(doc(db, 'artifacts/byrmalda-prod/config/maintenance'));
-if (!configSnap.exists()) {
-hide($('maintenance-overlay'));
-return;
-}
-const config = configSnap.data();
-if (!config.enabled) {
-hide($('maintenance-overlay'));
-if (maintenanceTimerInterval) clearInterval(maintenanceTimerInterval);
-return;
-}
-const now = Date.now();
-const startTs = config.startTimestamp;
-const endTs = config.endTimestamp;
-if (now >= startTs && now < endTs) {
-show($('maintenance-overlay'));
-startMaintenanceTimer(startTs, endTs);
-} else if (now < startTs) {
-show($('maintenance-overlay'));
-$('maint-timer-display').textContent = 'Ожидание начала...';
-show($('maint-timer-display'));
-startMaintenanceTimer(startTs, endTs);
-} else {
-hide($('maintenance-overlay'));
-if (maintenanceTimerInterval) clearInterval(maintenanceTimerInterval);
-}
-} catch(e) {
-console.error('checkMaintenance:', e);
-hide($('maintenance-overlay'));
-}
+  if (user?.email === ADMIN_EMAIL) {
+    hide($('maintenance-overlay'));
+    return;
+  }
+  try {
+    const configSnap = await getDoc(doc(db, 'artifacts/byrmalda-prod/config/maintenance'));
+    if (!configSnap.exists()) {
+      hide($('maintenance-overlay'));
+      return;
+    }
+    const config = configSnap.data();
+    if (!config.enabled) {
+      hide($('maintenance-overlay'));
+      if (maintenanceTimerInterval) clearInterval(maintenanceTimerInterval);
+      return;
+    }
+    const now = Date.now();
+    const startTs = config.startTimestamp;
+    const endTs = config.endTimestamp;
+    if (now >= startTs && now < endTs) {
+      show($('maintenance-overlay'));
+      startMaintenanceTimer(startTs, endTs);
+    } else if (now < startTs) {
+      show($('maintenance-overlay'));
+      if($('maint-timer-display')) {
+        $('maint-timer-display').textContent = 'Ожидание начала...';
+        show($('maint-timer-display'));
+      }
+      startMaintenanceTimer(startTs, endTs);
+    } else {
+      hide($('maintenance-overlay'));
+      if (maintenanceTimerInterval) clearInterval(maintenanceTimerInterval);
+    }
+  } catch(e) {
+    console.error('checkMaintenance:', e);
+    hide($('maintenance-overlay'));
+  }
 }
 
 // 🔁 ФУНКЦИИ ДЛЯ ЛИМИТОВ КРЕАТОРОВ
 function getMoscowMidnight() {
-const now = new Date();
-const mskOffset = 3 * 60 * 60 * 1000;
-const utc = now.getTime() + now.getTimezoneOffset() * 60000;
-const msk = new Date(utc + mskOffset);
-msk.setHours(0, 0, 0, 0);
-return msk.getTime() - mskOffset;
+  const now = new Date();
+  const mskOffset = 3 * 60 * 60 * 1000;
+  const utc = now.getTime() + now.getTimezoneOffset() * 60000;
+  const msk = new Date(utc + mskOffset);
+  msk.setHours(0, 0, 0, 0);
+  return msk.getTime() - mskOffset;
 }
 function getNextLimitReset() {
-const midnight = getMoscowMidnight();
-const now = Date.now();
-if (now >= midnight) {
-return midnight + 24 * 60 * 60 * 1000;
-}
-return midnight;
+  const midnight = getMoscowMidnight();
+  const now = Date.now();
+  if (now >= midnight) {
+    return midnight + 24 * 60 * 60 * 1000;
+  }
+  return midnight;
 }
 function getTimeUntilReset() {
-const reset = getNextLimitReset();
-const now = Date.now();
-return Math.max(0, reset - now);
+  const reset = getNextLimitReset();
+  const now = Date.now();
+  return Math.max(0, reset - now);
 }
 function formatTimeUntilReset(ms) {
-const days = Math.floor(ms / (1000 * 60 * 60 * 24));
-const hours = Math.floor((ms % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-if (days > 0) return `${days} дн ${hours} ч`;
-return `${hours} ч`;
+  const days = Math.floor(ms / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((ms % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  if (days > 0) return `${days} дн ${hours} ч`;
+  return `${hours} ч`;
 }
 function getUserLimit(userData) {
-if (!userData) return { max: 1, used: 0 };
-const level = userData.creatorLevel || 0;
-const max = level >= 4 ? 3 : 1;
-const used = userData.suggestionUsed || 0;
-const lastReset = userData.suggestionLastReset || 0;
-const now = Date.now();
-const midnight = getMoscowMidnight();
-if (now >= midnight && lastReset < midnight) {
-return { max, used: 0, reset: true };
-}
-return { max, used, reset: false };
+  if (!userData) return { max: 1, used: 0 };
+  const level = userData.creatorLevel || 0;
+  const max = level >= 4 ? 3 : 1;
+  const used = userData.suggestionUsed || 0;
+  const lastReset = userData.suggestionLastReset || 0;
+  const now = Date.now();
+  const midnight = getMoscowMidnight();
+  if (now >= midnight && lastReset < midnight) {
+    return { max, used: 0, reset: true };
+  }
+  return { max, used, reset: false };
 }
 function canSubmitSuggestion(userData) {
-const limit = getUserLimit(userData);
-return limit.used < limit.max;
+  const limit = getUserLimit(userData);
+  return limit.used < limit.max;
 }
 function useSuggestionLimit(userData) {
-if (!userData) return;
-const now = Date.now();
-const midnight = getMoscowMidnight();
-if (now >= midnight && (userData.suggestionLastReset || 0) < midnight) {
-userData.suggestionUsed = 1;
-} else {
-userData.suggestionUsed = (userData.suggestionUsed || 0) + 1;
-}
-userData.suggestionLastReset = midnight;
+  if (!userData) return;
+  const now = Date.now();
+  const midnight = getMoscowMidnight();
+  if (now >= midnight && (userData.suggestionLastReset || 0) < midnight) {
+    userData.suggestionUsed = 1;
+  } else {
+    userData.suggestionUsed = (userData.suggestionUsed || 0) + 1;
+  }
+  userData.suggestionLastReset = midnight;
 }
 
 // 🔁 ФУНКЦИИ ДЛЯ УРОВНЕЙ КРЕАТОРОВ
 function getCreatorLevel(userData) {
-if (!userData) return 0;
-return userData.creatorLevel || 0;
+  if (!userData) return 0;
+  return userData.creatorLevel || 0;
 }
 function getCreatorColor(level) {
-switch(level) {
-case 1: return 'creator-1';
-case 2: return 'creator-2';
-case 3: return 'creator-3';
-case 4: return 'creator-4';
-case 5: return 'creator-5';
-default: return '';
-}
+  switch(level) {
+    case 1: return 'creator-1';
+    case 2: return 'creator-2';
+    case 3: return 'creator-3';
+    case 4: return 'creator-4';
+    case 5: return 'creator-5';
+    default: return '';
+  }
 }
 function calculateCreatorDiscount(level, category, basePrice) {
-if (level < 5) return { price: basePrice, discount: 0 };
-const discount = category === 'footwear' ? 0.10 : 0.15;
-return { 
-price: basePrice * (1 - discount), 
-discount: Math.round(discount * 100) 
-};
+  if (level < 5) return { price: basePrice, discount: 0 };
+  const discount = category === 'footwear' ? 0.10 : 0.15;
+  return { 
+    price: basePrice * (1 - discount), 
+    discount: Math.round(discount * 100) 
+  };
 }
 
 function initCarousel() {
-const slides = document.querySelectorAll('.hero-slide');
-slides.forEach((s,i) => s.src = heroImages[i % heroImages.length]);
-carouselIdx = 0; updateCarousel();
-carouselTimer = setInterval(() => carouselNav(1), 8000);
+  const slides = document.querySelectorAll('.hero-slide');
+  slides.forEach((s,i) => { if(s) s.src = heroImages[i % heroImages.length]; });
+  carouselIdx = 0; updateCarousel();
+  carouselTimer = setInterval(() => carouselNav(1), 8000);
 }
 window.carouselNav = d => {
-const len = heroImages.length;
-carouselIdx = (carouselIdx + d + len) % len;
-updateCarousel();
-clearInterval(carouselTimer);
-carouselTimer = setInterval(() => carouselNav(1), 8000);
+  const len = heroImages.length;
+  carouselIdx = (carouselIdx + d + len) % len;
+  updateCarousel();
+  if(carouselTimer) clearInterval(carouselTimer);
+  carouselTimer = setInterval(() => carouselNav(1), 8000);
 };
 function updateCarousel() {
-document.querySelectorAll('.hero-slide').forEach((s,i) => s.classList.toggle('active', i===carouselIdx));
+  document.querySelectorAll('.hero-slide').forEach((s,i) => {
+    if(s) s.classList.toggle('active', i===carouselIdx);
+  });
 }
 
 window.addEventListener('DOMContentLoaded', () => {
-const url = new URL(window.location.href);
-const oob = url.searchParams.get('oobCode'), mode = url.searchParams.get('mode');
-if (oob && mode === 'verifyEmail') {
-applyActionCode(auth, oob).then(() => {
-url.searchParams.delete('oobCode'); url.searchParams.delete('mode');
-window.history.replaceState({}, '', url);
-alert('✅ Email подтверждён!');
-}).catch(e => alert('❌ Ошибка подтверждения: ' + e.message));
-}
-applyTheme(); initCarousel();
-onAuthStateChanged(auth, async u => {
-if (u) {
-user = u; await loadUser(); updateAuthUI();
-if (u.email === ADMIN_EMAIL) { show($('nav-admin')); hide($('nav-suggest')); loadAdminPanels(); loadMaintenanceStatus(); }
-else { hide($('nav-admin')); show($('nav-suggest')); }
-loadOrders(); loadChat(); checkReviewStatus(); renderDelivery(); renderCreatorLimit();
-await checkAndShowBan();
-await checkAndShowMaintenance();
-} else {
-user = userData = null; resetAuthUI(); hide($('delivery-box')); hide($('ban-overlay')); hide($('maintenance-overlay'));
-if (banTimerInterval) clearInterval(banTimerInterval);
-if (maintenanceTimerInterval) clearInterval(maintenanceTimerInterval);
-}
-});
-loadCartCount(); genCatalog(); setupListeners(); setInterval(autoUpdateOrders, 300000);
+  const url = new URL(window.location.href);
+  const oob = url.searchParams.get('oobCode'), mode = url.searchParams.get('mode');
+  if (oob && mode === 'verifyEmail') {
+    applyActionCode(auth, oob).then(() => {
+      url.searchParams.delete('oobCode'); url.searchParams.delete('mode');
+      window.history.replaceState({}, '', url);
+      alert('✅ Email подтверждён!');
+    }).catch(e => alert('❌ Ошибка подтверждения: ' + e.message));
+  }
+  applyTheme(); initCarousel();
+  onAuthStateChanged(auth, async u => {
+    if (u) {
+      user = u; await loadUser(); updateAuthUI();
+      if (u.email === ADMIN_EMAIL) { show($('nav-admin')); hide($('nav-suggest')); loadAdminPanels(); loadMaintenanceStatus(); }
+      else { hide($('nav-admin')); show($('nav-suggest')); }
+      loadOrders(); loadChat(); checkReviewStatus(); renderDelivery(); renderCreatorLimit();
+      await checkAndShowBan();
+      await checkAndShowMaintenance();
+    } else {
+      user = userData = null; resetAuthUI(); hide($('delivery-box')); hide($('ban-overlay')); hide($('maintenance-overlay'));
+      if (banTimerInterval) clearInterval(banTimerInterval);
+      if (maintenanceTimerInterval) clearInterval(maintenanceTimerInterval);
+    }
+  });
+  loadCartCount(); genCatalog(); setupListeners(); setInterval(autoUpdateOrders, 300000);
 });
 
 async function loadUser() {
-if (!user) return;
-try {
-const snap = await getDoc(doc(db, 'artifacts/byrmalda-prod/users', user.uid));
-userData = snap.exists() ? snap.data() : await createUserDoc();
-renderProfile(); syncCartFromDB();
-} catch(e) {
-console.error('loadUser:',e);
-if (e.code === 'permission-denied') { await createUserDoc(); loadUser(); }
-}
+  if (!user) return;
+  try {
+    const snap = await getDoc(doc(db, 'artifacts/byrmalda-prod/users', user.uid));
+    userData = snap.exists() ? snap.data() : await createUserDoc();
+    renderProfile(); syncCartFromDB();
+  } catch(e) {
+    console.error('loadUser:',e);
+    if (e.code === 'permission-denied') { await createUserDoc(); loadUser(); }
+  }
 }
 async function createUserDoc() {
-const d = {
-uid: user.uid, email: user.email, name: user.displayName || user.email.split('@')[0],
-avatar: null, avatarPending: null, registrationDate: serverTimestamp(),
-isBlocked: false, hasVerifiedProduct: false, language: 'ru', theme: 'light',
-reviewStatus: 'none', deliveryCountry: null, deliveryAddress: { cdek: null, ua: null, usa: null },
-cart: [],
-isBanned: false, banType: null, banUntil: null, banDuration: null,
-// 🔁 КРЕАТОРСТВО
-creatorLevel: 0, creatorApprovedCount: 0, suggestionUsed: 0, suggestionLastReset: 0
-};
-await setDoc(doc(db, 'artifacts/byrmalda-prod/users', user.uid), d, { merge: true });
-return d;
+  const d = {
+    uid: user.uid, email: user.email, name: user.displayName || user.email.split('@')[0],
+    avatar: null, avatarPending: null, registrationDate: serverTimestamp(),
+    isBlocked: false, hasVerifiedProduct: false, language: 'ru', theme: 'light',
+    reviewStatus: 'none', deliveryCountry: null, deliveryAddress: { cdek: null, ua: null, usa: null },
+    cart: [],
+    isBanned: false, banType: null, banUntil: null, banDuration: null,
+    creatorLevel: 0, creatorApprovedCount: 0, suggestionUsed: 0, suggestionLastReset: 0
+  };
+  await setDoc(doc(db, 'artifacts/byrmalda-prod/users', user.uid), d, { merge: true });
+  return d;
 }
 function renderProfile() {
-if (!userData) return;
-$('profile-name').textContent = userData.name || 'Пользователь';
-$('profile-id').textContent = user.uid.substring(0,10)+'...';
-$('profile-email').textContent = user.email;
-$('profile-date').textContent = fmtDate(userData.registrationDate);
-if (userData.avatar) $('avatar-display').innerHTML = `<img src="${userData.avatar}" style="width:100%;height:100%;object-fit:cover">`;
-// 🔁 ОТОБРАЖЕНИЕ УРОВНЯ КРЕАТОРА
-const level = getCreatorLevel(userData);
-if (level > 0) {
-const colorClass = getCreatorColor(level);
-$('profile-name').innerHTML = `<span class="verified ${colorClass}">✓</span> ${userData.name}`;
-} else if (userData.hasVerifiedProduct) {
-$('profile-name').innerHTML = `<span class="verified">✓</span> ${userData.name}`;
-}
-renderCreatorLimit();
+  if (!userData) return;
+  if($('profile-name')) $('profile-name').textContent = userData.name || 'Пользователь';
+  if($('profile-id')) $('profile-id').textContent = user.uid.substring(0,10)+'...';
+  if($('profile-email')) $('profile-email').textContent = user.email;
+  if($('profile-date')) $('profile-date').textContent = fmtDate(userData.registrationDate);
+  if($('avatar-display') && userData.avatar) {
+    $('avatar-display').innerHTML = `<img src="${userData.avatar}" style="width:100%;height:100%;object-fit:cover" onerror="this.src='https://via.placeholder.com/96/f5f5f5/111?text=👤'">`;
+  }
+  const level = getCreatorLevel(userData);
+  if (level > 0 && $('profile-name')) {
+    const colorClass = getCreatorColor(level);
+    $('profile-name').innerHTML = `<span class="verified ${colorClass}">✓</span> ${userData.name}`;
+  } else if (userData.hasVerifiedProduct && $('profile-name')) {
+    $('profile-name').innerHTML = `<span class="verified">✓</span> ${userData.name}`;
+  }
+  renderCreatorLimit();
 }
 function renderCreatorLimit() {
-if (!user || !userData) { hide($('creator-limit-display')); return; }
-const limit = getUserLimit(userData);
-const resetTime = formatTimeUntilReset(getTimeUntilReset());
-const text = `${limit.used}/${limit.max} • лимит обновится через ${resetTime}`;
-$('creator-limit-display').textContent = text;
-show($('creator-limit-display'));
+  if (!user || !userData || !$('creator-limit-display')) { hide($('creator-limit-display')); return; }
+  const limit = getUserLimit(userData);
+  const resetTime = formatTimeUntilReset(getTimeUntilReset());
+  const text = `${limit.used}/${limit.max} • лимит обновится через ${resetTime}`;
+  $('creator-limit-display').textContent = text;
+  show($('creator-limit-display'));
 }
-function updateAuthUI() { $('auth-btn').textContent = 'Выйти'; $('auth-btn').onclick = () => openModal('logout-confirm-modal'); $('user-email').textContent = user.email; }
-function resetAuthUI() { $('auth-btn').textContent = 'Войти'; $('auth-btn').onclick = () => openModal('login-modal'); $('user-email').textContent = 'Не авторизован'; $('profile-name').textContent = 'Гость'; $('profile-id').textContent = '-'; $('profile-email').textContent = '-'; $('profile-date').textContent = '-'; $('avatar-display').innerHTML = '👤'; hide($('creator-limit-display')); }
+function updateAuthUI() { 
+  if($('auth-btn')) {
+    $('auth-btn').textContent = 'Выйти'; 
+    $('auth-btn').onclick = () => openModal('logout-confirm-modal'); 
+  }
+  if($('user-email')) $('user-email').textContent = user.email; 
+}
+function resetAuthUI() { 
+  if($('auth-btn')) {
+    $('auth-btn').textContent = 'Войти'; 
+    $('auth-btn').onclick = () => openModal('login-modal'); 
+  }
+  if($('user-email')) $('user-email').textContent = 'Не авторизован'; 
+  if($('profile-name')) $('profile-name').textContent = 'Гость'; 
+  if($('profile-id')) $('profile-id').textContent = '-'; 
+  if($('profile-email')) $('profile-email').textContent = '-'; 
+  if($('profile-date')) $('profile-date').textContent = '-'; 
+  if($('avatar-display')) $('avatar-display').innerHTML = '👤'; 
+  hide($('creator-limit-display')); 
+}
 
 window.openLogin = () => openModal('login-modal');
 window.switchReg = () => { closeModal('login-modal'); openModal('reg-modal'); showStep(1); };
 window.doLogin = async () => {
-const email = $('log-email').value.trim(), pass = $('log-pass').value; $('log-err').textContent = '';
-if (!email || !pass) { $('log-err').textContent = 'Заполните поля'; return; }
-try {
-const cred = await signInWithEmailAndPassword(auth, email, pass);
-if (!cred.user.emailVerified) {
-await sendEmailVerification(cred.user, { url: window.location.href, handleCodeInApp: true });
-await signOut(auth);
-$('log-err').innerHTML = `✉️ Подтвердите почту.<br>Новая ссылка отправлена.`; return;
-}
-const ud = await getDoc(doc(db, 'artifacts/byrmalda-prod/users', cred.user.uid));
-if (ud.exists() && ud.data().isBlocked) { await signOut(auth); showBlock(); return; }
-closeModal('login-modal');
-} catch(e) { $('log-err').textContent = 'Неверный email или пароль'; }
+  const email = $('log-email')?.value?.trim(), pass = $('log-pass')?.value; 
+  if($('log-err')) $('log-err').textContent = '';
+  if (!email || !pass) { if($('log-err')) $('log-err').textContent = 'Заполните поля'; return; }
+  try {
+    const cred = await signInWithEmailAndPassword(auth, email, pass);
+    if (!cred.user.emailVerified) {
+      await sendEmailVerification(cred.user, { url: window.location.href, handleCodeInApp: true });
+      await signOut(auth);
+      if($('log-err')) $('log-err').innerHTML = `✉️ Подтвердите почту.<br>Новая ссылка отправлена.`; return;
+    }
+    const ud = await getDoc(doc(db, 'artifacts/byrmalda-prod/users', cred.user.uid));
+    if (ud.exists() && ud.data().isBlocked) { await signOut(auth); showBlock(); return; }
+    closeModal('login-modal');
+  } catch(e) { if($('log-err')) $('log-err').textContent = 'Неверный email или пароль'; }
 };
 window.regStep1 = async () => {
-const email = $('reg-email').value.trim(), name = $('reg-name').value.trim(), p1 = $('reg-pass').value, p2 = $('reg-pass2').value;
-$('reg-err').textContent = '';
-if (!email || !name || !p1 || !p2) { $('reg-err').textContent = 'Заполните все поля'; return; }
-if (p1 !== p2) { $('reg-err').textContent = 'Пароли не совпадают'; return; }
-try { 
-const cred = await createUserWithEmailAndPassword(auth, email, p1);
-await sendEmailVerification(cred.user, {
-url: window.location.href,
-handleCodeInApp: true
-});
-showStep(2); 
-}
-catch(e) { $('reg-err').textContent = e.code === 'auth/email-already-in-use' ? 'Email уже зарегистрирован. Войдите.' : 'Ошибка: '+e.message; }
+  const email = $('reg-email')?.value?.trim(), name = $('reg-name')?.value?.trim(), p1 = $('reg-pass')?.value, p2 = $('reg-pass2')?.value;
+  if($('reg-err')) $('reg-err').textContent = '';
+  if (!email || !name || !p1 || !p2) { if($('reg-err')) $('reg-err').textContent = 'Заполните все поля'; return; }
+  if (p1 !== p2) { if($('reg-err')) $('reg-err').textContent = 'Пароли не совпадают'; return; }
+  try { 
+    const cred = await createUserWithEmailAndPassword(auth, email, p1);
+    await sendEmailVerification(cred.user, { url: window.location.href, handleCodeInApp: true });
+    showStep(2); 
+  } catch(e) { 
+    if($('reg-err')) $('reg-err').textContent = e.code === 'auth/email-already-in-use' ? 'Email уже зарегистрирован. Войдите.' : 'Ошибка: '+e.message; 
+  }
 };
 window.regStep2 = async () => {
-try {
-await auth.currentUser.reload();
-if (auth.currentUser.emailVerified) {
-await updateProfile(auth.currentUser, { displayName: $('reg-name').value });
-await createUserDoc(); $('reg-step-2').classList.add('hidden'); $('reg-ok').classList.remove('hidden');
-} else { $('reg-err').textContent = 'Почта ещё не подтверждена. Проверьте письмо.'; }
-} catch(e) { $('reg-err').textContent = 'Ошибка: '+e.message; }
+  try {
+    await auth.currentUser.reload();
+    if (auth.currentUser.emailVerified) {
+      await updateProfile(auth.currentUser, { displayName: $('reg-name').value });
+      await createUserDoc(); 
+      hide($('reg-step-2')); 
+      show($('reg-ok'));
+    } else { if($('reg-err')) $('reg-err').textContent = 'Почта ещё не подтверждена. Проверьте письмо.'; }
+  } catch(e) { if($('reg-err')) $('reg-err').textContent = 'Ошибка: '+e.message; }
 };
-function showStep(n) { [1,2].forEach(i => $(`reg-step-${i}`).classList.add('hidden')); $('reg-ok').classList.add('hidden'); $(`reg-step-${n}`).classList.remove('hidden'); }
+function showStep(n) { 
+  [1,2].forEach(i => { if($(`reg-step-${i}`)) $(`reg-step-${i}`).classList.add('hidden'); }); 
+  if($('reg-ok')) $('reg-ok').classList.add('hidden'); 
+  if($(`reg-step-${n}`)) $(`reg-step-${n}`).classList.remove('hidden'); 
+}
 
 window.confirmLogout = () => { if (!user) openModal('login-modal'); else openModal('logout-confirm-modal'); };
 window.doLogout = async () => { closeModal('logout-confirm-modal'); await signOut(auth); userData = null; loadCartCount(); navigate('home'); };
 window.logoutFromBan = async () => { await signOut(auth); hide($('ban-overlay')); userData = null; resetAuthUI(); navigate('home'); };
 function showBlock() {
-const m = document.createElement('div'); m.className = 'modal active';
-m.innerHTML = `<div class="modal-content text-center"><h3 style="margin-bottom:12px">🚫 Аккаунт заблокирован</h3><p style="color:var(--text-dim);margin-bottom:20px">Разблокировка: <a href="https://t.me/fueum" target="_blank" style="color:#0088cc;font-weight:600">@fueum</a></p><button class="btn" onclick="this.closest('.modal').remove()">Понятно</button></div>`;
-document.body.appendChild(m); m.onclick = e => { if (e.target === m) m.remove(); };
+  const m = document.createElement('div'); m.className = 'modal active';
+  m.innerHTML = `<div class="modal-content text-center"><h3 style="margin-bottom:12px">🚫 Аккаунт заблокирован</h3><p style="color:var(--text-dim);margin-bottom:20px">Разблокировка: <a href="https://t.me/fueum" target="_blank" style="color:#0088cc;font-weight:600">@fueum</a></p><button class="btn" onclick="this.closest('.modal').remove()">Понятно</button></div>`;
+  document.body.appendChild(m); m.onclick = e => { if (e.target === m) m.remove(); };
 }
 
 window.navigate = page => {
-if (userData?.isBanned && page !== 'profile') { alert('❌ Ваш аккаунт заблокирован'); return; }
-document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-$(page).classList.add('active');
-document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-const nb = $(`nav-${page}`); if (nb) nb.classList.add('active');
-if (page==='cart') renderCart(); if (page==='catalog') genCatalog();
-if (page==='search') $('search-input').value='';
-if (page==='profile' && user) { loadOrders(); renderDelivery(); checkAndShowBan(); renderCreatorLimit(); }
-if (page==='reviews') loadPublicReviews();
-if (page==='admin' && user?.email===ADMIN_EMAIL) loadAdminPanels();
-if (window.innerWidth <= 1024) $('sidebar').classList.remove('expanded');
-if (page==='support') { chatUnread=0; updateSupportBadge(); loadChat(); }
+  if (userData?.isBanned && page !== 'profile') { alert('❌ Ваш аккаунт заблокирован'); return; }
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  if($(page)) $(page).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  const nb = $(`nav-${page}`); if (nb) nb.classList.add('active');
+  if (page==='cart') renderCart(); if (page==='catalog') genCatalog();
+  if (page==='search' && $('search-input')) $('search-input').value='';
+  if (page==='profile' && user) { loadOrders(); renderDelivery(); checkAndShowBan(); renderCreatorLimit(); }
+  if (page==='reviews') loadPublicReviews();
+  if (page==='admin' && user?.email===ADMIN_EMAIL) loadAdminPanels();
+  if (window.innerWidth <= 1024 && $('sidebar')) $('sidebar').classList.remove('expanded');
+  if (page==='support') { chatUnread=0; updateSupportBadge(); loadChat(); }
 };
-window.openModal = id => $(id).classList.add('active'); window.closeModal = id => $(id).classList.remove('active');
+window.openModal = id => { if($(id)) $(id).classList.add('active'); }; 
+window.closeModal = id => { if($(id)) $(id).classList.remove('active'); };
 document.querySelectorAll('.modal').forEach(m => m.onclick = e => { if (e.target===m) m.classList.remove('active'); });
 
 window.openAvatarSettingsModal = () => {
-if (!user) { openModal('login-modal'); return; }
-openModal('avatar-settings-modal');
+  if (!user) { openModal('login-modal'); return; }
+  openModal('avatar-settings-modal');
 };
 window.validateSingleFile = (input) => {
-if (input.files.length > 1) {
-alert('Можно загрузить только 1 изображение');
-input.value = '';
-}
+  if (input.files.length > 1) {
+    alert('Можно загрузить только 1 изображение');
+    input.value = '';
+  }
 };
 window.submitAvatarFromSettings = async () => {
-const file = $('av-settings-file').files[0];
-if (!file) { alert('Выберите файл'); return; }
-if (file.size > 5*1024*1024) { alert('Макс. размер 5МБ'); return; }
-try {
-const fd = new FormData(); fd.append('image', file); fd.append('key', IMGBB_KEY);
-const res = await fetch('https://api.imgbb.com/1/upload', { method: 'POST', body: fd });
-const data = await res.json();
-if (!data.success) throw new Error('ImgBB error');
-await updateDoc(doc(db, 'artifacts/byrmalda-prod/users', user.uid), {
-avatarPending: data.data.url, avatarStatus: 'pending', avatarSubmittedAt: serverTimestamp()
-});
-alert('✅ Аватарка отправлена на модерацию!');
-closeModal('avatar-settings-modal');
-$('av-settings-file').value = '';
-loadPendingAvatars();
-} catch(e) { console.error(e); alert('❌ Ошибка: '+e.message); }
+  const file = $('av-settings-file')?.files?.[0];
+  if (!file) { alert('Выберите файл'); return; }
+  if (file.size > 5*1024*1024) { alert('Макс. размер 5МБ'); return; }
+  try {
+    const fd = new FormData(); fd.append('image', file); fd.append('key', IMGBB_KEY);
+    const res = await fetch('https://api.imgbb.com/1/upload', { method: 'POST', body: fd });
+    const data = await res.json();
+    if (!data.success) throw new Error('ImgBB error');
+    await updateDoc(doc(db, 'artifacts/byrmalda-prod/users', user.uid), {
+      avatarPending: data.data.url, avatarStatus: 'pending', avatarSubmittedAt: serverTimestamp()
+    });
+    alert('✅ Аватарка отправлена на модерацию!');
+    closeModal('avatar-settings-modal');
+    if($('av-settings-file')) $('av-settings-file').value = '';
+    loadPendingAvatars();
+  } catch(e) { console.error(e); alert('❌ Ошибка: '+e.message); }
 };
 
 window.openAvatarModal = () => { if (!user) openModal('login-modal'); else openModal('avatar-modal'); };
 window.submitAvatar = async () => {
-const file = $('av-file').files[0];
-if (!file) { alert('Выберите файл'); return; }
-if (file.size > 5*1024*1024) { alert('Макс. 5МБ'); return; }
-try {
-const fd = new FormData(); fd.append('image', file); fd.append('key', IMGBB_KEY);
-const res = await fetch('https://api.imgbb.com/1/upload', { method: 'POST', body: fd });
-const data = await res.json();
-if (!data.success) throw new Error('ImgBB error');
-await updateDoc(doc(db, 'artifacts/byrmalda-prod/users', user.uid), {
-avatarPending: data.data.url, avatarStatus: 'pending', avatarSubmittedAt: serverTimestamp()
-});
-alert('✅ Аватарка отправлена на модерацию!');
-closeModal('avatar-modal');
-loadPendingAvatars();
-} catch(e) { console.error(e); alert('❌ Ошибка: '+e.message); }
+  const file = $('av-file')?.files?.[0];
+  if (!file) { alert('Выберите файл'); return; }
+  if (file.size > 5*1024*1024) { alert('Макс. 5МБ'); return; }
+  try {
+    const fd = new FormData(); fd.append('image', file); fd.append('key', IMGBB_KEY);
+    const res = await fetch('https://api.imgbb.com/1/upload', { method: 'POST', body: fd });
+    const data = await res.json();
+    if (!data.success) throw new Error('ImgBB error');
+    await updateDoc(doc(db, 'artifacts/byrmalda-prod/users', user.uid), {
+      avatarPending: data.data.url, avatarStatus: 'pending', avatarSubmittedAt: serverTimestamp()
+    });
+    alert('✅ Аватарка отправлена на модерацию!');
+    closeModal('avatar-modal');
+    loadPendingAvatars();
+  } catch(e) { console.error(e); alert('❌ Ошибка: '+e.message); }
 };
 
 // 🛒 КОРЗИНА
 window.addToCart = async () => {
-if (!user) { openModal('login-modal'); return; }
-if (!userData) return;
-let size = 'M', color = 'Белый';
-const sizeEl = $('p-size'), colorEl = $('p-color');
-if (sizeEl && sizeEl.tagName==='SELECT') size = sizeEl.value; else if (sizeEl?.closest('.opt-group')?.querySelector('.opt-static')) size = sizeEl.closest('.opt-group').querySelector('.opt-static').textContent;
-if (colorEl && colorEl.tagName==='SELECT') color = colorEl.value; else if (colorEl?.closest('.opt-group')?.querySelector('.opt-static')) color = colorEl.closest('.opt-group').querySelector('.opt-static').textContent;
-const item = {
-id: `${curProd.id}-${Date.now()}`, pid: curProd.id, name: curProd.name,
-img: curProd.images?.[0]||'', size, color,
-qty: parseInt($('p-qty')?.value)||1, price: curProd.price, weight: curProd.weight||200,
-isPreorder: false, at: new Date().toISOString()
+  if (!user) { openModal('login-modal'); return; }
+  if (!userData) return;
+  let size = 'M', color = 'Белый';
+  const sizeEl = $('p-size'), colorEl = $('p-color');
+  if (sizeEl && sizeEl.tagName==='SELECT') size = sizeEl.value; else if (sizeEl?.closest?.('.opt-group')?.querySelector?.('.opt-static')) size = sizeEl.closest('.opt-group').querySelector('.opt-static').textContent;
+  if (colorEl && colorEl.tagName==='SELECT') color = colorEl.value; else if (colorEl?.closest?.('.opt-group')?.querySelector?.('.opt-static')) color = colorEl.closest('.opt-group').querySelector('.opt-static').textContent;
+  const item = {
+    id: `${curProd?.id}-${Date.now()}`, pid: curProd?.id, name: curProd?.name,
+    img: curProd?.images?.[0]||'', size, color,
+    qty: parseInt($('p-qty')?.value)||1, price: curProd?.price, weight: curProd?.weight||200,
+    isPreorder: false, at: new Date().toISOString()
+  };
+  if (!userData.cart) userData.cart = [];
+  userData.cart.push(item);
+  await updateDoc(doc(db, 'artifacts/byrmalda-prod/users', user.uid), { cart: userData.cart });
+  loadCartCount(); alert(`✅ Добавлено в корзину!`); navigate('cart');
 };
-if (!userData.cart) userData.cart = [];
-userData.cart.push(item);
-await updateDoc(doc(db, 'artifacts/byrmalda-prod/users', user.uid), { cart: userData.cart });
-loadCartCount(); alert(`✅ Добавлено в корзину!`); navigate('cart');
-};
-function loadCartCount() { const n = (userData?.cart||[]).reduce((s,i)=>s+i.qty,0); $('cart-badge').textContent = n; $('nav-cart').classList.toggle('has-badge', n>0); }
+function loadCartCount() { const n = (userData?.cart||[]).reduce((s,i)=>s+(i?.qty||0),0); if($('cart-badge')) $('cart-badge').textContent = n; if($('nav-cart')) $('nav-cart').classList.toggle('has-badge', n>0); }
 function syncCartFromDB() { loadCartCount(); if (userData?.cart) renderCart(); }
 window.renderCart = () => {
-const items = userData?.cart || [];
-const empty = $('cart-empty'), full = $('cart-full'), body = $('cart-items');
-if (!items.length) { show(empty); hide(full); return; }
-hide(empty); show(full);
-let sub=0, kg=0;
-body.innerHTML = items.map(it => {
-const tot = it.price * it.qty; sub+=tot; kg+=(it.weight*it.qty)/1000;
-return `<tr><td><input type="number" class="qty-input" value="${it.qty}" min="1" onchange="updCart('${it.id}','qty',this.value)"></td><td class="flex items-center gap-8"><img class="cart-img" src="${it.img||'https://via.placeholder.com/60/f5f5f5/111?text=📦'}"><div><div style="font-weight:500">${it.name}</div></div></td><td>${it.size}</td><td>${it.color}</td><td>$${it.price}</td><td><button class="btn-cancel" onclick="delCart('${it.id}')">×</button></td></tr>`;
-}).join('');
-const delRUB = Math.round(kg*900), delUSD = (delRUB/RATES.USD_TO_RUB).toFixed(2);
-$('cart-total').textContent = `$${(sub+parseFloat(delUSD)).toFixed(2)}`;
-$('.delivery-note').textContent = `Доставка: ${delRUB.toLocaleString('ru-RU')} ₽ (~$${delUSD})`;
+  const items = userData?.cart || [];
+  const empty = $('cart-empty'), full = $('cart-full'), body = $('cart-items');
+  if (!items.length) { if(empty) show(empty); if(full) hide(full); return; }
+  if(empty) hide(empty); if(full) show(full);
+  let sub=0, kg=0;
+  if(body) {
+    body.innerHTML = items.map(it => {
+      const tot = (it?.price||0) * (it?.qty||1); sub+=tot; kg+=((it?.weight||200)*(it?.qty||1))/1000;
+      return `<tr><td><input type="number" class="qty-input" value="${it?.qty||1}" min="1" onchange="updCart('${it?.id}','qty',this.value)"></td><td class="flex items-center gap-8"><img class="cart-img" src="${it?.img||'https://via.placeholder.com/60/f5f5f5/111?text=📦'}" onerror="this.src='https://via.placeholder.com/60/f5f5f5/111?text=No'"><div><div style="font-weight:500">${it?.name||'Товар'}</div></div></td><td>${it?.size||'-'}</td><td>${it?.color||'-'}</td><td>$${it?.price||0}</td><td><button class="btn-cancel" onclick="delCart('${it?.id}')">×</button></td></tr>`;
+    }).join('');
+  }
+  const delRUB = Math.round(kg*900), delUSD = (delRUB/RATES.USD_TO_RUB).toFixed(2);
+  if($('cart-total')) $('cart-total').textContent = `$${(sub+parseFloat(delUSD)).toFixed(2)}`;
+  if($('.delivery-note')) $('.delivery-note').textContent = `Доставка: ${delRUB.toLocaleString('ru-RU')} ₽ (~$${delUSD})`;
 };
 window.updCart = async (id,f,v) => {
-const it = userData.cart.find(i=>i.id===id); if(!it)return;
-if(f==='qty') it.qty=Math.max(1,parseInt(v)||1);
-await updateDoc(doc(db,'artifacts/byrmalda-prod/users',user.uid),{cart:userData.cart});
-renderCart(); loadCartCount();
+  const it = userData?.cart?.find(i=>i?.id===id); if(!it)return;
+  if(f==='qty') it.qty=Math.max(1,parseInt(v)||1);
+  await updateDoc(doc(db,'artifacts/byrmalda-prod/users',user.uid),{cart:userData.cart});
+  renderCart(); loadCartCount();
 };
 window.delCart = async id => {
-userData.cart = userData.cart.filter(i=>i.id!==id);
-await updateDoc(doc(db,'artifacts/byrmalda-prod/users',user.uid),{cart:userData.cart});
-renderCart(); loadCartCount();
+  if(userData?.cart) {
+    userData.cart = userData.cart.filter(i=>i?.id!==id);
+    await updateDoc(doc(db,'artifacts/byrmalda-prod/users',user.uid),{cart:userData.cart});
+    renderCart(); loadCartCount();
+  }
 };
 
 // 🔍 КАТАЛОГ & ПОИСК
 function genCatalog() {
-const cats = [{id:'tshirts',n:'Футболки',ic:'T-shirts',t:'футболка'},{id:'hoodies',n:'Толстовки',ic:'hoodie',t:'толстовка'},{id:'longsleeve',n:'Лонгсливы',ic:'longsleeves',t:'лонгслив'},{id:'sneakers',n:'Кроссовки',ic:'sneakers',t:'кроссовки'},{id:'acc',n:'Аксессуары',ic:'accessories',t:'аксессуар'},{id:'pants',n:'Штаны',ic:'Pants',t:'штаны'},{id:'shorts',n:'Шорты',ic:'Shorts',t:'шорты'},{id:'jackets',n:'Куртки',ic:'Jackets',t:'куртка'},{id:'archive',n:'Архив',ic:'📁',t:'archive'}];
-$('catalog-grid').innerHTML = cats.map(c => `<div class="cat-card" onclick="filterType('${c.t}')"><div class="card-img">${c.ic}</div><div class="card-body"><div class="card-title">${c.n}</div></div></div>`).join('');
+  const cats = [{id:'tshirts',n:'Футболки',ic:'T-shirts',t:'футболка'},{id:'hoodies',n:'Толстовки',ic:'hoodie',t:'толстовка'},{id:'longsleeve',n:'Лонгсливы',ic:'longsleeves',t:'лонгслив'},{id:'sneakers',n:'Кроссовки',ic:'sneakers',t:'кроссовки'},{id:'acc',n:'Аксессуары',ic:'accessories',t:'аксессуар'},{id:'pants',n:'Штаны',ic:'Pants',t:'штаны'},{id:'shorts',n:'Шорты',ic:'Shorts',t:'шорты'},{id:'jackets',n:'Куртки',ic:'Jackets',t:'куртка'},{id:'archive',n:'Архив',ic:'📁',t:'archive'}];
+  if($('catalog-grid')) {
+    $('catalog-grid').innerHTML = cats.map(c => `<div class="cat-card" onclick="filterType('${c.t}')"><div class="card-img">${c.ic}</div><div class="card-body"><div class="card-title">${c.n}</div></div></div>`).join('');
+  }
 }
-window.filterType = async type => { navigate('search'); $('search-input').value=type; await searchProds(type); };
-window.handleSearch = async e => { const q=e.target.value.trim().toLowerCase(); if(q.length>=2) await searchProds(q); else $('search-results').innerHTML=''; };
+window.filterType = async type => { navigate('search'); if($('search-input')) $('search-input').value=type; await searchProds(type); };
+window.handleSearch = async e => { const q=e?.target?.value?.trim()?.toLowerCase(); if(q?.length>=2) await searchProds(q); else if($('search-results')) $('search-results').innerHTML=''; };
 async function searchProds(q) {
-const c = $('search-results'); 
-c.innerHTML = '<div class="text-center" style="padding:32px"><div class="loading"></div></div>';
-try {
-let coll = collection(db, 'artifacts/byrmalda-prod/public/data/products');
+  const c = $('search-results'); 
+  if(c) c.innerHTML = '<div class="text-center" style="padding:32px"><div class="loading"></div></div>';
+  try {
+    let coll = collection(db, 'artifacts/byrmalda-prod/public/data/products');
 
-if (q === 'archive') {
-const snap = await getDocs(query(coll, where('deleted','==',true)));
-const res = []; snap.forEach(d => res.push({...d.data(),id:d.id}));
-if (!res.length) { c.innerHTML = '<div class="text-center" style="padding:32px;color:var(--text-dim)">Архив пуст</div>'; return; }
-c.innerHTML = res.map(p => prodCard(p)).join('');
-return;
-}
+    if (q === 'archive') {
+      const snap = await getDocs(query(coll, where('deleted','==',true)));
+      const res = []; snap.forEach(d => res.push({...d.data(),id:d.id}));
+      if (!res.length && c) { c.innerHTML = '<div class="text-center" style="padding:32px;color:var(--text-dim)">Архив пуст</div>'; return; }
+      if(c) c.innerHTML = res.map(p => prodCard(p)).join('');
+      return;
+    }
 
-const filterTypes = ['футболка','толстовка','кроссовки','аксессуар','штаны','шорты','куртка','лонгслив'];
-const isExactFilter = filterTypes.includes(q.toLowerCase());
+    const filterTypes = ['футболка','толстовка','кроссовки','аксессуар','штаны','шорты','куртка','лонгслив'];
+    const isExactFilter = filterTypes.includes(q.toLowerCase());
 
-let snap;
-if (isExactFilter) {
-snap = await getDocs(query(coll, where('published','==',true), where('deleted','==',false), where('type','==',q)));
-} else {
-snap = await getDocs(query(coll, where('published','==',true), where('deleted','==',false)));
-}
+    let snap;
+    if (isExactFilter) {
+      snap = await getDocs(query(coll, where('published','==',true), where('deleted','==',false), where('type','==',q)));
+    } else {
+      snap = await getDocs(query(coll, where('published','==',true), where('deleted','==',false)));
+    }
 
-const res = [];
-if (isExactFilter) {
-snap.forEach(d => res.push({...d.data(),id:d.id}));
-} else {
-snap.forEach(d => { const p = d.data(); if (`${p.name} ${p.type} ${p.category} ${p.desc}`.toLowerCase().includes(q)) res.push({...p,id:d.id}); });
-}
+    const res = [];
+    if (isExactFilter) {
+      snap.forEach(d => res.push({...d.data(),id:d.id}));
+    } else {
+      snap.forEach(d => { const p = d.data(); if (`${p?.name||''} ${p?.type||''} ${p?.category||''} ${p?.desc||''}`.toLowerCase().includes(q)) res.push({...p,id:d.id}); });
+    }
 
-if (!res.length) { c.innerHTML = `<div class="text-center" style="padding:32px;color:var(--text-dim)">Ничего не найдено</div>`; return; }
-c.innerHTML = res.map(p => prodCard(p)).join('');
+    if (!res.length && c) { c.innerHTML = `<div class="text-center" style="padding:32px;color:var(--text-dim)">Ничего не найдено</div>`; return; }
+    if(c) c.innerHTML = res.map(p => prodCard(p)).join('');
 
-} catch(e) { console.error(e); c.innerHTML = '<div class="text-center" style="padding:32px;color:var(--error)">Ошибка</div>'; }
+  } catch(e) { console.error(e); if(c) c.innerHTML = '<div class="text-center" style="padding:32px;color:var(--error)">Ошибка</div>'; }
 }
 function prodCard(p) {
-const stock=p.stock>0;
-return `<div class="prod-card" onclick="openProd('${p.id}')"><div class="card-img">${p.images?.[0]?`<img src="${p.images[0]}" style="width:100%;height:100%;object-fit:cover">`:'📦'}</div><div class="card-body"><div class="card-title">${p.name}</div><div class="card-price ${stock?'':'card-nostock'}">${stock?`$${p.price}`:'Нет в наличии'}</div></div></div>`;
+  const stock=p?.stock>0;
+  return `<div class="prod-card" onclick="openProd('${p?.id}')"><div class="card-img">${p?.images?.[0]?`<img src="${p.images[0]}" style="width:100%;height:100%;object-fit:cover" onerror="this.src='https://via.placeholder.com/220/f5f5f5/111?text=No'">`:'📦'}</div><div class="card-body"><div class="card-title">${p?.name||'Товар'}</div><div class="card-price ${stock?'':'card-nostock'}">${stock?`$${p?.price||0}`:'Нет в наличии'}</div></div></div>`;
 }
 
-// 📦 КАРТОЧКА ТОВАРА
+// 📦 КАРТОЧКА ТОВАРА — с улучшенной обработкой ошибок
 window.openProd = async id => {
-try {
-const snap = await getDoc(doc(db, 'artifacts/byrmalda-prod/public/data/products', id));
-if (!snap.exists()) return alert('Товар не найден');
-curProd = { ...snap.data(), id };
-$('p-id').textContent = `ID: ${curProd.productId || id}`; $('p-name').innerHTML = curProd.name;
+  try {
+    const snap = await getDoc(doc(db, 'artifacts/byrmalda-prod/public/data/products', id));
+    if (!snap?.exists()) { alert('Товар не найден'); return; }
+    curProd = { ...snap.data(), id };
+    
+    if($('p-id')) $('p-id').textContent = `ID: ${curProd?.productId || id}`; 
+    if($('p-name')) $('p-name').innerHTML = curProd?.name || 'Товар';
 
-// 🔁 БАДЖИ ДЛЯ ПОЛЬЗОВАТЕЛЬСКИХ ТОВАРОВ
-if (curProd.createdByUser) {
-show($('user-created-badge'));
-if (curProd.editedByAdmin) {
-show($('admin-edited-badge'));
-} else {
-hide($('admin-edited-badge'));
-}
-} else {
-hide($('user-created-badge'));
-hide($('admin-edited-badge'));
-}
+    // 🔁 БАДЖИ ДЛЯ ПОЛЬЗОВАТЕЛЬСКИХ ТОВАРОВ
+    if (curProd?.createdByUser) {
+      show($('user-created-badge'));
+      if (curProd?.editedByAdmin) {
+        show($('admin-edited-badge'));
+      } else {
+        hide($('admin-edited-badge'));
+      }
+    } else {
+      hide($('user-created-badge'));
+      hide($('admin-edited-badge'));
+    }
 
-const colors=(curProd.color||'Белый').split(',').map(c=>c.trim()).filter(c=>c);
-const sizes=(curProd.sizes||'S,M,L,XL').split(',').map(s=>s.trim()).filter(s=>s);
-const colorGroup=$('opt-color-group');
-if(colors.length===1) colorGroup.innerHTML=`<label class="form-label">Цвет</label><div class="opt-static">${colors[0]}</div>`;
-else { colorGroup.innerHTML=`<label class="form-label">Цвет</label><select class="opt-select" id="p-color"></select>`; $('p-color').innerHTML=colors.map(c=>`<option>${c}</option>`).join(''); }
-const sizeGroup=$('opt-size-group');
-if(sizes.length===1) sizeGroup.innerHTML=`<label class="form-label">Размер</label><div class="opt-static">${sizes[0]}</div>`;
-else { sizeGroup.innerHTML=`<label class="form-label">Размер</label><select class="opt-select" id="p-size"></select>`; $('p-size').innerHTML=sizes.map(s=>`<option>${s}</option>`).join(''); }
-$('p-specs').innerHTML=`<div class="spec-row"><span class="spec-l">Для кого</span><span class="spec-v">${curProd.audience||'Унисекс'}</span></div><div class="spec-row"><span class="spec-l">Тип</span><span class="spec-v">${curProd.type}</span></div><div class="spec-row"><span class="spec-l">Материал</span><span class="spec-v">${curProd.material||'-'}</span></div><div class="spec-row"><span class="spec-l">Коллаборация</span><span class="spec-v">${curProd.collab||'Нет'}</span></div><div class="spec-row"><span class="spec-l">Масса</span><span class="spec-v">${curProd.weight||'-'} г</span></div><div class="spec-row"><span class="spec-l">Год релиза</span><span class="spec-v">${curProd.year||'-'}</span></div><div class="spec-row"><span class="spec-l">В наличии</span><span class="spec-v">${curProd.stock} шт</span></div>`;
-$('p-desc').textContent = curProd.desc || '';
+    const colors=(curProd?.color||'Белый').split(',').map(c=>c?.trim()).filter(c=>c);
+    const sizes=(curProd?.sizes||'S,M,L,XL').split(',').map(s=>s?.trim()).filter(s=>s);
+    
+    const colorGroup=$('opt-color-group');
+    if(colorGroup) {
+      if(colors.length===1) colorGroup.innerHTML=`<label class="form-label">Цвет</label><div class="opt-static">${colors[0]}</div>`;
+      else { colorGroup.innerHTML=`<label class="form-label">Цвет</label><select class="opt-select" id="p-color"></select>`; if($('p-color')) $('p-color').innerHTML=colors.map(c=>`<option>${c}</option>`).join(''); }
+    }
+    
+    const sizeGroup=$('opt-size-group');
+    if(sizeGroup) {
+      if(sizes.length===1) sizeGroup.innerHTML=`<label class="form-label">Размер</label><div class="opt-static">${sizes[0]}</div>`;
+      else { sizeGroup.innerHTML=`<label class="form-label">Размер</label><select class="opt-select" id="p-size"></select>`; if($('p-size')) $('p-size').innerHTML=sizes.map(s=>`<option>${s}</option>`).join(''); }
+    }
+    
+    if($('p-specs')) {
+      $('p-specs').innerHTML=`<div class="spec-row"><span class="spec-l">Для кого</span><span class="spec-v">${curProd?.audience||'Унисекс'}</span></div><div class="spec-row"><span class="spec-l">Тип</span><span class="spec-v">${curProd?.type||'-'}</span></div><div class="spec-row"><span class="spec-l">Материал</span><span class="spec-v">${curProd?.material||'-'}</span></div><div class="spec-row"><span class="spec-l">Коллаборация</span><span class="spec-v">${curProd?.collab||'Нет'}</span></div><div class="spec-row"><span class="spec-l">Масса</span><span class="spec-v">${curProd?.weight||'-'} г</span></div><div class="spec-row"><span class="spec-l">Год релиза</span><span class="spec-v">${curProd?.year||'-'}</span></div><div class="spec-row"><span class="spec-l">В наличии</span><span class="spec-v">${curProd?.stock||0} шт</span></div>`;
+    }
+    
+    if($('p-desc')) $('p-desc').textContent = curProd?.desc || '';
 
-// 🔁 ЦЕНА С УЧЁТОМ СКИДКИ КРЕАТОРА
-let displayPrice = curProd.price;
-let discountText = '';
-if (user && userData) {
-const level = getCreatorLevel(userData);
-if (level === 5) {
-const { price, discount } = calculateCreatorDiscount(level, curProd.category, curProd.price);
-displayPrice = price;
-discountText = `Скидка для креатора 5 уровня: -${discount}%`;
-show($('creator-discount-badge'));
-$('creator-discount-badge').textContent = discountText;
-} else {
-hide($('creator-discount-badge'));
-}
-} else {
-hide($('creator-discount-badge'));
-}
+    // 🔁 ЦЕНА С УЧЁТОМ СКИДКИ КРЕАТОРА
+    let displayPrice = curProd?.price || 0;
+    let discountText = '';
+    if (user && userData) {
+      const level = getCreatorLevel(userData);
+      if (level === 5) {
+        const { price, discount } = calculateCreatorDiscount(level, curProd?.category, curProd?.price);
+        displayPrice = price;
+        discountText = `Скидка для креатора 5 уровня: -${discount}%`;
+        show($('creator-discount-badge'));
+        if($('creator-discount-badge')) $('creator-discount-badge').textContent = discountText;
+      } else {
+        hide($('creator-discount-badge'));
+      }
+    } else {
+      hide($('creator-discount-badge'));
+    }
 
-$('p-price-usd').textContent = `$${displayPrice.toFixed(2)}`; 
-$('p-price-conv').textContent = `≈ ${Math.round(displayPrice*RATES.USD_TO_RUB).toLocaleString('ru-RU')} ₽ / ≈ ${Math.round(displayPrice*RATES.USD_TO_UAH).toLocaleString('ru-RU')} ₴`;
-const stockEl=$('p-stock'), btn=$('p-action'), opts=$('p-options'), delNotice=$('p-deleted-notice');
-if (curProd.deleted) { delNotice.classList.remove('hidden'); btn.textContent='Удален'; btn.disabled=true; hide(opts); }
-else if (curProd.stock>0) { delNotice.classList.add('hidden'); stockEl.innerHTML='<span class="in-stock">✓ В наличии</span>'; btn.textContent='Купить'; btn.disabled=false; btn.onclick=()=>addToCart(); show(opts); }
-else { delNotice.classList.add('hidden'); stockEl.innerHTML='<span class="out-stock">✗ Предзаказ</span>'; btn.textContent='Предзаказ'; btn.disabled=false; btn.onclick=()=>{alert('Предзаказ добавлен в корзину'); addToCart();}; hide(opts); }
-galIdx=0; updateGal(); navigate('product');
-} catch(e) { alert('Ошибка загрузки'); }
+    if($('p-price-usd')) $('p-price-usd').textContent = `$${displayPrice.toFixed(2)}`; 
+    if($('p-price-conv')) $('p-price-conv').textContent = `≈ ${Math.round(displayPrice*RATES.USD_TO_RUB).toLocaleString('ru-RU')} ₽ / ≈ ${Math.round(displayPrice*RATES.USD_TO_UAH).toLocaleString('ru-RU')} ₴`;
+    
+    const stockEl=$('p-stock'), btn=$('p-action'), opts=$('p-options'), delNotice=$('p-deleted-notice');
+    if (curProd?.deleted) { 
+      if(delNotice) delNotice.classList.remove('hidden'); 
+      if(btn) { btn.textContent='Удален'; btn.disabled=true; }
+      if(opts) hide(opts); 
+    } else if ((curProd?.stock||0)>0) { 
+      if(delNotice) delNotice.classList.add('hidden'); 
+      if(stockEl) stockEl.innerHTML='<span class="in-stock">✓ В наличии</span>'; 
+      if(btn) { btn.textContent='Купить'; btn.disabled=false; btn.onclick=()=>addToCart(); }
+      if(opts) show(opts); 
+    } else { 
+      if(delNotice) delNotice.classList.add('hidden'); 
+      if(stockEl) stockEl.innerHTML='<span class="out-stock">✗ Предзаказ</span>'; 
+      if(btn) { btn.textContent='Предзаказ'; btn.disabled=false; btn.onclick=()=>{alert('Предзаказ добавлен в корзину'); addToCart();}; }
+      if(opts) hide(opts); 
+    }
+    
+    galIdx=0; updateGal(); navigate('product');
+  } catch(e) { 
+    console.error('openProd error:', e);
+    alert('Ошибка загрузки товара'); 
+  }
 };
-function updateGal() { if(!curProd)return; const imgs=curProd.images&&curProd.images.length?curProd.images:['https://via.placeholder.com/600/f5f5f5/111?text=BYRMALDA']; $('p-main-img').src=imgs[galIdx]; $('p-thumbs').innerHTML=imgs.map((src,i)=>`<img src="${src}" class="thumb ${i===galIdx?'active':''}" onclick="setGal(${i})">`).join(''); }
-window.setGal=i=>{galIdx=i;updateGal();}; window.galNav=d=>{if(!curProd)return;const len=curProd.images?.length||1;galIdx=(galIdx+d+len)%len;updateGal();};
+
+// 🔁 ОБНОВЛЕНИЕ ГАЛЕРЕИ — с обработкой ошибок загрузки изображений
+function updateGal() { 
+  if(!curProd) return; 
+  let imgs = [];
+  if (curProd?.images && Array.isArray(curProd.images) && curProd.images.length > 0) {
+    imgs = curProd.images.filter(img => img && img.trim() !== '');
+  }
+  if (imgs.length === 0) {
+    imgs = ['https://via.placeholder.com/600/f5f5f5/111?text=BYRMALDA'];
+  }
+  
+  if($('p-main-img')) {
+    $('p-main-img').src = imgs[galIdx] || imgs[0];
+    $('p-main-img').onerror = function() { this.src = 'https://via.placeholder.com/600/f5f5f5/111?text=No+Image'; };
+  }
+  
+  if($('p-thumbs')) {
+    $('p-thumbs').innerHTML = imgs.map((src, i) => 
+      `<img src="${src}" class="thumb ${i===galIdx?'active':''}" 
+            onclick="setGal(${i})" 
+            onerror="this.src='https://via.placeholder.com/60/f5f5f5/111?text=No'">`
+    ).join('');
+  }
+}
+window.setGal = i => { galIdx=i; updateGal(); }; 
+window.galNav = d => { 
+  if(!curProd) return; 
+  const len = (curProd?.images?.filter(img => img && img.trim() !== '')?.length) || 1;
+  galIdx = (galIdx + d + len) % len; 
+  updateGal(); 
+};
 
 // 🚀 ОФОРМЛЕНИЕ ЗАКАЗА
 window.checkout = async () => {
-if(!user){openModal('login-modal');return;} if(!userData?.cart.length){alert('Корзина пуста');return;}
-if(!userData?.deliveryCountry || !userData?.deliveryAddress?.[userData.deliveryCountry]){ alert('Укажите адрес доставки в профиле'); navigate('profile'); return; }
-for(const item of userData.cart) {
-const pSnap = await getDoc(doc(db, 'artifacts/byrmalda-prod/public/data/products', item.pid));
-if(!pSnap.exists()) continue;
-const p = pSnap.data();
-if(item.qty > p.stock) {
-alert(`❌ Количество выбранных позиций не соответствует количеству товара на странице. Максимум: ${p.stock} шт.`); return;
-}
-}
-openModal('checkout-modal');
+  if(!user){openModal('login-modal');return;} 
+  if(!userData?.cart?.length){alert('Корзина пуста');return;}
+  if(!userData?.deliveryCountry || !userData?.deliveryAddress?.[userData.deliveryCountry]){ 
+    alert('Укажите адрес доставки в профиле'); navigate('profile'); return; 
+  }
+  for(const item of userData.cart) {
+    const pSnap = await getDoc(doc(db, 'artifacts/byrmalda-prod/public/data/products', item?.pid));
+    if(!pSnap?.exists()) continue;
+    const p = pSnap.data();
+    if((item?.qty||0) > (p?.stock||0)) {
+      alert(`❌ Количество выбранных позиций не соответствует количеству товара на странице. Максимум: ${p?.stock||0} шт.`); return;
+    }
+  }
+  openModal('checkout-modal');
 };
 window.confirmCheckout = async () => {
-closeModal('checkout-modal');
-const oid='ORD-'+genId(), total=parseFloat($('cart-total').textContent.replace('$',''));
-const order={id:oid,userId:user.uid,items:[...userData.cart],total,status:'Ожидает оплату',tracking:'TRK-'+genId(),adminChangedStatus:false,createdAt:serverTimestamp(),updatedAt:serverTimestamp(),deliveryAddress:userData.deliveryAddress[userData.deliveryCountry],deliveryCountry:userData.deliveryCountry};
-await setDoc(doc(db,'artifacts/byrmalda-prod/public/data/orders',oid),order);
-for(const it of order.items) {
-const pSnap=await getDoc(doc(db,'artifacts/byrmalda-prod/public/data/products',it.pid));
-if(pSnap.exists()){
-const d=pSnap.data(); await updateDoc(doc(db,'artifacts/byrmalda-prod/public/data/products',it.pid),{stock:Math.max(0,d.stock-it.qty)});
-}
-}
-userData.cart=[];
-await updateDoc(doc(db,'artifacts/byrmalda-prod/users',user.uid),{cart:[]});
-loadCartCount(); loadOrders();
-alert(`✅ Заказ #${oid} создан! Статус: Ожидает оплату. Напишите @fueum для оплаты.`);
-navigate('profile');
+  closeModal('checkout-modal');
+  const oid='ORD-'+genId(), total=parseFloat($('cart-total')?.textContent?.replace('$','')||'0');
+  const order={id:oid,userId:user.uid,items:[...userData.cart],total,status:'Ожидает оплату',tracking:'TRK-'+genId(),adminChangedStatus:false,createdAt:serverTimestamp(),updatedAt:serverTimestamp(),deliveryAddress:userData.deliveryAddress[userData.deliveryCountry],deliveryCountry:userData.deliveryCountry};
+  await setDoc(doc(db,'artifacts/byrmalda-prod/public/data/orders',oid),order);
+  for(const it of order.items) {
+    const pSnap=await getDoc(doc(db,'artifacts/byrmalda-prod/public/data/products',it?.pid));
+    if(pSnap?.exists()){
+      const d=pSnap.data(); await updateDoc(doc(db,'artifacts/byrmalda-prod/public/data/products',it?.pid),{stock:Math.max(0,(d?.stock||0)-(it?.qty||0))});
+    }
+  }
+  if(userData) userData.cart=[];
+  await updateDoc(doc(db,'artifacts/byrmalda-prod/users',user.uid),{cart:[]});
+  loadCartCount(); loadOrders();
+  alert(`✅ Заказ #${oid} создан! Статус: Ожидает оплату. Напишите @fueum для оплаты.`);
+  navigate('profile');
 };
 
 // 📋 ЗАКАЗЫ
 async function loadOrders() {
-if(!user)return;
-const c=$('orders-list'); c.innerHTML='<div class="text-center" style="padding:24px"><div class="loading"></div></div>';
-try {
-const snap=await getDocs(query(collection(db,'artifacts/byrmalda-prod/public/data/orders'),where('userId','==',user.uid),orderBy('createdAt','desc'),limit(50)));
-if(snap.empty){c.innerHTML='<div class="text-center" style="padding:32px;color:var(--text-dim)">Заказов нет</div>';return;}
-c.innerHTML=snap.docs.map(d=>{
-const o=d.data(); const st=o.status||'Ожидает оплату';
-const cls={'Ожидает оплату':'st-awaiting','Создан':'st-created','Передача товара в доставку':'st-shipping','В пути':'st-transit','Доставлен':'st-delivered','Отменён':'st-cancelled'}[st]||'st-awaiting';
-const canCancel=st==='Ожидает оплата'||st==='Создан';
-const first=o.items?.[0]||{};
-return `<div class="order-card" onclick="openProd('${first.pid}')"><div class="order-img">${first.img?`<img src="${first.img}" style="width:100%;height:100%;object-fit:cover">`:'📦'}</div><div class="order-info"><div class="order-name">${first.name||'Товар'}</div><span class="order-status ${cls}">${st}</span><div class="order-meta"><div>Заказ: #${o.id}</div><div>Трекинг: ${o.tracking||'-'}</div><div>Сумма: $${o.total?.toFixed(2)||'0.00'}</div><div>Дата: ${fmtDate(o.createdAt)}</div></div></div><div class="order-actions"><button class="btn-cancel" ${!canCancel?'disabled':''} onclick="event.stopPropagation();cancelOrder('${o.id}','${st}')">×</button></div></div>`;
-}).join('');
-} catch(e) { c.innerHTML='<div class="text-center" style="padding:24px;color:var(--error)">Ошибка</div>'; }
+  if(!user) return;
+  const c=$('orders-list'); 
+  if(c) c.innerHTML='<div class="text-center" style="padding:24px"><div class="loading"></div></div>';
+  try {
+    const snap=await getDocs(query(collection(db,'artifacts/byrmalda-prod/public/data/orders'),where('userId','==',user.uid),orderBy('createdAt','desc'),limit(50)));
+    if(snap.empty && c){ c.innerHTML='<div class="text-center" style="padding:32px;color:var(--text-dim)">Заказов нет</div>'; return; }
+    if(c) {
+      c.innerHTML=snap.docs.map(d=>{
+        const o=d.data(); const st=o?.status||'Ожидает оплату';
+        const cls={'Ожидает оплату':'st-awaiting','Создан':'st-created','Передача товара в доставку':'st-shipping','В пути':'st-transit','Доставлен':'st-delivered','Отменён':'st-cancelled'}[st]||'st-awaiting';
+        const canCancel=st==='Ожидает оплату'||st==='Создан';
+        const first=o?.items?.[0]||{};
+        return `<div class="order-card" onclick="openProd('${first?.pid}')"><div class="order-img">${first?.img?`<img src="${first.img}" style="width:100%;height:100%;object-fit:cover" onerror="this.src='https://via.placeholder.com/72/f5f5f5/111?text=No'">`:'📦'}</div><div class="order-info"><div class="order-name">${first?.name||'Товар'}</div><span class="order-status ${cls}">${st}</span><div class="order-meta"><div>Заказ: #${o?.id}</div><div>Трекинг: ${o?.tracking||'-'}</div><div>Сумма: $${(o?.total||0).toFixed(2)}</div><div>Дата: ${fmtDate(o?.createdAt)}</div></div></div><div class="order-actions"><button class="btn-cancel" ${!canCancel?'disabled':''} onclick="event.stopPropagation();cancelOrder('${o?.id}','${st}')">×</button></div></div>`;
+      }).join('');
+    }
+  } catch(e) { if(c) c.innerHTML='<div class="text-center" style="padding:24px;color:var(--error)">Ошибка</div>'; }
 }
 window.cancelOrder = async (oid, st) => {
-if(st!=='Ожидает оплата'&&st!=='Создан'){alert('❌ Нельзя отменить');return;} if(!confirm('Отменить заказ?'))return;
-await updateDoc(doc(db,'artifacts/byrmalda-prod/public/data/orders',oid),{status:'Отменён',updatedAt:serverTimestamp()}); loadOrders();
+  if(st!=='Ожидает оплату'&&st!=='Создан'){alert('❌ Нельзя отменить');return;} 
+  if(!confirm('Отменить заказ?')) return;
+  await updateDoc(doc(db,'artifacts/byrmalda-prod/public/data/orders',oid),{status:'Отменён',updatedAt:serverTimestamp()}); 
+  loadOrders();
 };
 
 // 💬 ЧАТ
 async function loadChat() {
-if(!user)return; const c=$('chat-msgs'); c.innerHTML='<div class="text-center" style="padding:24px"><div class="loading"></div></div>';
-try {
-const snap=await getDocs(query(collection(db,'artifacts/byrmalda-prod/public/data/support'),orderBy('ts','asc'),limit(200)));
-c.innerHTML=''; let vis=0;
-snap.forEach(d=>{const m=d.data(); let show=false; if(user.email===ADMIN_EMAIL) show=true; else if(m.uid===user.uid || (m.isAdmin && (!m.replyTo || m.replyTo===user.uid))) show=true; if(show){addMsgToUI(m); vis++;}});
-if(!vis) c.innerHTML='<div class="text-center" style="padding:32px;color:var(--text-dim)">Нет сообщений</div>';
-c.scrollTop=c.scrollHeight;
-} catch(e) { c.innerHTML='<div class="text-center" style="padding:24px;color:var(--error)">Ошибка</div>'; }
+  if(!user) return; 
+  const c=$('chat-msgs'); 
+  if(c) c.innerHTML='<div class="text-center" style="padding:24px"><div class="loading"></div></div>';
+  try {
+    const snap=await getDocs(query(collection(db,'artifacts/byrmalda-prod/public/data/support'),orderBy('ts','asc'),limit(200)));
+    if(c) {
+      c.innerHTML=''; let vis=0;
+      snap.forEach(d=>{const m=d.data(); let show=false; if(user.email===ADMIN_EMAIL) show=true; else if(m?.uid===user.uid || (m?.isAdmin && (!m?.replyTo || m?.replyTo===user.uid))) show=true; if(show){addMsgToUI(m); vis++;}});
+      if(!vis) c.innerHTML='<div class="text-center" style="padding:32px;color:var(--text-dim)">Нет сообщений</div>';
+      c.scrollTop=c.scrollHeight;
+    }
+  } catch(e) { if(c) c.innerHTML='<div class="text-center" style="padding:24px;color:var(--error)">Ошибка</div>'; }
 }
 function addMsgToUI(m) {
-const isU=m.uid===user?.uid, el=document.createElement('div');
-el.className=`msg ${m.isAdmin?'admin':isU?'user':'admin'}`;
-let meta = '';
-if (m.isAdmin) {
-meta = 'Администратор';
-if (m.replyTo) meta += `<span class="msg-target">→ ${m.replyTo.substring(0,8)}...</span>`;
-} else {
-meta = `[UID: ${m.uid}]`;
-}
-const time = m.ts?.toDate?.()?.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'}) || '';
-el.innerHTML = `${m.text}<div class="msg-meta">${meta} • ${time}</div>`;
-$('chat-msgs').appendChild(el); $('chat-msgs').scrollTop=$('chat-msgs').scrollHeight;
-if(!$('support').classList.contains('active') && !isU) { chatUnread++; updateSupportBadge(); }
+  const isU=m?.uid===user?.uid, el=document.createElement('div');
+  el.className=`msg ${m?.isAdmin?'admin':isU?'user':'admin'}`;
+  let meta = '';
+  if (m?.isAdmin) {
+    meta = 'Администратор';
+    if (m?.replyTo) meta += `<span class="msg-target">→ ${m.replyTo.substring(0,8)}...</span>`;
+  } else {
+    meta = `[UID: ${m?.uid}]`;
+  }
+  const time = m?.ts?.toDate?.()?.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'}) || '';
+  el.innerHTML = `${m?.text||''}<div class="msg-meta">${meta} • ${time}</div>`;
+  if($('chat-msgs')) {
+    $('chat-msgs').appendChild(el); 
+    $('chat-msgs').scrollTop=$('chat-msgs').scrollHeight;
+  }
+  if(!$('support')?.classList?.contains('active') && !isU) { chatUnread++; updateSupportBadge(); }
 }
 window.sendMsg = async () => {
-const txt=$('chat-input').value.trim(); if(!txt||!user)return;
-let replyTo = null, displayText = txt;
-if (user.email === ADMIN_EMAIL) {
-const match = txt.match(/^@([A-Za-z0-9_-]+)\s+(.+)/);
-if (match) {
-replyTo = match[1];
-displayText = match[2];
-}
-}
-const msg={uid:user.uid,name:userData?.name||user.email.split('@')[0],text:displayText,ts:serverTimestamp(),isAdmin:user.email===ADMIN_EMAIL,replyTo:replyTo};
-await addDoc(collection(db,'artifacts/byrmalda-prod/public/data/support'),msg); $('chat-input').value=''; addMsgToUI({...msg,ts:new Date()});
+  const txt=$('chat-input')?.value?.trim(); if(!txt||!user) return;
+  let replyTo = null, displayText = txt;
+  if (user.email === ADMIN_EMAIL) {
+    const match = txt.match(/^@([A-Za-z0-9_-]+)\s+(.+)/);
+    if (match) {
+      replyTo = match[1];
+      displayText = match[2];
+    }
+  }
+  const msg={uid:user.uid,name:userData?.name||user.email.split('@')[0],text:displayText,ts:serverTimestamp(),isAdmin:user.email===ADMIN_EMAIL,replyTo:replyTo};
+  await addDoc(collection(db,'artifacts/byrmalda-prod/public/data/support'),msg); 
+  if($('chat-input')) $('chat-input').value=''; 
+  addMsgToUI({...msg,ts:new Date()});
 };
-function updateSupportBadge() { $('support-badge').textContent=chatUnread; $('nav-support').classList.toggle('has-badge',chatUnread>0); }
-
+function updateSupportBadge() { 
+  if($('support-badge')) $('support-badge').textContent=chatUnread; 
+  if($('nav-support')) $('nav-support').classList.toggle('has-badge',chatUnread>0); 
+}
 
 // ⚙️ НАСТРОЙКИ & ОТЗЫВЫ
 window.toggleTheme = () => {
@@ -1873,50 +1987,36 @@ window.toggleTheme = () => {
   localStorage.setItem('theme', theme);
   applyTheme();
 };
-
 function applyTheme() {
   document.documentElement.setAttribute('data-theme', theme);
-  $('theme-ind').textContent = theme === 'dark' ? '🌙' : '☀️';
+  if($('theme-ind')) $('theme-ind').textContent = theme === 'dark' ? '🌙' : '☀️';
 }
-
 window.toggleLang = () => {
   lang = lang === 'ru' ? 'en' : 'ru';
-  $('cur-lang').textContent = lang.toUpperCase();
+  if($('cur-lang')) $('cur-lang').textContent = lang.toUpperCase();
 };
-
 async function checkReviewStatus() {
   if (!user) return;
-  // Проверяем статус отзыва из данных пользователя
   if (userData?.reviewStatus !== 'pending' && userData?.reviewStatus !== 'approved') {
     userData.reviewStatus = 'none';
   }
 }
 
-// 🔁 ОТКРЫТИЕ МОДАЛКИ ОТЗЫВА С ПРОВЕРКАМИ
 window.openReviewModal = () => {
-  if (!user) { 
-    openModal('login-modal'); 
-    return; 
-  }
-  // 🔁 ПРОВЕРКА: если уже оставлял отзыв (одобрен или на модерации) — блокируем
+  if (!user) { openModal('login-modal'); return; }
   if (userData?.reviewStatus === 'pending' || userData?.reviewStatus === 'approved') { 
-    $('rev-err').textContent = '❌ Вы уже оставляли отзыв. Повторная отправка невозможна.'; 
-    setTimeout(() => { $('rev-err').textContent = ''; }, 3000); 
+    if($('rev-err')) {
+      $('rev-err').textContent = '❌ Вы уже оставляли отзыв. Повторная отправка невозможна.'; 
+      setTimeout(() => { $('rev-err').textContent = ''; }, 3000); 
+    }
     return; 
   }
-  $('rev-err').textContent = ''; 
+  if($('rev-err')) $('rev-err').textContent = ''; 
   openModal('review-modal'); 
   revStars = 0; 
   updStars();
 };
-
-// 🔁 ВЫБОР РЕЙТИНГА — ИСПРАВЛЕННАЯ ВЕРСИЯ
-window.setRating = n => {
-  revStars = n;
-  updStars();
-};
-
-// 🔁 ОБНОВЛЕНИЕ ЗВЁЗД — БЕЗОПАСНАЯ РЕАЛИЗАЦИЯ
+window.setRating = n => { revStars = n; updStars(); };
 function updStars() {
   const starsContainer = $('rev-stars');
   if (!starsContainer) return;
@@ -1927,19 +2027,10 @@ function updStars() {
     star.onclick = () => setRating(index + 1);
   });
 }
-
-// 🔁 ОТПРАВКА ОТЗЫВА — С ОБРАБОТКОЙ ОШИБОК
 window.submitReview = async () => {
-  if (!revStars) { 
-    $('rev-err').textContent = '❌ Выберите оценку'; 
-    return; 
-  }
-  const txt = $('rev-text').value.trim(); 
-  if (!txt) { 
-    $('rev-err').textContent = '❌ Напишите текст отзыва'; 
-    return; 
-  }
-  
+  if (!revStars) { if($('rev-err')) $('rev-err').textContent = '❌ Выберите оценку'; return; }
+  const txt = $('rev-text')?.value?.trim(); 
+  if (!txt) { if($('rev-err')) $('rev-err').textContent = '❌ Напишите текст отзыва'; return; }
   try {
     await addDoc(collection(db, 'artifacts/byrmalda-prod/public/data/reviews'), {
       uid: user.uid,
@@ -1949,34 +2040,22 @@ window.submitReview = async () => {
       status: 'pending',
       ts: serverTimestamp()
     });
-    
-    // Обновляем статус в локальных данных и в базе
-    userData.reviewStatus = 'pending';
-    await updateDoc(doc(db, 'artifacts/byrmalda-prod/users', user.uid), { 
-      reviewStatus: 'pending' 
-    });
-    
+    userData.reviewStatus = 'pending'; 
+    await updateDoc(doc(db, 'artifacts/byrmalda-prod/users', user.uid), { reviewStatus: 'pending' });
     alert('✅ Отзыв отправлен на модерацию'); 
     closeModal('review-modal'); 
-    $('rev-text').value = ''; 
+    if($('rev-text')) $('rev-text').value = ''; 
     revStars = 0;
     updStars();
-    
   } catch (e) {
     console.error('submitReview error:', e);
-    $('rev-err').textContent = '❌ Ошибка: ' + (e.message || 'Неизвестная ошибка');
+    if($('rev-err')) $('rev-err').textContent = '❌ Ошибка: ' + (e.message || 'Неизвестная ошибка');
   }
 };
-
-// 🚨 ЖАЛОБЫ
-window.openReport = () => { 
-  openModal('report-modal'); 
-};
-
+window.openReport = () => { openModal('report-modal'); };
 window.submitReport = async () => {
-  const t = $('rep-text').value.trim();
+  const t = $('rep-text')?.value?.trim();
   if (!t) return;
-  
   try {
     await addDoc(collection(db, 'artifacts/byrmalda-prod/public/data/reports'), {
       uid: user.uid,
@@ -1987,492 +2066,650 @@ window.submitReport = async () => {
     });
     alert('✅ Жалоба отправлена');
     closeModal('report-modal');
-    $('rep-text').value = '';
+    if($('rep-text')) $('rep-text').value = '';
   } catch (e) {
     console.error('submitReport error:', e);
     alert('❌ Ошибка отправки жалобы');
   }
 };
-
-// 📏 РАЗМЕРНЫЕ СЕТКИ — С ДОБАВЛЕННЫМИ 42, 43, 44
 window.showSizeChart = type => {
   const c = $('sz-content');
-  
   if (type === 'clothing') {
-    $('sz-title').textContent = 'Размерная сетка одежды';
-    c.innerHTML = `
-      <table style="width:100%;border-collapse:collapse;font-size:13px">
-        <tr style="border-bottom:1px solid var(--border)">
-          <th style="padding:10px;text-align:left">RU</th>
-          <th>Грудь</th>
-          <th>Талия</th>
-          <th>Бёдра</th>
-        </tr>
-        <tr style="border-bottom:1px solid var(--border)">
-          <td style="padding:8px">XS</td><td>81-86</td><td>66-71</td><td>86-91</td>
-        </tr>
-        <tr style="border-bottom:1px solid var(--border)">
-          <td>S</td><td>86-91</td><td>71-76</td><td>91-96</td>
-        </tr>
-        <tr style="border-bottom:1px solid var(--border)">
-          <td>M</td><td>91-96</td><td>76-81</td><td>96-101</td>
-        </tr>
-        <tr style="border-bottom:1px solid var(--border)">
-          <td>L</td><td>96-101</td><td>81-86</td><td>101-106</td>
-        </tr>
-        <tr>
-          <td>XL</td><td>101-106</td><td>86-91</td><td>106-111</td>
-        </tr>
-      </table>
-    `;
-  } 
-  else {
-    $('sz-title').textContent = 'Размерная сетка обуви';
-    c.innerHTML = `
-      <table style="width:100%;border-collapse:collapse;font-size:13px">
-        <tr style="border-bottom:1px solid var(--border)">
-          <th style="padding:10px;text-align:left">RU</th>
-          <th>EU</th>
-          <th>US</th>
-          <th>Стопа (см)</th>
-        </tr>
-        <tr style="border-bottom:1px solid var(--border)">
-          <td style="padding:8px">36</td><td>36</td><td>5.5</td><td>23</td>
-        </tr>
-        <tr style="border-bottom:1px solid var(--border)">
-          <td>37</td><td>37</td><td>6.5</td><td>23.5</td>
-        </tr>
-        <tr style="border-bottom:1px solid var(--border)">
-          <td>38</td><td>38</td><td>7.5</td><td>24.5</td>
-        </tr>
-        <tr style="border-bottom:1px solid var(--border)">
-          <td>39</td><td>39</td><td>8.5</td><td>25</td>
-        </tr>
-        <tr style="border-bottom:1px solid var(--border)">
-          <td>40</td><td>40</td><td>9.5</td><td>26</td>
-        </tr>
-        <tr style="border-bottom:1px solid var(--border)">
-          <td>41</td><td>41</td><td>10.5</td><td>26.5</td>
-        </tr>
-        <tr style="border-bottom:1px solid var(--border)">
-          <td>42</td><td>42</td><td>11</td><td>27</td>
-        </tr>
-        <tr style="border-bottom:1px solid var(--border)">
-          <td>43</td><td>43</td><td>12</td><td>27.5</td>
-        </tr>
-        <tr>
-          <td>44</td><td>44</td><td>13</td><td>28</td>
-        </tr>
-      </table>
-    `;
+    if($('sz-title')) $('sz-title').textContent = 'Размерная сетка одежды';
+    if(c) {
+      c.innerHTML = `<table style="width:100%;border-collapse:collapse;font-size:13px">
+        <tr style="border-bottom:1px solid var(--border)"><th style="padding:10px;text-align:left">RU</th><th>Грудь</th><th>Талия</th><th>Бёдра</th></tr>
+        <tr style="border-bottom:1px solid var(--border)"><td style="padding:8px">XS</td><td>81-86</td><td>66-71</td><td>86-91</td></tr>
+        <tr style="border-bottom:1px solid var(--border)"><td>S</td><td>86-91</td><td>71-76</td><td>91-96</td></tr>
+        <tr style="border-bottom:1px solid var(--border)"><td>M</td><td>91-96</td><td>76-81</td><td>96-101</td></tr>
+        <tr style="border-bottom:1px solid var(--border)"><td>L</td><td>96-101</td><td>81-86</td><td>101-106</td></tr>
+        <tr><td>XL</td><td>101-106</td><td>86-91</td><td>106-111</td></tr>
+      </table>`;
+    }
+  } else {
+    if($('sz-title')) $('sz-title').textContent = 'Размерная сетка обуви';
+    if(c) {
+      c.innerHTML = `<table style="width:100%;border-collapse:collapse;font-size:13px">
+        <tr style="border-bottom:1px solid var(--border)"><th style="padding:10px;text-align:left">RU</th><th>EU</th><th>US</th><th>Стопа (см)</th></tr>
+        <tr style="border-bottom:1px solid var(--border)"><td style="padding:8px">36</td><td>36</td><td>5.5</td><td>23</td></tr>
+        <tr style="border-bottom:1px solid var(--border)"><td>37</td><td>37</td><td>6.5</td><td>23.5</td></tr>
+        <tr style="border-bottom:1px solid var(--border)"><td>38</td><td>38</td><td>7.5</td><td>24.5</td></tr>
+        <tr style="border-bottom:1px solid var(--border)"><td>39</td><td>39</td><td>8.5</td><td>25</td></tr>
+        <tr style="border-bottom:1px solid var(--border)"><td>40</td><td>40</td><td>9.5</td><td>26</td></tr>
+        <tr style="border-bottom:1px solid var(--border)"><td>41</td><td>41</td><td>10.5</td><td>26.5</td></tr>
+        <tr style="border-bottom:1px solid var(--border)"><td>42</td><td>42</td><td>11</td><td>27</td></tr>
+        <tr style="border-bottom:1px solid var(--border)"><td>43</td><td>43</td><td>12</td><td>27.5</td></tr>
+        <tr><td>44</td><td>44</td><td>13</td><td>28</td></tr>
+      </table>`;
+    }
   }
   openModal('sizechart-modal');
 };
 
 // 🚚 ДОСТАВКА
-window.renderDelivery=()=>{
-if(!user)return; show($('delivery-box'));
-if(userData?.deliveryCountry){
-$('del-provider').textContent = userData.deliveryCountry==='cdek'?'🇷🇺 СДЭК':userData.deliveryCountry==='ua'?'🇺🇦 UaExpress':'🇺🇸 USmall';
-const addr=userData.deliveryAddress[userData.deliveryCountry];
-$('del-addr').textContent = addr?`${addr.city}, ${addr.street}, ${addr.house}`:'Адрес не указан';
-}else{$('del-provider').textContent='Доставка не указана';$('del-addr').textContent='Нажмите "Изменить"';}
+window.renderDelivery = () => {
+  if(!user) return; 
+  show($('delivery-box'));
+  if(userData?.deliveryCountry){
+    if($('del-provider')) $('del-provider').textContent = userData.deliveryCountry==='cdek'?'🇷🇺 СДЭК':userData.deliveryCountry==='ua'?'🇺🇦 UaExpress':'🇺🇸 USmall';
+    const addr=userData.deliveryAddress[userData.deliveryCountry];
+    if($('del-addr')) $('del-addr').textContent = addr?`${addr.city}, ${addr.street}, ${addr.house}`:'Адрес не указан';
+  } else {
+    if($('del-provider')) $('del-provider').textContent='Доставка не указана';
+    if($('del-addr')) $('del-addr').textContent='Нажмите "Изменить"';
+  }
 };
-window.openDeliveryModal=()=>{openModal('delivery-modal');document.querySelectorAll('input[name="del-opt"]').forEach(r=>r.checked=false);hide($('del-fields'));};
-window.selectDelivery=country=>{
-document.querySelectorAll('.delivery-option').forEach(o=>o.style.borderColor='transparent');
-$(`d-${country}`).checked=true; $(`d-${country}`).closest('.delivery-option').style.borderColor='var(--accent)';
-show($('del-fields'));
+window.openDeliveryModal = () => {
+  openModal('delivery-modal');
+  document.querySelectorAll('input[name="del-opt"]').forEach(r=>{if(r) r.checked=false;});
+  hide($('del-fields'));
 };
-window.saveDelivery=async()=>{
-const country=document.querySelector('input[name="del-opt"]:checked')?.value; if(!country){alert('Выберите службу');return;}
-const city=$('del-city').value.trim(),street=$('del-street').value.trim(),house=$('del-house').value.trim();
-if(!city||!street||!house){alert('Заполните все поля');return;}
-await updateDoc(doc(db,'artifacts/byrmalda-prod/users',user.uid),{deliveryCountry:country,deliveryAddress:{cdek:country==='cdek'?{city,street,house}:null,ua:country==='ua'?{city,street,house}:null,usa:country==='usa'?{city,street,house}:null}});
-userData.deliveryCountry=country; userData.deliveryAddress={cdek:country==='cdek'?{city,street,house}:userData.deliveryAddress.cdek,ua:country==='ua'?{city,street,house}:userData.deliveryAddress.ua,usa:country==='usa'?{city,street,house}:userData.deliveryAddress.usa};
-renderDelivery(); closeModal('delivery-modal');
+window.selectDelivery = country => {
+  document.querySelectorAll('.delivery-option').forEach(o=>{if(o) o.style.borderColor='transparent';});
+  if($(`d-${country}`)) {
+    $(`d-${country}`).checked=true; 
+    $(`d-${country}`).closest?.('.delivery-option')?.style.setProperty('border-color','var(--accent)');
+  }
+  show($('del-fields'));
+};
+window.saveDelivery = async () => {
+  const country = document.querySelector('input[name="del-opt"]:checked')?.value; 
+  if(!country){alert('Выберите службу');return;}
+  const city=$('del-city')?.value?.trim(), street=$('del-street')?.value?.trim(), house=$('del-house')?.value?.trim();
+  if(!city||!street||!house){alert('Заполните все поля');return;}
+  await updateDoc(doc(db,'artifacts/byrmalda-prod/users',user.uid),{
+    deliveryCountry:country,
+    deliveryAddress:{
+      cdek:country==='cdek'?{city,street,house}:null,
+      ua:country==='ua'?{city,street,house}:null,
+      usa:country==='usa'?{city,street,house}:null
+    }
+  });
+  if(userData) {
+    userData.deliveryCountry=country; 
+    userData.deliveryAddress={
+      cdek:country==='cdek'?{city,street,house}:userData.deliveryAddress?.cdek,
+      ua:country==='ua'?{city,street,house}:userData.deliveryAddress?.ua,
+      usa:country==='usa'?{city,street,house}:userData.deliveryAddress?.usa
+    };
+  }
+  renderDelivery(); closeModal('delivery-modal');
 };
 
 // 🔁 ИНФОРМАЦИЯ О КРЕАТОРСТВЕ
-window.openCreatorInfo = () => {
-openModal('creator-info-modal');
-};
+window.openCreatorInfo = () => { openModal('creator-info-modal'); };
 
 // 🛡️ АДМИН ПАНЕЛЬ
-async function loadAdminPanels(){loadPendingReviews();loadPendingAvatars();loadPendingSuggestions();loadReports();loadMaintenanceStatus();}
-window.toggleCollabInput=()=>{if($('adm-collab-type').value==='yes')show($('adm-collab-group'));else hide($('adm-collab-group'));};
-window.toggleEditCollabInput=()=>{if($('edit-collab-type').value==='yes')show($('edit-collab-group'));else hide($('edit-collab-group'));};
-window.admCreateProduct=async()=>{
-const name=$('adm-name').value.trim(),cat=$('adm-cat').value,type=$('adm-type').value.trim(),price=parseFloat($('adm-price').value),stock=parseInt($('adm-stock').value),weight=parseInt($('adm-weight').value),aud=$('adm-aud').value,mat=$('adm-mat').value.trim(),color=$('adm-color').value.trim(),sizes=$('adm-sizes').value.trim()||'S,M,L,XL',year=parseInt($('adm-year').value)||2026,collabType=$('adm-collab-type').value,collabName=$('adm-collab-name').value.trim(),desc=$('adm-desc').value.trim();
-if(!name||!type||isNaN(price)||isNaN(stock)||isNaN(weight)){alert('Заполните обязательные поля');return;}
-const collab=collabType==='yes'&&collabName?`Да, ${collabName}`:'Нет';
-const files=$('adm-photos').files; let imgs=[];
-if(files.length>0){for(let f of files){const fd=new FormData();fd.append('image',f);fd.append('key',IMGBB_KEY);const res=await fetch('https://api.imgbb.com/1/upload',{method:'POST',body:fd});const d=await res.json();if(d.success)imgs.push(d.data.url);}}
-const prod={productId:genId(),name,category:cat,type,price,stock,weight,audience:aud,material:mat,color,sizes,collab,year,desc,images:imgs,published:true,deleted:false,createdAt:serverTimestamp()};
-await addDoc(collection(db,'artifacts/byrmalda-prod/public/data/products'),prod); alert('✅ Опубликовано'); navigate('catalog');
+async function loadAdminPanels(){
+  loadPendingReviews();
+  loadPendingAvatars();
+  loadPendingSuggestions();
+  loadReports();
+  loadMaintenanceStatus();
+}
+window.toggleCollabInput = () => {
+  if($('adm-collab-type')?.value==='yes') show($('adm-collab-group')); else hide($('adm-collab-group'));
 };
-window.admLoadProduct=async()=>{
-const pid=$('adm-edit-id').value.trim(); if(!pid)return;
-try{
-let snap=await getDoc(doc(db,'artifacts/byrmalda-prod/public/data/products',pid));
-if(!snap.exists()){const q=query(collection(db,'artifacts/byrmalda-prod/public/data/products'),where('productId','==',pid),limit(1));const r=await getDocs(q);if(!r.empty)snap=r.docs[0];}
-if(!snap.exists()){alert('Товар не найден');return;}
-const p=snap.data();
-$('edit-name').value=p.name; $('edit-cat').value=p.category; $('edit-type').value=p.type; $('edit-price').value=p.price; $('edit-stock').value=p.stock; $('edit-weight').value=p.weight; $('edit-aud').value=p.audience; $('edit-mat').value=p.material; $('edit-color').value=p.color; $('edit-sizes').value=p.sizes; $('edit-year').value=p.year; $('edit-desc').value=p.desc;
-if(p.collab&&p.collab!=='Нет'){$('edit-collab-type').value='yes';$('edit-collab-name').value=p.collab.replace('Да, ','');show($('edit-collab-group'));}else{$('edit-collab-type').value='no';hide($('edit-collab-group'));}
-$('edit-current-photos').innerHTML=p.images?.map(i=>`<img src="${i}" style="width:40px;height:40px;object-fit:cover;border-radius:4px;margin:2px">`).join('')||'Нет фото';
-$('adm-edit-form').dataset.docId=snap.id; show($('adm-edit-form'));
-}catch(e){alert('Ошибка загрузки: '+e.message);}
+window.toggleEditCollabInput = () => {
+  if($('edit-collab-type')?.value==='yes') show($('edit-collab-group')); else hide($('edit-collab-group'));
 };
-window.admSaveProduct=async()=>{
-const docId=$('adm-edit-form').dataset.docId; if(!docId)return;
-const collabType=$('edit-collab-type').value,collabName=$('edit-collab-name').value.trim(),collab=collabType==='yes'&&collabName?`Да, ${collabName}`:'Нет';
-const u={name:$('edit-name').value.trim(),category:$('edit-cat').value,type:$('edit-type').value.trim(),price:parseFloat($('edit-price').value),stock:parseInt($('edit-stock').value),weight:parseInt($('edit-weight').value),audience:$('edit-aud').value,material:$('edit-mat').value.trim(),color:$('edit-color').value.trim(),sizes:$('edit-sizes').value.trim(),year:parseInt($('edit-year').value)||2026,collab,desc:$('edit-desc').value.trim(),updatedAt:serverTimestamp()};
-const files=$('edit-photos').files;
-if(files.length>0){const cur=JSON.parse($('adm-edit-form').dataset.curImgs||'[]');for(let f of files){const fd=new FormData();fd.append('image',f);fd.append('key',IMGBB_KEY);const res=await fetch('https://api.imgbb.com/1/upload',{method:'POST',body:fd});const d=await res.json();if(d.success)cur.push(d.data.url);} u.images=cur;}
-await updateDoc(doc(db,'artifacts/byrmalda-prod/public/data/products',docId),u); alert('✅ Сохранено'); hide($('adm-edit-form'));
+window.admCreateProduct = async () => {
+  const name=$('adm-name')?.value?.trim(), cat=$('adm-cat')?.value, type=$('adm-type')?.value?.trim(), 
+        price=parseFloat($('adm-price')?.value), stock=parseInt($('adm-stock')?.value), 
+        weight=parseInt($('adm-weight')?.value), aud=$('adm-aud')?.value, 
+        mat=$('adm-mat')?.value?.trim(), color=$('adm-color')?.value?.trim(), 
+        sizes=$('adm-sizes')?.value?.trim()||'S,M,L,XL', year=parseInt($('adm-year')?.value)||2026, 
+        collabType=$('adm-collab-type')?.value, collabName=$('adm-collab-name')?.value?.trim(), 
+        desc=$('adm-desc')?.value?.trim();
+  if(!name||!type||isNaN(price)||isNaN(stock)||isNaN(weight)){alert('Заполните обязательные поля');return;}
+  const collab = collabType==='yes'&&collabName ? `Да, ${collabName}` : 'Нет';
+  const files = $('adm-photos')?.files; 
+  let imgs = [];
+  if(files?.length>0){
+    for(let f of files){
+      const fd = new FormData(); fd.append('image', f); fd.append('key', IMGBB_KEY);
+      const res = await fetch('https://api.imgbb.com/1/upload', {method:'POST', body:fd});
+      const d = await res.json();
+      if(d?.success) imgs.push(d?.data?.url);
+    }
+  }
+  const prod = {
+    productId: genId(), name, category: cat, type, price, stock, weight, 
+    audience: aud, material: mat, color, sizes, collab, year, desc, 
+    images: imgs, published: true, deleted: false, createdAt: serverTimestamp()
+  };
+  await addDoc(collection(db,'artifacts/byrmalda-prod/public/data/products'), prod); 
+  alert('✅ Опубликовано'); 
+  navigate('catalog');
 };
-window.admDeleteProduct=async()=>{const pid=$('adm-delete-id').value.trim();if(!pid)return;if(!confirm('Удалить?'))return;await updateDoc(doc(db,'artifacts/byrmalda-prod/public/data/products',pid),{deleted:true,published:false});alert('✅ Удален');$('adm-delete-id').value='';};
+window.admLoadProduct = async () => {
+  const pid = $('adm-edit-id')?.value?.trim(); 
+  if(!pid) return;
+  try {
+    let snap = await getDoc(doc(db,'artifacts/byrmalda-prod/public/data/products', pid));
+    if(!snap?.exists()){
+      const q = query(collection(db,'artifacts/byrmalda-prod/public/data/products'), where('productId','==',pid), limit(1));
+      const r = await getDocs(q);
+      if(!r?.empty) snap = r.docs[0];
+    }
+    if(!snap?.exists()){ alert('Товар не найден'); return; }
+    const p = snap.data();
+    if($('edit-name')) $('edit-name').value = p?.name || '';
+    if($('edit-cat')) $('edit-cat').value = p?.category || '';
+    if($('edit-type')) $('edit-type').value = p?.type || '';
+    if($('edit-price')) $('edit-price').value = p?.price || '';
+    if($('edit-stock')) $('edit-stock').value = p?.stock || '';
+    if($('edit-weight')) $('edit-weight').value = p?.weight || '';
+    if($('edit-aud')) $('edit-aud').value = p?.audience || '';
+    if($('edit-mat')) $('edit-mat').value = p?.material || '';
+    if($('edit-color')) $('edit-color').value = p?.color || '';
+    if($('edit-sizes')) $('edit-sizes').value = p?.sizes || '';
+    if($('edit-year')) $('edit-year').value = p?.year || '';
+    if($('edit-desc')) $('edit-desc').value = p?.desc || '';
+    if(p?.collab && p?.collab!=='Нет'){
+      if($('edit-collab-type')) $('edit-collab-type').value = 'yes';
+      if($('edit-collab-name')) $('edit-collab-name').value = p?.collab?.replace('Да, ','') || '';
+      show($('edit-collab-group'));
+    } else {
+      if($('edit-collab-type')) $('edit-collab-type').value = 'no';
+      hide($('edit-collab-group'));
+    }
+    if($('edit-current-photos')) {
+      $('edit-current-photos').innerHTML = (p?.images||[]).map(i=>`<img src="${i}" style="width:40px;height:40px;object-fit:cover;border-radius:4px;margin:2px" onerror="this.src='https://via.placeholder.com/40/f5f5f5/111?text=No'">`).join('') || 'Нет фото';
+    }
+    if($('adm-edit-form')) {
+      $('adm-edit-form').dataset.docId = snap.id; 
+      show($('adm-edit-form'));
+    }
+  } catch(e) { alert('Ошибка загрузки: '+e.message); }
+};
+window.admSaveProduct = async () => {
+  const docId = $('adm-edit-form')?.dataset?.docId; 
+  if(!docId) return;
+  const collabType = $('edit-collab-type')?.value, collabName = $('edit-collab-name')?.value?.trim(), 
+        collab = collabType==='yes'&&collabName ? `Да, ${collabName}` : 'Нет';
+  const u = {
+    name: $('edit-name')?.value?.trim(),
+    category: $('edit-cat')?.value,
+    type: $('edit-type')?.value?.trim(),
+    price: parseFloat($('edit-price')?.value),
+    stock: parseInt($('edit-stock')?.value),
+    weight: parseInt($('edit-weight')?.value),
+    audience: $('edit-aud')?.value,
+    material: $('edit-mat')?.value?.trim(),
+    color: $('edit-color')?.value?.trim(),
+    sizes: $('edit-sizes')?.value?.trim(),
+    year: parseInt($('edit-year')?.value)||2026,
+    collab,
+    desc: $('edit-desc')?.value?.trim(),
+    updatedAt: serverTimestamp()
+  };
+  const files = $('edit-photos')?.files;
+  if(files?.length>0){
+    const cur = JSON.parse($('adm-edit-form')?.dataset?.curImgs || '[]');
+    for(let f of files){
+      const fd = new FormData(); fd.append('image', f); fd.append('key', IMGBB_KEY);
+      const res = await fetch('https://api.imgbb.com/1/upload', {method:'POST', body:fd});
+      const d = await res.json();
+      if(d?.success) cur.push(d?.data?.url);
+    }
+    u.images = cur;
+  }
+  await updateDoc(doc(db,'artifacts/byrmalda-prod/public/data/products', docId), u); 
+  alert('✅ Сохранено'); 
+  hide($('adm-edit-form'));
+};
+window.admDeleteProduct = async () => {
+  const pid = $('adm-delete-id')?.value?.trim();
+  if(!pid) return;
+  if(!confirm('Удалить?')) return;
+  await updateDoc(doc(db,'artifacts/byrmalda-prod/public/data/products', pid), {deleted:true, published:false});
+  alert('✅ Удален');
+  if($('adm-delete-id')) $('adm-delete-id').value = '';
+};
 
 // 🔁 СИСТЕМА БАНОВ
-window.admBlockUser=async()=>{const uid=$('adm-uid').value.trim();if(!uid)return;await updateDoc(doc(db,'artifacts/byrmalda-prod/users',uid),{isBanned:true,banType:'permanent',banUntil:null,banDuration:null});alert('✅ Пользователь заблокирован навсегда');};
-window.admUnblockUser=async()=>{const uid=$('adm-uid').value.trim();if(!uid)return;await updateDoc(doc(db,'artifacts/byrmalda-prod/users',uid),{isBanned:false,banType:null,banUntil:null,banDuration:null});alert('✅ Пользователь разблокирован');};
-window.admTempBanUser=async()=>{
-const uid=$('adm-temp-ban-uid').value.trim();const timeStr=$('adm-temp-ban-time').value.trim();
-if(!uid||!timeStr){alert('Введите UID и время');return;}
-const timeObj=parseTimeStr(timeStr);const totalSeconds=timeToSeconds(timeObj);
-if(totalSeconds<=0){alert('Неверное время');return;}
-const banUntil=Date.now()+totalSeconds*1000;
-await updateDoc(doc(db,'artifacts/byrmalda-prod/users',uid),{isBanned:true,banType:'temporary',banUntil,banDuration:timeStr});
-alert(`✅ Пользователь заблокирован на ${timeStr}`);
+window.admBlockUser = async () => {
+  const uid = $('adm-uid')?.value?.trim();
+  if(!uid) return;
+  await updateDoc(doc(db,'artifacts/byrmalda-prod/users', uid), {isBanned:true, banType:'permanent', banUntil:null, banDuration:null});
+  alert('✅ Пользователь заблокирован навсегда');
 };
-window.admUnbanAfterUser=async()=>{
-const uid=$('adm-unban-after-uid').value.trim();const timeStr=$('adm-unban-after-time').value.trim();
-if(!uid||!timeStr){alert('Введите UID и время');return;}
-const timeObj=parseTimeStr(timeStr);const totalSeconds=timeToSeconds(timeObj);
-if(totalSeconds<=0){alert('Неверное время');return;}
-const banUntil=Date.now()+totalSeconds*1000;
-await updateDoc(doc(db,'artifacts/byrmalda-prod/users',uid),{isBanned:true,banType:'unban-after',banUntil,banDuration:timeStr});
-alert(`✅ Разблокировка запланирована через ${timeStr}`);
+window.admUnblockUser = async () => {
+  const uid = $('adm-uid')?.value?.trim();
+  if(!uid) return;
+  await updateDoc(doc(db,'artifacts/byrmalda-prod/users', uid), {isBanned:false, banType:null, banUntil:null, banDuration:null});
+  alert('✅ Пользователь разблокирован');
+};
+window.admTempBanUser = async () => {
+  const uid = $('adm-temp-ban-uid')?.value?.trim(), timeStr = $('adm-temp-ban-time')?.value?.trim();
+  if(!uid||!timeStr){alert('Введите UID и время');return;}
+  const timeObj = parseTimeStr(timeStr), totalSeconds = timeToSeconds(timeObj);
+  if(totalSeconds<=0){alert('Неверное время');return;}
+  const banUntil = Date.now() + totalSeconds*1000;
+  await updateDoc(doc(db,'artifacts/byrmalda-prod/users', uid), {isBanned:true, banType:'temporary', banUntil, banDuration:timeStr});
+  alert(`✅ Пользователь заблокирован на ${timeStr}`);
+};
+window.admUnbanAfterUser = async () => {
+  const uid = $('adm-unban-after-uid')?.value?.trim(), timeStr = $('adm-unban-after-time')?.value?.trim();
+  if(!uid||!timeStr){alert('Введите UID и время');return;}
+  const timeObj = parseTimeStr(timeStr), totalSeconds = timeToSeconds(timeObj);
+  if(totalSeconds<=0){alert('Неверное время');return;}
+  const banUntil = Date.now() + totalSeconds*1000;
+  await updateDoc(doc(db,'artifacts/byrmalda-prod/users', uid), {isBanned:true, banType:'unban-after', banUntil, banDuration:timeStr});
+  alert(`✅ Разблокировка запланирована через ${timeStr}`);
 };
 
-window.admFindOrder=async()=>{
-const oid=$('adm-oid').value.trim();if(!oid)return;
-let snap=await getDoc(doc(db,'artifacts/byrmalda-prod/public/data/orders',oid));
-if(!snap.exists()){const q=query(collection(db,'artifacts/byrmalda-prod/public/data/orders'),where('tracking','==',oid),limit(1));const r=await getDocs(q);if(!r.empty)snap=r.docs[0];}
-if(!snap.exists()){$('adm-order-res').innerHTML='<div style="color:var(--error)">Заказ не найден</div>';return;}
-const o=snap.data(), items=o.items?.map(i=>`<div style="display:flex;gap:10px;margin:8px 0;padding:8px;background:var(--bg-soft);border-radius:4px"><img src="${i.img||'https://via.placeholder.com/50/f5f5f5/111?text=📦'}" style="width:50px;height:50px;object-fit:cover;border-radius:4px"><div><div style="font-weight:500">${i.name}</div><div style="font-size:11px;color:var(--text-dim)">${i.qty} шт • ${i.size} • ${i.color}</div></div></div>`).join('')||'-';
-$('adm-order-res').innerHTML=`<div style="background:var(--bg);padding:16px;border-radius:6px"><div style="margin-bottom:8px"><strong>Заказ:</strong> #${o.id} | <strong>Трекинг:</strong> ${o.tracking}</div><div style="margin-bottom:12px"><strong>Статус:</strong> <span style="padding:4px 10px;border-radius:20px;font-size:12px;background:#cffafe">${o.status}</span></div><div style="margin:12px 0"><strong>Товары:</strong></div>${items}<div style="margin-top:12px"><strong>Действия:</strong><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><button class="btn btn-sm" style="width:auto" onclick="admSetOrderStatus('${o.id}','Создан')">Создан</button><button class="btn btn-sm" style="width:auto" onclick="admSetOrderStatus('${o.id}','Передача товара в доставку')">В доставку</button><button class="btn btn-sm" style="width:auto" onclick="admSetOrderStatus('${o.id}','В пути')">В пути</button><button class="btn btn-danger btn-sm" style="width:auto" onclick="admSetOrderStatus('${o.id}','Отменён')">Отмена</button></div></div></div>`;
-show($('adm-order-res'));
+window.admFindOrder = async () => {
+  const oid = $('adm-oid')?.value?.trim();
+  if(!oid) return;
+  let snap = await getDoc(doc(db,'artifacts/byrmalda-prod/public/data/orders', oid));
+  if(!snap?.exists()){
+    const q = query(collection(db,'artifacts/byrmalda-prod/public/data/orders'), where('tracking','==',oid), limit(1));
+    const r = await getDocs(q);
+    if(!r?.empty) snap = r.docs[0];
+  }
+  if(!snap?.exists() && $('adm-order-res')) {
+    $('adm-order-res').innerHTML = '<div style="color:var(--error)">Заказ не найден</div>';
+    return;
+  }
+  const o = snap?.data(), 
+        items = (o?.items||[]).map(i=>`<div style="display:flex;gap:10px;margin:8px 0;padding:8px;background:var(--bg-soft);border-radius:4px"><img src="${i?.img||'https://via.placeholder.com/50/f5f5f5/111?text=📦'}" style="width:50px;height:50px;object-fit:cover;border-radius:4px" onerror="this.src='https://via.placeholder.com/50/f5f5f5/111?text=No'"><div><div style="font-weight:500">${i?.name||'Товар'}</div><div style="font-size:11px;color:var(--text-dim)">${i?.qty||0} шт • ${i?.size||'-'} • ${i?.color||'-'}</div></div></div>`).join('')||'-';
+  if($('adm-order-res')) {
+    $('adm-order-res').innerHTML = `<div style="background:var(--bg);padding:16px;border-radius:6px"><div style="margin-bottom:8px"><strong>Заказ:</strong> #${o?.id} | <strong>Трекинг:</strong> ${o?.tracking||'-'}</div><div style="margin-bottom:12px"><strong>Статус:</strong> <span style="padding:4px 10px;border-radius:20px;font-size:12px;background:#cffafe">${o?.status||'-'}</span></div><div style="margin:12px 0"><strong>Товары:</strong></div>${items}<div style="margin-top:12px"><strong>Действия:</strong><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><button class="btn btn-sm" style="width:auto" onclick="admSetOrderStatus('${o?.id}','Создан')">Создан</button><button class="btn btn-sm" style="width:auto" onclick="admSetOrderStatus('${o?.id}','Передача товара в доставку')">В доставку</button><button class="btn btn-sm" style="width:auto" onclick="admSetOrderStatus('${o?.id}','В пути')">В пути</button><button class="btn btn-danger btn-sm" style="width:auto" onclick="admSetOrderStatus('${o?.id}','Отменён')">Отмена</button></div></div></div>`;
+    show($('adm-order-res'));
+  }
 };
-window.admSetOrderStatus=async(oid,s)=>{await updateDoc(doc(db,'artifacts/byrmalda-prod/public/data/orders',oid),{status:s,updatedAt:serverTimestamp(),adminChangedStatus:true});alert(`✅ Статус: ${s}`);admFindOrder();};
+window.admSetOrderStatus = async (oid, s) => {
+  await updateDoc(doc(db,'artifacts/byrmalda-prod/public/data/orders', oid), {status:s, updatedAt:serverTimestamp(), adminChangedStatus:true});
+  alert(`✅ Статус: ${s}`);
+  admFindOrder();
+};
 
 async function loadPendingReviews(){
-const c=$('adm-reviews-mod');c.innerHTML='<div class="text-center"><div class="loading"></div></div>';
-if(user?.email!==ADMIN_EMAIL){c.innerHTML='Доступ только для администратора';return;}
-const snap=await getDocs(query(collection(db,'artifacts/byrmalda-prod/public/data/reviews'),where('status','==','pending')));
-c.innerHTML=snap.docs.map(d=>{const r=d.data();return `<div class="mod-item"><div class="flex justify-between"><strong>${r.name}</strong><span>${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</span></div><div style="font-size:13px;color:var(--text-dim);margin:6px 0">${r.text}</div><div class="actions"><button class="btn btn-success btn-sm" onclick="admApproveReview('${d.id}')">Одобрить</button><button class="btn btn-danger btn-sm" onclick="admRejectReview('${d.id}')">Отклонить</button></div></div>`;}).join('')||'Нет заявок';
+  const c = $('adm-reviews-mod');
+  if(c) c.innerHTML = '<div class="text-center"><div class="loading"></div></div>';
+  if(user?.email!==ADMIN_EMAIL){ if(c) c.innerHTML='Доступ только для администратора'; return; }
+  const snap = await getDocs(query(collection(db,'artifacts/byrmalda-prod/public/data/reviews'), where('status','==','pending')));
+  if(c) {
+    c.innerHTML = snap.docs.map(d=>{
+      const r = d.data();
+      return `<div class="mod-item"><div class="flex justify-between"><strong>${r?.name||'-'}</strong><span>${'★'.repeat(r?.rating||0)}${'☆'.repeat(5-(r?.rating||0))}</span></div><div style="font-size:13px;color:var(--text-dim);margin:6px 0">${r?.text||''}</div><div class="actions"><button class="btn btn-success btn-sm" onclick="admApproveReview('${d?.id}')">Одобрить</button><button class="btn btn-danger btn-sm" onclick="admRejectReview('${d?.id}')">Отклонить</button></div></div>`;
+    }).join('') || 'Нет заявок';
+  }
 }
-window.admApproveReview=async id=>{await updateDoc(doc(db,'artifacts/byrmalda-prod/public/data/reviews',id),{status:'approved'});loadPendingReviews();loadPublicReviews();};
-window.admRejectReview=async id=>{await deleteDoc(doc(db,'artifacts/byrmalda-prod/public/data/reviews',id));loadPendingReviews();};
+window.admApproveReview = async id => {
+  await updateDoc(doc(db,'artifacts/byrmalda-prod/public/data/reviews', id), {status:'approved'});
+  loadPendingReviews();
+  loadPublicReviews();
+};
+window.admRejectReview = async id => {
+  await deleteDoc(doc(db,'artifacts/byrmalda-prod/public/data/reviews', id));
+  loadPendingReviews();
+};
 async function loadPublicReviews(){
-const c=$('reviews-list');c.innerHTML='<div class="text-center"><div class="loading"></div></div>';
-const snap=await getDocs(query(collection(db,'artifacts/byrmalda-prod/public/data/reviews'),where('status','==','approved'),orderBy('ts','desc'),limit(50)));
-const isAdmin=user?.email===ADMIN_EMAIL;
-c.innerHTML=snap.docs.map(d=>{const r=d.data();return `<div class="review-card">${isAdmin?`<span class="review-delete" onclick="admDeleteReview('${d.id}')">🗑️</span>`:''}<div class="review-head"><strong>${r.name}</strong><span>${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</span></div><div class="review-text">${r.text}</div></div>`;}).join('')||'Отзывов нет';
+  const c = $('reviews-list');
+  if(c) c.innerHTML = '<div class="text-center"><div class="loading"></div></div>';
+  const snap = await getDocs(query(collection(db,'artifacts/byrmalda-prod/public/data/reviews'), where('status','==','approved'), orderBy('ts','desc'), limit(50)));
+  const isAdmin = user?.email===ADMIN_EMAIL;
+  if(c) {
+    c.innerHTML = snap.docs.map(d=>{
+      const r = d.data();
+      return `<div class="review-card">${isAdmin?`<span class="review-delete" onclick="admDeleteReview('${d?.id}')">🗑️</span>`:''}<div class="review-head"><strong>${r?.name||'-'}</strong><span>${'★'.repeat(r?.rating||0)}${'☆'.repeat(5-(r?.rating||0))}</span></div><div class="review-text">${r?.text||''}</div></div>`;
+    }).join('') || 'Отзывов нет';
+  }
 }
-window.admDeleteReview=async id=>{if(!confirm('Удалить?'))return;await deleteDoc(doc(db,'artifacts/byrmalda-prod/public/data/reviews',id));loadPublicReviews();};
+window.admDeleteReview = async id => {
+  if(!confirm('Удалить?')) return;
+  await deleteDoc(doc(db,'artifacts/byrmalda-prod/public/data/reviews', id));
+  loadPublicReviews();
+};
 
 async function loadPendingAvatars(){
-const c=$('adm-avatars-mod');c.innerHTML='<div class="text-center"><div class="loading"></div></div>';
-if(user?.email!==ADMIN_EMAIL){c.innerHTML='Доступ только для администратора';return;}
-const snap=await getDocs(query(collection(db,'artifacts/byrmalda-prod/users'),where('avatarStatus','==','pending')));
-c.innerHTML=snap.docs.map(d=>{const u=d.data();return `<div class="mod-item flex items-center gap-12"><img src="${u.avatarPending}" style="width:120px;height:120px;border-radius:8px;object-fit:cover"><div style="flex:1"><div style="font-weight:500">${u.name}</div><div style="font-size:11px;color:var(--text-dim)">UID: ${u.uid}</div></div><div class="actions"><button class="btn btn-success btn-sm" onclick="admApproveAvatar('${u.uid}','${u.avatarPending}')">Одобрить</button><button class="btn btn-danger btn-sm" onclick="admRejectAvatar('${u.uid}')">Отклонить</button></div></div>`;}).join('')||'Нет заявок';
+  const c = $('adm-avatars-mod');
+  if(c) c.innerHTML = '<div class="text-center"><div class="loading"></div></div>';
+  if(user?.email!==ADMIN_EMAIL){ if(c) c.innerHTML='Доступ только для администратора'; return; }
+  const snap = await getDocs(query(collection(db,'artifacts/byrmalda-prod/users'), where('avatarStatus','==','pending')));
+  if(c) {
+    c.innerHTML = snap.docs.map(d=>{
+      const u = d.data();
+      return `<div class="mod-item flex items-center gap-12"><img src="${u?.avatarPending||'https://via.placeholder.com/120/f5f5f5/111?text=No'}" style="width:120px;height:120px;border-radius:8px;object-fit:cover" onerror="this.src='https://via.placeholder.com/120/f5f5f5/111?text=No'"><div style="flex:1"><div style="font-weight:500">${u?.name||'-'}</div><div style="font-size:11px;color:var(--text-dim)">UID: ${u?.uid?.substring(0,10)||'-'}...</div></div><div class="actions"><button class="btn btn-success btn-sm" onclick="admApproveAvatar('${u?.uid}','${u?.avatarPending}')">Одобрить</button><button class="btn btn-danger btn-sm" onclick="admRejectAvatar('${u?.uid}')">Отклонить</button></div></div>`;
+    }).join('') || 'Нет заявок';
+  }
 }
-window.admApproveAvatar=async(uid,url)=>{await updateDoc(doc(db,'artifacts/byrmalda-prod/users',uid),{avatar:url,avatarPending:null,avatarStatus:'approved'});loadPendingAvatars();};
-window.admRejectAvatar=async uid=>{await updateDoc(doc(db,'artifacts/byrmalda-prod/users',uid),{avatarPending:null,avatarStatus:'rejected'});loadPendingAvatars();};
+window.admApproveAvatar = async (uid, url) => {
+  await updateDoc(doc(db,'artifacts/byrmalda-prod/users', uid), {avatar:url, avatarPending:null, avatarStatus:'approved'});
+  loadPendingAvatars();
+};
+window.admRejectAvatar = async uid => {
+  await updateDoc(doc(db,'artifacts/byrmalda-prod/users', uid), {avatarPending:null, avatarStatus:'rejected'});
+  loadPendingAvatars();
+};
 
-// 🔁 ПРЕДЛОЖЕНИЯ ТОВАРОВ С ПОЛНЫМИ ПОЛЯМИ
+// 🔁 ПРЕДЛОЖЕНИЯ ТОВАРОВ
 async function loadPendingSuggestions(){
-const c=$('adm-suggestions');c.innerHTML='<div class="text-center"><div class="loading"></div></div>';
-if(user?.email!==ADMIN_EMAIL){c.innerHTML='Доступ только для администратора';return;}
-const snap=await getDocs(query(collection(db,'artifacts/byrmalda-prod/public/data/suggestions'),where('status','==','pending')));
-c.innerHTML=snap.docs.map(d=>{
-const s=d.data();
-return `<div class="mod-item">
-  <div style="font-weight:500;margin-bottom:6px">${s.name}</div>
-  <div style="font-size:13px;color:var(--text-dim);margin:4px 0">
-    <strong>Категория:</strong> ${s.category} • <strong>Тип:</strong> ${s.type} • <strong>Цена:</strong> $${s.price}<br>
-    <strong>В наличии:</strong> ${s.stock||10} • <strong>Масса:</strong> ${s.weight||200}г • <strong>Для кого:</strong> ${s.audience||'Унисекс'}<br>
-    <strong>Размеры:</strong> ${s.sizes||'-'} • <strong>Материал:</strong> ${s.material||'-'}<br>
-    <strong>Описание:</strong> ${s.desc||'-'}
-  </div>
-  ${s.img ? `<div style="margin:8px 0"><img src="${s.img}" style="max-width:200px;max-height:150px;border-radius:4px;object-fit:cover"></div>` : ''}
-  <div class="actions">
-    <button class="btn btn-sm" style="width:auto" onclick="admEditSuggestion('${d.id}')">✏️ Редактировать</button>
-    <button class="btn btn-success btn-sm" style="width:auto" onclick="admApproveSuggestion('${d.id}')">✅ Одобрить</button>
-    <button class="btn btn-danger btn-sm" style="width:auto" onclick="admRejectSuggestion('${d.id}')">❌ Отклонить</button>
-  </div>
-</div>`;
-}).join('')||'Нет предложений';
+  const c = $('adm-suggestions');
+  if(c) c.innerHTML = '<div class="text-center"><div class="loading"></div></div>';
+  if(user?.email!==ADMIN_EMAIL){ if(c) c.innerHTML='Доступ только для администратора'; return; }
+  const snap = await getDocs(query(collection(db,'artifacts/byrmalda-prod/public/data/suggestions'), where('status','==','pending')));
+  if(c) {
+    c.innerHTML = snap.docs.map(d=>{
+      const s = d.data();
+      return `<div class="mod-item">
+        <div style="font-weight:500;margin-bottom:6px">${s?.name||'-'}</div>
+        <div style="font-size:13px;color:var(--text-dim);margin:4px 0">
+          <strong>Категория:</strong> ${s?.category||'-'} • <strong>Тип:</strong> ${s?.type||'-'} • <strong>Цена:</strong> $${s?.price||0}<br>
+          <strong>В наличии:</strong> ${s?.stock||10} • <strong>Масса:</strong> ${s?.weight||200}г • <strong>Для кого:</strong> ${s?.audience||'Унисекс'}<br>
+          <strong>Размеры:</strong> ${s?.sizes||'-'} • <strong>Материал:</strong> ${s?.material||'-'}<br>
+          <strong>Описание:</strong> ${s?.desc||'-'}
+        </div>
+        ${s?.img ? `<div style="margin:8px 0"><img src="${s.img}" style="max-width:200px;max-height:150px;border-radius:4px;object-fit:cover" onerror="this.src='https://via.placeholder.com/200/f5f5f5/111?text=No'"></div>` : ''}
+        <div class="actions">
+          <button class="btn btn-sm" style="width:auto" onclick="admEditSuggestion('${d?.id}')">✏️ Редактировать</button>
+          <button class="btn btn-success btn-sm" style="width:auto" onclick="admApproveSuggestion('${d?.id}')">✅ Одобрить</button>
+          <button class="btn btn-danger btn-sm" style="width:auto" onclick="admRejectSuggestion('${d?.id}')">❌ Отклонить</button>
+        </div>
+      </div>`;
+    }).join('') || 'Нет предложений';
+  }
 }
 
-// 🔁 РЕДАКТИРОВАНИЕ ПРЕДЛОЖЕНИЯ АДМИНОМ
 window.admEditSuggestion = async (id) => {
-const snap = await getDoc(doc(db, 'artifacts/byrmalda-prod/public/data/suggestions', id));
-if (!snap.exists()) return;
-const s = snap.data();
-// Заполняем форму редактирования товара данными из предложения
-$('edit-name').value = s.name;
-$('edit-cat').value = s.category;
-$('edit-type').value = s.type;
-$('edit-price').value = s.price;
-$('edit-stock').value = s.stock || 10;
-$('edit-weight').value = s.weight || 200;
-$('edit-aud').value = s.audience || 'unisex';
-$('edit-mat').value = s.material || '';
-$('edit-color').value = s.color || '';
-$('edit-sizes').value = s.sizes || 'S,M,L';
-$('edit-year').value = s.year || new Date().getFullYear();
-$('edit-desc').value = s.desc || '';
-if (s.collab && s.collab !== 'Нет') {
-  $('edit-collab-type').value = 'yes';
-  $('edit-collab-name').value = s.collab.replace('Да, ', '');
-  show($('edit-collab-group'));
-} else {
-  $('edit-collab-type').value = 'no';
-  hide($('edit-collab-group'));
-}
-// Сохраняем ID предложения для последующего использования
-$('adm-edit-form').dataset.suggestionId = id;
-$('adm-edit-form').dataset.editingSuggestion = 'true';
-show($('adm-edit-form'));
+  const snap = await getDoc(doc(db, 'artifacts/byrmalda-prod/public/data/suggestions', id));
+  if (!snap?.exists()) return;
+  const s = snap.data();
+  if($('edit-name')) $('edit-name').value = s?.name || '';
+  if($('edit-cat')) $('edit-cat').value = s?.category || '';
+  if($('edit-type')) $('edit-type').value = s?.type || '';
+  if($('edit-price')) $('edit-price').value = s?.price || '';
+  if($('edit-stock')) $('edit-stock').value = s?.stock || 10;
+  if($('edit-weight')) $('edit-weight').value = s?.weight || 200;
+  if($('edit-aud')) $('edit-aud').value = s?.audience || 'unisex';
+  if($('edit-mat')) $('edit-mat').value = s?.material || '';
+  if($('edit-color')) $('edit-color').value = s?.color || '';
+  if($('edit-sizes')) $('edit-sizes').value = s?.sizes || 'S,M,L';
+  if($('edit-year')) $('edit-year').value = s?.year || new Date().getFullYear();
+  if($('edit-desc')) $('edit-desc').value = s?.desc || '';
+  if (s?.collab && s?.collab !== 'Нет') {
+    if($('edit-collab-type')) $('edit-collab-type').value = 'yes';
+    if($('edit-collab-name')) $('edit-collab-name').value = s?.collab?.replace('Да, ','') || '';
+    show($('edit-collab-group'));
+  } else {
+    if($('edit-collab-type')) $('edit-collab-type').value = 'no';
+    hide($('edit-collab-group'));
+  }
+  if($('adm-edit-form')) {
+    $('adm-edit-form').dataset.suggestionId = id;
+    $('adm-edit-form').dataset.editingSuggestion = 'true';
+    show($('adm-edit-form'));
+  }
 };
 
 window.admApproveSuggestion = async (id, editedData = null) => {
-let s;
-if (editedData) {
-  s = editedData;
-} else {
-  const snap = await getDoc(doc(db, 'artifacts/byrmalda-prod/public/data/suggestions', id));
-  if (!snap.exists()) return;
-  s = snap.data();
-}
-// Определяем, редактировал ли админ
-const wasEdited = !!editedData;
-// Создаём товар
-const prod = {
-  productId: genId(),
-  name: s.name,
-  category: s.category,
-  type: s.type,
-  price: s.price,
-  stock: s.stock || 10,
-  weight: s.weight || 200,
-  audience: s.audience || 'unisex',
-  material: s.material || '',
-  color: s.color || '',
-  sizes: s.sizes || 'S,M,L',
-  collab: s.collab || 'Нет',
-  year: s.year || new Date().getFullYear(),
-  desc: s.desc || '',
-  images: s.img ? [s.img] : [],
-  published: true,
-  deleted: false,
-  createdByUser: true,
-  editedByAdmin: wasEdited,
-  createdAt: serverTimestamp()
-};
-await addDoc(collection(db, 'artifacts/byrmalda-prod/public/data/products'), prod);
-// Обновляем статус предложения
-await updateDoc(doc(db, 'artifacts/byrmalda-prod/public/data/suggestions', id), { status: 'approved' });
-// 🔁 ОБНОВЛЯЕМ КРЕАТОРСТВО ПОЛЬЗОВАТЕЛЯ (только если НЕ редактировал админ)
-if (s.uid && !wasEdited) {
-  const userSnap = await getDoc(doc(db, 'artifacts/byrmalda-prod/users', s.uid));
-  if (userSnap.exists()) {
-    const u = userSnap.data();
-    let newCount = (u.creatorApprovedCount || 0) + 1;
-    let newLevel = u.creatorLevel || 0;
-    // Логика уровней с обнулением счётчика
-    if (newLevel === 0 && newCount >= 1) {
-      newLevel = 1;
-      newCount = 0;
-      // Уведомление о повышении
-      setTimeout(() => {
-        alert(`🎉 Вы стали креатором 1 уровня! Ваш ник стал синим.`);
-      }, 500);
-    } else if (newLevel === 1 && newCount >= 5) {
-      newLevel = 2;
-      newCount = 0;
-      setTimeout(() => {
-        alert(`🎉 Вы достигли 2 уровня креатора! Ваш ник стал жёлтым.`);
-      }, 500);
-    } else if (newLevel === 2 && newCount >= 10) {
-      newLevel = 3;
-      newCount = 0;
-      setTimeout(() => {
-        alert(`🎉 Вы достигли 3 уровня креатора! Ваш ник стал зелёным.`);
-      }, 500);
-    } else if (newLevel === 3 && newCount >= 25) {
-      newLevel = 4;
-      newCount = 0;
-      setTimeout(() => {
-        alert(`🎉 Вы достигли 4 уровня креатора! Ваш ник стал красным.`);
-      }, 500);
-    } else if (newLevel === 4 && newCount >= 50) {
-      newLevel = 5;
-      newCount = 0;
-      setTimeout(() => {
-        alert(`🎉 Вы достигли МАКСИМАЛЬНОГО 5 уровня креатора! Ваш ник переливается, и вы получаете скидку 25% на все товары!`);
-      }, 500);
-    }
-    await updateDoc(doc(db, 'artifacts/byrmalda-prod/users', s.uid), {
-      creatorLevel: newLevel,
-      creatorApprovedCount: newCount,
-      hasVerifiedProduct: true
-    });
+  let s;
+  if (editedData) {
+    s = editedData;
+  } else {
+    const snap = await getDoc(doc(db, 'artifacts/byrmalda-prod/public/data/suggestions', id));
+    if (!snap?.exists()) return;
+    s = snap.data();
   }
-}
-loadPendingSuggestions();
-alert('✅ Товар опубликован!');
+  const wasEdited = !!editedData;
+  const prod = {
+    productId: genId(),
+    name: s?.name,
+    category: s?.category,
+    type: s?.type,
+    price: s?.price,
+    stock: s?.stock || 10,
+    weight: s?.weight || 200,
+    audience: s?.audience || 'unisex',
+    material: s?.material || '',
+    color: s?.color || '',
+    sizes: s?.sizes || 'S,M,L',
+    collab: s?.collab || 'Нет',
+    year: s?.year || new Date().getFullYear(),
+    desc: s?.desc || '',
+    images: s?.img ? [s.img] : [],
+    published: true,
+    deleted: false,
+    createdByUser: true,
+    editedByAdmin: wasEdited,
+    createdAt: serverTimestamp()
+  };
+  await addDoc(collection(db, 'artifacts/byrmalda-prod/public/data/products'), prod);
+  await updateDoc(doc(db, 'artifacts/byrmalda-prod/public/data/suggestions', id), { status: 'approved' });
+  
+  if (s?.uid && !wasEdited) {
+    const userSnap = await getDoc(doc(db, 'artifacts/byrmalda-prod/users', s.uid));
+    if (userSnap?.exists()) {
+      const u = userSnap.data();
+      let newCount = (u?.creatorApprovedCount || 0) + 1;
+      let newLevel = u?.creatorLevel || 0;
+      if (newLevel === 0 && newCount >= 1) {
+        newLevel = 1; newCount = 0;
+        setTimeout(() => { alert(`🎉 Вы стали креатором 1 уровня! Ваш ник стал синим.`); }, 500);
+      } else if (newLevel === 1 && newCount >= 5) {
+        newLevel = 2; newCount = 0;
+        setTimeout(() => { alert(`🎉 Вы достигли 2 уровня креатора! Ваш ник стал жёлтым.`); }, 500);
+      } else if (newLevel === 2 && newCount >= 10) {
+        newLevel = 3; newCount = 0;
+        setTimeout(() => { alert(`🎉 Вы достигли 3 уровня креатора! Ваш ник стал зелёным.`); }, 500);
+      } else if (newLevel === 3 && newCount >= 25) {
+        newLevel = 4; newCount = 0;
+        setTimeout(() => { alert(`🎉 Вы достигли 4 уровня креатора! Ваш ник стал красным.`); }, 500);
+      } else if (newLevel === 4 && newCount >= 50) {
+        newLevel = 5; newCount = 0;
+        setTimeout(() => { alert(`🎉 Вы достигли МАКСИМАЛЬНОГО 5 уровня креатора! Ваш ник переливается, и вы получаете скидку 25% на все товары!`); }, 500);
+      }
+      await updateDoc(doc(db, 'artifacts/byrmalda-prod/users', s.uid), {
+        creatorLevel: newLevel,
+        creatorApprovedCount: newCount,
+        hasVerifiedProduct: true
+      });
+    }
+  }
+  loadPendingSuggestions();
+  alert('✅ Товар опубликован!');
 };
 
 window.admRejectSuggestion = async id => {
-await deleteDoc(doc(db, 'artifacts/byrmalda-prod/public/data/suggestions', id));
-loadPendingSuggestions();
+  await deleteDoc(doc(db, 'artifacts/byrmalda-prod/public/data/suggestions', id));
+  loadPendingSuggestions();
 };
 
-// 🔁 ПРЕДЛОЖЕНИЕ ТОВАРА ПОЛЬЗОВАТЕЛЕМ
 window.openSuggest = async () => {
-if (!user) { openModal('login-modal'); return; }
-// 🔁 ПРОВЕРКА ЛИМИТА
-if (!canSubmitSuggestion(userData)) {
-  const resetTime = formatTimeUntilReset(getTimeUntilReset());
-  alert(`❌ Лимит исчерпан. Попробуйте через ${resetTime}.`);
-  return;
-}
-openModal('suggest-modal');
+  if (!user) { openModal('login-modal'); return; }
+  if (!canSubmitSuggestion(userData)) {
+    const resetTime = formatTimeUntilReset(getTimeUntilReset());
+    alert(`❌ Лимит исчерпан. Попробуйте через ${resetTime}.`);
+    return;
+  }
+  openModal('suggest-modal');
 };
 
 window.submitSuggestion = async () => {
-// 🔁 ПОВТОРНАЯ ПРОВЕРКА ЛИМИТА ПЕРЕД ОТПРАВКОЙ
-if (!canSubmitSuggestion(userData)) {
-  const resetTime = formatTimeUntilReset(getTimeUntilReset());
-  alert(`❌ Лимит исчерпан. Попробуйте через ${resetTime}.`);
-  return;
-}
-const n=$('sug-name').value.trim(),c=$('sug-cat').value,t=$('sug-type').value.trim(),p=parseFloat($('sug-price').value),stock=parseInt($('sug-stock').value)||10,weight=parseInt($('sug-weight').value)||200;
-if(!n||!t||isNaN(p)){alert('Заполните обязательные поля');return;}
-let url='';const f=$('sug-img').files[0];if(f){const fd=new FormData();fd.append('image',f);fd.append('key',IMGBB_KEY);const res=await fetch('https://api.imgbb.com/1/upload',{method:'POST',body:fd});const d=await res.json();if(d.success)url=d.data.url;}
-await addDoc(collection(db,'artifacts/byrmalda-prod/public/data/suggestions'),{
-  uid:user.uid,
-  userName:userData?.name||user.email.split('@')[0],
-  name:n,
-  category:c,
-  type:t,
-  price:p,
-  stock:stock,
-  weight:weight,
-  img:url,
-  audience:$('sug-aud').value,
-  sizes:$('sug-sizes').value,
-  material:$('sug-mat').value,
-  desc:$('sug-desc').value,
-  status:'pending',
-  ts:serverTimestamp()
-});
-// 🔁 ТРАТИМ ЛИМИТ
-useSuggestionLimit(userData);
-await updateDoc(doc(db, 'artifacts/byrmalda-prod/users', user.uid), {
-  suggestionUsed: userData.suggestionUsed,
-  suggestionLastReset: userData.suggestionLastReset
-});
-alert('✅ Отправлено на модерацию!');
-closeModal('suggest-modal');
-renderCreatorLimit();
-loadPendingSuggestions();
+  if (!canSubmitSuggestion(userData)) {
+    const resetTime = formatTimeUntilReset(getTimeUntilReset());
+    alert(`❌ Лимит исчерпан. Попробуйте через ${resetTime}.`);
+    return;
+  }
+  const n = $('sug-name')?.value?.trim(), c = $('sug-cat')?.value, t = $('sug-type')?.value?.trim(), 
+        p = parseFloat($('sug-price')?.value), stock = parseInt($('sug-stock')?.value)||10, 
+        weight = parseInt($('sug-weight')?.value)||200;
+  if(!n||!t||isNaN(p)){alert('Заполните обязательные поля');return;}
+  let url = '';
+  const f = $('sug-img')?.files?.[0];
+  if(f){
+    const fd = new FormData(); fd.append('image', f); fd.append('key', IMGBB_KEY);
+    const res = await fetch('https://api.imgbb.com/1/upload', {method:'POST', body:fd});
+    const d = await res.json();
+    if(d?.success) url = d?.data?.url;
+  }
+  await addDoc(collection(db,'artifacts/byrmalda-prod/public/data/suggestions'),{
+    uid: user.uid,
+    userName: userData?.name || user.email?.split('@')?.[0],
+    name: n,
+    category: c,
+    type: t,
+    price: p,
+    stock: stock,
+    weight: weight,
+    img: url,
+    audience: $('sug-aud')?.value,
+    sizes: $('sug-sizes')?.value,
+    material: $('sug-mat')?.value,
+    desc: $('sug-desc')?.value,
+    status: 'pending',
+    ts: serverTimestamp()
+  });
+  useSuggestionLimit(userData);
+  await updateDoc(doc(db, 'artifacts/byrmalda-prod/users', user.uid), {
+    suggestionUsed: userData?.suggestionUsed,
+    suggestionLastReset: userData?.suggestionLastReset
+  });
+  alert('✅ Отправлено на модерацию!');
+  closeModal('suggest-modal');
+  renderCreatorLimit();
+  loadPendingSuggestions();
 };
 
 async function loadReports(){
-const c=$('adm-reports');c.innerHTML='<div class="text-center"><div class="loading"></div></div>';
-if(user?.email!==ADMIN_EMAIL){c.innerHTML='Доступ только для администратора';return;}
-const snap=await getDocs(query(collection(db,'artifacts/byrmalda-prod/public/data/reports'),where('status','==','new'),orderBy('ts','desc')));
-c.innerHTML=snap.docs.map(d=>{const r=d.data();return `<div class="mod-item"><div style="font-weight:500">${r.name} <span style="font-size:11px;color:var(--text-dim)">${r.uid}</span></div><div style="font-size:13px;color:var(--text-dim);margin:6px 0">${r.text}</div><div class="actions"><button class="btn btn-sm" onclick="admMarkReportViewed('${d.id}')">Просмотрено</button></div></div>`;}).join('')||'Нет жалоб';
+  const c = $('adm-reports');
+  if(c) c.innerHTML = '<div class="text-center"><div class="loading"></div></div>';
+  if(user?.email!==ADMIN_EMAIL){ if(c) c.innerHTML='Доступ только для администратора'; return; }
+  const snap = await getDocs(query(collection(db,'artifacts/byrmalda-prod/public/data/reports'), where('status','==','new'), orderBy('ts','desc')));
+  if(c) {
+    c.innerHTML = snap.docs.map(d=>{
+      const r = d.data();
+      return `<div class="mod-item"><div style="font-weight:500">${r?.name||'-'} <span style="font-size:11px;color:var(--text-dim)">${r?.uid?.substring(0,10)||'-'}...</span></div><div style="font-size:13px;color:var(--text-dim);margin:6px 0">${r?.text||''}</div><div class="actions"><button class="btn btn-sm" onclick="admMarkReportViewed('${d?.id}')">Просмотрено</button></div></div>`;
+    }).join('') || 'Нет жалоб';
+  }
 }
-window.admMarkReportViewed=async id=>{await updateDoc(doc(db,'artifacts/byrmalda-prod/public/data/reports',id),{status:'viewed'});loadReports();};
+window.admMarkReportViewed = async id => {
+  await updateDoc(doc(db,'artifacts/byrmalda-prod/public/data/reports', id), {status:'viewed'});
+  loadReports();
+};
 
 // 🔁 ФУНКЦИИ ДЛЯ ТЕХНИЧЕСКОГО ПЕРЕРЫВА
 async function loadMaintenanceStatus() {
-if (user?.email !== ADMIN_EMAIL) return;
-try {
-const snap = await getDoc(doc(db, 'artifacts/byrmalda-prod/config/maintenance'));
-const statusDiv = $('maint-status');
-if (!snap.exists()) {
-statusDiv.innerHTML = '📋 Расписание не настроено';
-return;
-}
-const cfg = snap.data();
-const startStr = new Date(cfg.startTimestamp).toLocaleString('ru-RU', { timeZone: 'Europe/Moscow' });
-const endStr = new Date(cfg.endTimestamp).toLocaleString('ru-RU', { timeZone: 'Europe/Moscow' });
-statusDiv.innerHTML = `
-<strong>Статус:</strong> ${cfg.enabled ? '✅ ВКЛЮЧЕН' : '❌ ВЫКЛЮЧЕН'}<br>
-<strong>Начало (МСК):</strong> ${startStr}<br>
-<strong>Окончание (МСК):</strong> ${endStr}
-`;
-} catch(e) { console.error('loadMaintenanceStatus:', e); }
+  if (user?.email !== ADMIN_EMAIL) return;
+  try {
+    const snap = await getDoc(doc(db, 'artifacts/byrmalda-prod/config/maintenance'));
+    const statusDiv = $('maint-status');
+    if (!snap?.exists()) {
+      if(statusDiv) statusDiv.innerHTML = '📋 Расписание не настроено';
+      return;
+    }
+    const cfg = snap.data();
+    const startStr = new Date(cfg?.startTimestamp).toLocaleString('ru-RU', { timeZone: 'Europe/Moscow' });
+    const endStr = new Date(cfg?.endTimestamp).toLocaleString('ru-RU', { timeZone: 'Europe/Moscow' });
+    if(statusDiv) {
+      statusDiv.innerHTML = `<strong>Статус:</strong> ${cfg?.enabled ? '✅ ВКЛЮЧЕН' : '❌ ВЫКЛЮЧЕН'}<br><strong>Начало (МСК):</strong> ${startStr}<br><strong>Окончание (МСК):</strong> ${endStr}`;
+    }
+  } catch(e) { console.error('loadMaintenanceStatus:', e); }
 }
 window.toggleMaintenance = async (enabled) => {
-try {
-const docRef = doc(db, 'artifacts/byrmalda-prod/config/maintenance');
-const snap = await getDoc(docRef);
-const current = snap.exists() ? snap.data() : { startTimestamp: 0, endTimestamp: 0 };
-await setDoc(docRef, { ...current, enabled, updatedAt: serverTimestamp() }, { merge: true });
-alert(`✅ Технический перерыв ${enabled ? 'включён' : 'выключен'}`);
-loadMaintenanceStatus();
-} catch(e) { console.error('toggleMaintenance:', e); alert('❌ Ошибка: '+e.message); }
+  try {
+    const docRef = doc(db, 'artifacts/byrmalda-prod/config/maintenance');
+    const snap = await getDoc(docRef);
+    const current = snap?.exists() ? snap.data() : { startTimestamp: 0, endTimestamp: 0 };
+    await setDoc(docRef, { ...current, enabled, updatedAt: serverTimestamp() }, { merge: true });
+    alert(`✅ Технический перерыв ${enabled ? 'включён' : 'выключен'}`);
+    loadMaintenanceStatus();
+  } catch(e) { console.error('toggleMaintenance:', e); alert('❌ Ошибка: '+e.message); }
 };
 window.saveMaintenanceSchedule = async () => {
-const startDate = $('maint-start-date').value;
-const startTime = $('maint-start-time').value;
-const endDate = $('maint-end-date').value;
-const endTime = $('maint-end-time').value;
-if (!startDate || !startTime || !endDate || !endTime) { alert('Заполните все поля даты и времени'); return; }
-try {
-const startTs = parseDateTimeMSK(startDate, startTime);
-const endTs = parseDateTimeMSK(endDate, endTime);
-if (startTs >= endTs) { alert('Время начала должно быть раньше времени окончания'); return; }
-await setDoc(doc(db, 'artifacts/byrmalda-prod/config/maintenance'), {
-startTimestamp: startTs,
-endTimestamp: endTs,
-enabled: true,
-updatedAt: serverTimestamp()
-}, { merge: true });
-$('maint-saved').classList.remove('hidden');
-setTimeout(() => $('maint-saved').classList.add('hidden'), 3000);
-loadMaintenanceStatus();
-} catch(e) { console.error('saveMaintenanceSchedule:', e); alert('❌ Ошибка: '+e.message); }
+  const startDate = $('maint-start-date')?.value, startTime = $('maint-start-time')?.value,
+        endDate = $('maint-end-date')?.value, endTime = $('maint-end-time')?.value;
+  if (!startDate || !startTime || !endDate || !endTime) { alert('Заполните все поля даты и времени'); return; }
+  try {
+    const startTs = parseDateTimeMSK(startDate, startTime), endTs = parseDateTimeMSK(endDate, endTime);
+    if (startTs >= endTs) { alert('Время начала должно быть раньше времени окончания'); return; }
+    await setDoc(doc(db, 'artifacts/byrmalda-prod/config/maintenance'), {
+      startTimestamp: startTs, endTimestamp: endTs, enabled: true, updatedAt: serverTimestamp()
+    }, { merge: true });
+    if($('maint-saved')) {
+      $('maint-saved').classList.remove('hidden');
+      setTimeout(() => $('maint-saved')?.classList?.add('hidden'), 3000);
+    }
+    loadMaintenanceStatus();
+  } catch(e) { console.error('saveMaintenanceSchedule:', e); alert('❌ Ошибка: '+e.message); }
 };
 window.emergencyStopMaintenance = async () => {
-if (!confirm('🚨 Экстренно выключить технический перерыв? Таймер будет сброшен.')) return;
-try {
-await updateDoc(doc(db, 'artifacts/byrmalda-prod/config/maintenance'), {
-enabled: false,
-emergencyStoppedAt: serverTimestamp()
-});
-alert('✅ Технический перерыв экстренно выключен');
-loadMaintenanceStatus();
-if (maintenanceTimerInterval) clearInterval(maintenanceTimerInterval);
-hide($('maintenance-overlay'));
-} catch(e) { console.error('emergencyStopMaintenance:', e); alert('❌ Ошибка: '+e.message); }
+  if (!confirm('🚨 Экстренно выключить технический перерыв? Таймер будет сброшен.')) return;
+  try {
+    await updateDoc(doc(db, 'artifacts/byrmalda-prod/config/maintenance'), { enabled: false, emergencyStoppedAt: serverTimestamp() });
+    alert('✅ Технический перерыв экстренно выключен');
+    loadMaintenanceStatus();
+    if (maintenanceTimerInterval) clearInterval(maintenanceTimerInterval);
+    hide($('maintenance-overlay'));
+  } catch(e) { console.error('emergencyStopMaintenance:', e); alert('❌ Ошибка: '+e.message); }
 };
 
 async function autoUpdateOrders(){
-if(user?.email!==ADMIN_EMAIL)return;try{const now=Date.now();const created=await getDocs(query(collection(db,'artifacts/byrmalda-prod/public/data/orders'),where('status','==','Создан')));created.forEach(async d=>{const o=d.data();if(o.adminChangedStatus)return;const t=o.createdAt?.toDate?.().getTime();if(t&&now-t>4*24*60*60*1000)await updateDoc(doc(db,'artifacts/byrmalda-prod/public/data/orders',d.id),{status:'Передача товара в доставку',updatedAt:serverTimestamp()});});const shipping=await getDocs(query(collection(db,'artifacts/byrmalda-prod/public/data/orders'),where('status','==','Передача товара в доставку')));shipping.forEach(async d=>{const o=d.data();if(o.adminChangedStatus)return;const t=o.updatedAt?.toDate?.().getTime();if(t&&now-t>15*60*60*1000)await updateDoc(doc(db,'artifacts/byrmalda-prod/public/data/orders',d.id),{status:'В пути',updatedAt:serverTimestamp()});});}catch(e){}
+  if(user?.email!==ADMIN_EMAIL) return;
+  try{
+    const now=Date.now();
+    const created=await getDocs(query(collection(db,'artifacts/byrmalda-prod/public/data/orders'),where('status','==','Создан')));
+    created.forEach(async d=>{
+      const o=d.data();
+      if(o?.adminChangedStatus) return;
+      const t=o?.createdAt?.toDate?.()?.getTime();
+      if(t && now-t>4*24*60*60*1000) await updateDoc(doc(db,'artifacts/byrmalda-prod/public/data/orders',d.id),{status:'Передача товара в доставку',updatedAt:serverTimestamp()});
+    });
+    const shipping=await getDocs(query(collection(db,'artifacts/byrmalda-prod/public/data/orders'),where('status','==','Передача товара в доставку')));
+    shipping.forEach(async d=>{
+      const o=d.data();
+      if(o?.adminChangedStatus) return;
+      const t=o?.updatedAt?.toDate?.()?.getTime();
+      if(t && now-t>15*60*60*1000) await updateDoc(doc(db,'artifacts/byrmalda-prod/public/data/orders',d.id),{status:'В пути',updatedAt:serverTimestamp()});
+    });
+  } catch(e) { console.error('autoUpdateOrders:', e); }
 }
-function setupListeners(){document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.modal.active').forEach(m=>m.classList.remove('active'));});}
+function setupListeners(){
+  document.addEventListener('keydown', e => {
+    if(e.key==='Escape') document.querySelectorAll('.modal.active').forEach(m => m.classList.remove('active'));
+  });
+}
 
-Object.assign(window, {navigate, openModal, closeModal, openLogin, switchReg, doLogin, regStep1, regStep2, openAvatarModal, submitAvatar, filterType, handleSearch, openProd, setGal, galNav, addToCart, updCart, delCart, checkout, confirmCheckout, cancelOrder, sendMsg, toggleTheme, toggleLang, openReviewModal, setRating, submitReview, openReport, submitReport, showSizeChart, admCreateProduct, admLoadProduct, admSaveProduct, admDeleteProduct, admBlockUser, admUnblockUser, admTempBanUser, admUnbanAfterUser, admFindOrder, admSetOrderStatus, admApproveReview, admRejectReview, admDeleteReview, admApproveAvatar, admRejectAvatar, admApproveSuggestion, admRejectSuggestion, admEditSuggestion, openSuggest, submitSuggestion, toggleCollabInput, toggleEditCollabInput, openDeliveryModal, selectDelivery, saveDelivery, carouselNav, confirmLogout, doLogout, logoutFromBan, openAvatarSettingsModal, submitAvatarFromSettings, validateSingleFile, toggleMaintenance, saveMaintenanceSchedule, emergencyStopMaintenance, openCreatorInfo});
-console.log('🚀 BYRMALDA loaded. Полная система креаторов + лимиты + редактирование предложений.');
+// 🔁 ЭКСПОРТ ФУНКЦИЙ В ГЛОБАЛЬНУЮ ОБЛАСТЬ
+Object.assign(window, {
+  navigate, openModal, closeModal, openLogin, switchReg, doLogin, regStep1, regStep2, 
+  openAvatarModal, submitAvatar, filterType, handleSearch, openProd, setGal, galNav, 
+  addToCart, updCart, delCart, checkout, confirmCheckout, cancelOrder, sendMsg, 
+  toggleTheme, toggleLang, openReviewModal, setRating, submitReview, openReport, submitReport, 
+  showSizeChart, admCreateProduct, admLoadProduct, admSaveProduct, admDeleteProduct, 
+  admBlockUser, admUnblockUser, admTempBanUser, admUnbanAfterUser, admFindOrder, admSetOrderStatus, 
+  admApproveReview, admRejectReview, admDeleteReview, admApproveAvatar, admRejectAvatar, 
+  admApproveSuggestion, admRejectSuggestion, admEditSuggestion, openSuggest, submitSuggestion, 
+  toggleCollabInput, toggleEditCollabInput, openDeliveryModal, selectDelivery, saveDelivery, 
+  carouselNav, confirmLogout, doLogout, logoutFromBan, openAvatarSettingsModal, 
+  submitAvatarFromSettings, validateSingleFile, toggleMaintenance, saveMaintenanceSchedule, 
+  emergencyStopMaintenance, openCreatorInfo
+});
+
+console.log('🚀 BYRMALDA loaded. Все функции исправлены и готовы к работе.');
 </script>
 </body>
 </html>
